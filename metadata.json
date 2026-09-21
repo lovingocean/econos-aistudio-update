@@ -1,0 +1,6 @@
+{
+  "name": "ECONOS",
+  "description": "Commercial Business & Financial Operating System featuring cash flow forecasting, multi-entity accounting, invoicing, scenario simulations, and automated accounts receivable.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

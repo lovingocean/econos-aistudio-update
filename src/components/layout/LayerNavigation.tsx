@@ -33,7 +33,10 @@ import {
   Eye,
   Mountain,
   Truck,
-  Radio
+  Radio,
+  PhoneCall,
+  Calculator,
+  FileCheck2
 } from 'lucide-react';
 import { AppLayer } from '../../types/econos';
 
@@ -55,8 +58,24 @@ export const LayerNavigation: React.FC<LayerNavigationProps> = ({
   openIncidentsCount = 0
 }) => {
   const selected = currentLayer || activeLayer || 'BUSINESS';
-  const [activeGroup, setActiveGroup] = useState<'CORE_OS' | 'V2_STRATEGIC' | 'SOVEREIGN_INFRA' | 'PLANETARY_SYSTEMS' | 'CIVILIZATIONAL_FRONTIER' | 'OMNI_SINGULARITY'>(
-    ['OMNI_TELEMETRY_BUS', 'OMNI_CLEARING_MESH', 'OMNI_MINERAL_TITLE', 'OMNI_LEGAL_SYNTHESIS', 'OMNI_POWER_GRID', 'OMNI_CREDIT_MATRIX', 'OMNI_ROBOTIC_LABOR', 'OMNI_INTENT_TRANSLATION', 'OMNI_QUANTUM_CITADEL', 'OMNI_CIVILIZATION_ANCHOR'].includes(selected)
+  const [activeGroup, setActiveGroup] = useState<
+    | 'CORE_OS' 
+    | 'V2_STRATEGIC' 
+    | 'SOVEREIGN_INFRA' 
+    | 'PLANETARY_SYSTEMS' 
+    | 'CIVILIZATIONAL_FRONTIER' 
+    | 'OMNI_SINGULARITY'
+    | 'ENTERPRISE_SYNTHETICS'
+    | 'INSTITUTIONAL_TAX_PE'
+    | 'EXTENDED_100_MATRIX'
+  >(
+    selected === 'LAYER_62_RD_TAX_CREDIT' || selected === 'LAYER_62' || selected.startsWith('LAYER_6') || selected.startsWith('LAYER_7')
+      ? 'INSTITUTIONAL_TAX_PE'
+      : (selected.startsWith('LAYER_4') || selected.startsWith('LAYER_5'))
+      ? 'ENTERPRISE_SYNTHETICS'
+      : selected === 'EXTENDED_LAYERS_WORKSPACE' || selected.startsWith('LAYER_')
+      ? 'EXTENDED_100_MATRIX'
+      : ['OMNI_TELEMETRY_BUS', 'OMNI_CLEARING_MESH', 'OMNI_MINERAL_TITLE', 'OMNI_LEGAL_SYNTHESIS', 'OMNI_POWER_GRID', 'OMNI_CREDIT_MATRIX', 'OMNI_ROBOTIC_LABOR', 'OMNI_INTENT_TRANSLATION', 'OMNI_QUANTUM_CITADEL', 'OMNI_CIVILIZATION_ANCHOR'].includes(selected)
       ? 'OMNI_SINGULARITY'
       : ['RELATIVISTIC_LIGHT_CONE', 'GEOENGINEERING_DERIVATIVE', 'POST_HUMAN_ENTERPRISE', 'BIOLOGICAL_NEUROMORPHIC_GRID', 'KARDASHEV_OMEGA_PROTOCOL'].includes(selected)
       ? 'CIVILIZATIONAL_FRONTIER'
@@ -70,7 +89,13 @@ export const LayerNavigation: React.FC<LayerNavigationProps> = ({
   );
 
   useEffect(() => {
-    if (['OMNI_TELEMETRY_BUS', 'OMNI_CLEARING_MESH', 'OMNI_MINERAL_TITLE', 'OMNI_LEGAL_SYNTHESIS', 'OMNI_POWER_GRID', 'OMNI_CREDIT_MATRIX', 'OMNI_ROBOTIC_LABOR', 'OMNI_INTENT_TRANSLATION', 'OMNI_QUANTUM_CITADEL', 'OMNI_CIVILIZATION_ANCHOR'].includes(selected)) {
+    if (selected === 'LAYER_62_RD_TAX_CREDIT' || selected === 'LAYER_62' || selected.startsWith('LAYER_6') || selected.startsWith('LAYER_7')) {
+      setActiveGroup('INSTITUTIONAL_TAX_PE');
+    } else if (selected.startsWith('LAYER_4') || selected.startsWith('LAYER_5')) {
+      setActiveGroup('ENTERPRISE_SYNTHETICS');
+    } else if (selected === 'EXTENDED_LAYERS_WORKSPACE' || selected.startsWith('LAYER_')) {
+      setActiveGroup('EXTENDED_100_MATRIX');
+    } else if (['OMNI_TELEMETRY_BUS', 'OMNI_CLEARING_MESH', 'OMNI_MINERAL_TITLE', 'OMNI_LEGAL_SYNTHESIS', 'OMNI_POWER_GRID', 'OMNI_CREDIT_MATRIX', 'OMNI_ROBOTIC_LABOR', 'OMNI_INTENT_TRANSLATION', 'OMNI_QUANTUM_CITADEL', 'OMNI_CIVILIZATION_ANCHOR'].includes(selected)) {
       setActiveGroup('OMNI_SINGULARITY');
     } else if (['RELATIVISTIC_LIGHT_CONE', 'GEOENGINEERING_DERIVATIVE', 'POST_HUMAN_ENTERPRISE', 'BIOLOGICAL_NEUROMORPHIC_GRID', 'KARDASHEV_OMEGA_PROTOCOL'].includes(selected)) {
       setActiveGroup('CIVILIZATIONAL_FRONTIER');
@@ -87,12 +112,30 @@ export const LayerNavigation: React.FC<LayerNavigationProps> = ({
 
   const coreLayers = [
     {
+      id: 'SOVEREIGN_COMMAND' as AppLayer,
+      name: 'Ω. Sovereign Command',
+      subtitle: 'Concept C 4-Quadrant Institutional Mission Architecture',
+      question: 'Synthetic Reserves • Planetary Map • §41 ASC Tax • Merkle Engine',
+      icon: Compass,
+      color: 'amber',
+      badge: '4-QUADRANT OS'
+    },
+    {
       id: 'BUSINESS' as AppLayer,
       name: '1. Business',
       subtitle: 'FinOps, AI CFO, P2P, RevRec, Close & Audit',
       question: 'P2P 3-Way Match • ASC 606 • Continuous Close • SOC-2',
       icon: Briefcase,
       color: 'amber'
+    },
+    {
+      id: 'CLIENT_ACQUISITION' as AppLayer,
+      name: 'Client Acquisition',
+      subtitle: 'Maps Scraper • Outbound Email • Voice Agent',
+      question: 'Automated Lead Harvest • Roadmap Dispatch • Phone Calls',
+      icon: PhoneCall,
+      color: 'emerald',
+      badge: 'MAPS + CALLS'
     },
     {
       id: 'WEALTH' as AppLayer,
@@ -417,6 +460,245 @@ export const LayerNavigation: React.FC<LayerNavigationProps> = ({
     }
   ];
 
+  const enterpriseSyntheticsLayers = [
+    {
+      id: 'LAYER_42_SYNTHETIC_BALANCE_SHEET' as AppLayer,
+      name: '42. Balance Sheet Sculptor',
+      subtitle: 'Working Capital Rebalancing & Debt Optimization',
+      question: 'Reduce WACC 120-250 bps • Eliminate Cash Drag',
+      icon: TrendingUp,
+      color: 'amber'
+    },
+    {
+      id: 'LAYER_43_TREASURY_SWEEPER' as AppLayer,
+      name: '43. Treasury Sweeper',
+      subtitle: 'Zero-Balance Overnight Sweeper',
+      question: 'SOFR Yield Maximizer • $35K-$140K Interest Gains',
+      icon: DollarSign,
+      color: 'emerald'
+    },
+    {
+      id: 'LAYER_44_WORKING_CAPITAL_REBALANCE' as AppLayer,
+      name: '44. Working Capital Rebalance',
+      subtitle: 'DSO vs DPO Dynamic Compression',
+      question: 'Cash Conversion Cycle -18 Days • Free Up Liquidity',
+      icon: Activity,
+      color: 'indigo'
+    },
+    {
+      id: 'LAYER_45_MULTICURRENCY_FX' as AppLayer,
+      name: '45. Multi-Currency FX Engine',
+      subtitle: 'Cross-Border Wholesale Corridor',
+      question: 'Zero Spread Netting • Cut 1.5-3.0% FX Fees',
+      icon: Globe2,
+      color: 'cyan'
+    },
+    {
+      id: 'LAYER_46_SUPPLY_CHAIN_FIREWALL' as AppLayer,
+      name: '46. Supply Chain Firewall',
+      subtitle: 'Dual-Sourcing Logistics Interceptor',
+      question: 'Prevent Factory Stoppages • Automated PO Reroute',
+      icon: Shield,
+      color: 'rose'
+    },
+    {
+      id: 'LAYER_47_VENDOR_DISCOUNT_CAPTURE' as AppLayer,
+      name: '47. Vendor Discount Capture',
+      subtitle: '2/10 Net 30 Early Payment Yield',
+      question: '36.7% Annualized Risk-Free IRR on Cash',
+      icon: Coins,
+      color: 'emerald'
+    },
+    {
+      id: 'LAYER_48_SUB_TIER_INSOLVENCY' as AppLayer,
+      name: '48. Sub-Tier Insolvency Radar',
+      subtitle: 'Tier 2/3 Distress Detection',
+      question: '60-90 Day Advance Supplier Default Warning',
+      icon: AlertOctagon,
+      color: 'amber'
+    },
+    {
+      id: 'LAYER_49_VAT_GST_ARBITRAGE' as AppLayer,
+      name: '49. VAT/GST Reclaim Rails',
+      subtitle: 'Automated 13th Directive Reclaims',
+      question: '100% Cross-Border Tax Recovery • $240K+ Salvaged',
+      icon: Scale,
+      color: 'blue'
+    },
+    {
+      id: 'LAYER_50_SOVEREIGN_DEBT_SWAP' as AppLayer,
+      name: '50. Debt Swap Engine',
+      subtitle: 'Debt-for-Equity & Restructuring',
+      question: '30-50% Interest Burden Cut • Covenant Relief',
+      icon: Landmark,
+      color: 'purple'
+    },
+    {
+      id: 'LAYER_51_ABCP_CONDUIT' as AppLayer,
+      name: '51. ABCP Conduit',
+      subtitle: 'Asset-Backed Commercial Paper',
+      question: 'SOFR + 45 bps Mid-Market Borrowing Facility',
+      icon: Building2,
+      color: 'indigo'
+    },
+    {
+      id: 'LAYER_52_DYNAMIC_PRICE_ELASTICITY' as AppLayer,
+      name: '52. Dynamic Pricing Matrix',
+      subtitle: 'Real-Time Margin Optimization',
+      question: '+240-480 bps Gross Margin Expansion',
+      icon: TrendingUp,
+      color: 'emerald'
+    },
+    {
+      id: 'LAYER_53_SAAS_RIGHTSIZING' as AppLayer,
+      name: '53. SaaS License Sentinel',
+      subtitle: 'Ghost Seat Deprovisioning',
+      question: 'Instant 20-35% Cloud & Software Cost Cut',
+      icon: Cpu,
+      color: 'cyan'
+    },
+    {
+      id: 'LAYER_54_HEADCOUNT_PRODUCTIVITY' as AppLayer,
+      name: '54. Labor Allocator',
+      subtitle: 'Revenue per Employee Optimization',
+      question: '+25-40% Rev/FTE Margin Lift',
+      icon: Target,
+      color: 'purple'
+    },
+    {
+      id: 'LAYER_55_INSURANCE_UNDERWRITING' as AppLayer,
+      name: '55. Insurance Underwriting',
+      subtitle: 'D&O & Cyber Risk Reverse Auction',
+      question: '18-30% Commercial Premium Reduction',
+      icon: Shield,
+      color: 'blue'
+    },
+    {
+      id: 'LAYER_56_CARBON_TOKENIZATION' as AppLayer,
+      name: '56. Carbon Credit Tokenizer',
+      subtitle: 'Scope 1/2/3 Offset Registry',
+      question: 'Monetize Net-Zero Milestones into Tradeable Cash',
+      icon: Sparkles,
+      color: 'emerald'
+    },
+    {
+      id: 'LAYER_57_ASC_606_REV_REC' as AppLayer,
+      name: '57. ASC 606 RevRec Pipeline',
+      subtitle: 'Deferred Revenue Waterfall',
+      question: 'Zero Restatement Risk • Audit-Ready Schedules',
+      icon: Hash,
+      color: 'amber'
+    },
+    {
+      id: 'LAYER_58_PHANTOM_STOCK_CLEARING' as AppLayer,
+      name: '58. Inventory Clearinghouse',
+      subtitle: 'Dead Stock Secondary B2B Auctions',
+      question: 'Liberate 40-70% Cash from Locked Warehouses',
+      icon: Truck,
+      color: 'indigo'
+    },
+    {
+      id: 'LAYER_59_SEC_CONTINUOUS_AUDIT' as AppLayer,
+      name: '59. Continuous SEC/IFRS Audit',
+      subtitle: 'Automated 10-K/10-Q & XBRL Engine',
+      question: 'Audit Prep Reduced from 8 Weeks to 48 Hours',
+      icon: Landmark,
+      color: 'purple'
+    },
+    {
+      id: 'LAYER_60_PATENT_SHIELD' as AppLayer,
+      name: '60. Patent & IP Shield',
+      subtitle: 'Prior Art Scanner & Collateralizer',
+      question: 'Patent Valuation & Defensive Litigation Moat',
+      icon: Lock,
+      color: 'cyan'
+    },
+    {
+      id: 'LAYER_61_PE_LBO_OPTIMIZER' as AppLayer,
+      name: '61. PE LBO & Covenant Engine',
+      subtitle: 'Leveraged Buyout Waterfall & Return IRR',
+      question: 'Target 28.4% IRR with Zero Covenant Default',
+      icon: Compass,
+      color: 'emerald'
+    }
+  ];
+
+  const taxAndPeLayers = [
+    {
+      id: 'LAYER_62_RD_TAX_CREDIT' as AppLayer,
+      name: '62. R&D Tax Credit (§41)',
+      subtitle: 'IRC §41, §3111(f) & Form 6765',
+      question: '$50K-$500K+ Cash Refund or Payroll Offset',
+      icon: Calculator,
+      color: 'amber',
+      badge: 'REQUESTED L62'
+    },
+    {
+      id: 'LAYER_63_OPPORTUNITY_ZONE' as AppLayer,
+      name: '63. Opportunity Zones & §1031',
+      subtitle: 'QOF 10-Year 0% Capital Gain Elimination',
+      question: '100% Tax Elimination on 10-Year Qualified Assets',
+      icon: Building2,
+      color: 'emerald'
+    },
+    {
+      id: 'LAYER_64_QSBS_MULTIPLIER' as AppLayer,
+      name: '64. QSBS Multiplier (§1202)',
+      subtitle: '$10M / 10x Basis Exclusion Stacking',
+      question: 'Save $2.38M+ Tax per Shareholder on Exit',
+      icon: Coins,
+      color: 'indigo'
+    },
+    {
+      id: 'LAYER_65_PTET_SALT_OPTIMIZER' as AppLayer,
+      name: '65. PTET SALT Workaround',
+      subtitle: '36-State Pass-Through Entity Tax',
+      question: 'Bypass $10K SALT Cap • Save $30K-$120K/Partner',
+      icon: Scale,
+      color: 'purple'
+    },
+    {
+      id: 'LAYER_66_TRANSFER_PRICING_APA' as AppLayer,
+      name: '66. Transfer Pricing APA',
+      subtitle: 'OECD BEPS 2.0 & Economic Substance',
+      question: 'Eliminate §482 Double Taxation & Audits',
+      icon: Globe2,
+      color: 'cyan'
+    },
+    {
+      id: 'LAYER_67_PE_CARVEOUT_INTEGRATION' as AppLayer,
+      name: '67. PE Carve-Out Rails',
+      subtitle: 'TSA Billing & Standalone Separation',
+      question: 'Cut Carve-Out Timeline 6 Months • Save $1.2M',
+      icon: Network,
+      color: 'rose'
+    },
+    {
+      id: 'LAYER_72_COST_SEGREGATION_179D' as AppLayer,
+      name: '72. Cost Segregation (§179D)',
+      subtitle: 'Accelerated Building Depreciation',
+      question: '$150K-$600K Year-1 Real Estate Deductions',
+      icon: Landmark,
+      color: 'emerald'
+    },
+    {
+      id: 'LAYER_74_ESOP_TRANSITION' as AppLayer,
+      name: '74. ESOP Transition Engine',
+      subtitle: 'IRC §1042 Tax-Free Founder Sale',
+      question: '0% Capital Gains to Founder • 100% Tax-Exempt Co',
+      icon: Target,
+      color: 'amber'
+    },
+    {
+      id: 'LAYER_75_CAPTIVE_INSURANCE' as AppLayer,
+      name: '75. Captive Insurance (§831b)',
+      subtitle: 'Micro-Captives & Reinsurance Shield',
+      question: 'Shelter $2.8M/Yr Pre-Tax with 0% Underwriting Tax',
+      icon: Shield,
+      color: 'blue'
+    }
+  ];
+
   const currentLayersList = 
     activeGroup === 'CORE_OS' 
       ? coreLayers 
@@ -428,6 +710,12 @@ export const LayerNavigation: React.FC<LayerNavigationProps> = ({
       ? frontierLayers
       : activeGroup === 'OMNI_SINGULARITY'
       ? omniSingularityLayers
+      : activeGroup === 'ENTERPRISE_SYNTHETICS'
+      ? enterpriseSyntheticsLayers
+      : activeGroup === 'INSTITUTIONAL_TAX_PE'
+      ? taxAndPeLayers
+      : activeGroup === 'EXTENDED_100_MATRIX'
+      ? [...enterpriseSyntheticsLayers, ...taxAndPeLayers]
       : sovereignLayers;
 
   return (
@@ -543,6 +831,64 @@ export const LayerNavigation: React.FC<LayerNavigationProps> = ({
               10 OMNI
             </span>
           </button>
+
+          <button
+            onClick={() => {
+              setActiveGroup('ENTERPRISE_SYNTHETICS');
+              if (!selected.startsWith('LAYER_4') && !selected.startsWith('LAYER_5')) {
+                onSelectLayer('LAYER_42_SYNTHETIC_BALANCE_SHEET');
+              }
+            }}
+            className={`px-3 py-1.5 rounded-lg font-bold transition flex items-center gap-1.5 cursor-pointer ${
+              activeGroup === 'ENTERPRISE_SYNTHETICS'
+                ? 'bg-gradient-to-r from-blue-700 via-indigo-700 to-cyan-700 text-white shadow-md border border-cyan-400/40'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+            }`}
+          >
+            <Building2 className="w-3.5 h-3.5 text-cyan-300" />
+            <span>Enterprise (L42-61)</span>
+            <span className="px-1.5 py-0.2 rounded-full bg-cyan-950 text-cyan-300 text-[9px] font-mono font-bold">
+              20 LAYERS
+            </span>
+          </button>
+
+          <button
+            onClick={() => {
+              setActiveGroup('INSTITUTIONAL_TAX_PE');
+              if (selected !== 'LAYER_62_RD_TAX_CREDIT' && selected !== 'LAYER_62') {
+                onSelectLayer('LAYER_62_RD_TAX_CREDIT');
+              }
+            }}
+            className={`px-3 py-1.5 rounded-lg font-bold transition flex items-center gap-1.5 cursor-pointer ${
+              activeGroup === 'INSTITUTIONAL_TAX_PE'
+                ? 'bg-gradient-to-r from-amber-700 via-emerald-800 to-slate-900 text-white shadow-md border border-amber-400/50 ring-1 ring-amber-400/30'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+            }`}
+          >
+            <Calculator className="w-3.5 h-3.5 text-amber-300" />
+            <span>Tax &amp; PE (L62-75)</span>
+            <span className="px-1.5 py-0.2 rounded-full bg-amber-400/20 text-amber-200 border border-amber-300/40 text-[9px] font-mono font-bold">
+              ⭐ L62 R&amp;D
+            </span>
+          </button>
+
+          <button
+            onClick={() => {
+              setActiveGroup('EXTENDED_100_MATRIX');
+              onSelectLayer('EXTENDED_LAYERS_WORKSPACE');
+            }}
+            className={`px-3 py-1.5 rounded-lg font-bold transition flex items-center gap-1.5 cursor-pointer ${
+              activeGroup === 'EXTENDED_100_MATRIX' || selected === 'EXTENDED_LAYERS_WORKSPACE'
+                ? 'bg-gradient-to-r from-purple-900 via-indigo-950 to-slate-950 text-white shadow-md border border-purple-400/50'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+            }`}
+          >
+            <Layers className="w-3.5 h-3.5 text-purple-300" />
+            <span>100-Layer Sovereign Matrix</span>
+            <span className="px-1.5 py-0.2 rounded-full bg-purple-500/20 text-purple-300 text-[9px] font-mono font-bold">
+              ALL 100
+            </span>
+          </button>
         </div>
 
         <div className="text-[11px] font-mono text-slate-400 hidden xl:block">
@@ -556,63 +902,73 @@ export const LayerNavigation: React.FC<LayerNavigationProps> = ({
             ? 'Relativistic Minkowski DAG, Geoengineering Swaps, Zero-Employee DAOs, Bio-Compute & Omega Protocol'
             : activeGroup === 'OMNI_SINGULARITY'
             ? 'Omni-Access: Earth Telemetry, RTGS Clearing, Subsurface Cadastre, 195-Nation Law & Post-Quantum Citadels'
+            : activeGroup === 'ENTERPRISE_SYNTHETICS'
+            ? 'Layers 42–61: Balance Sheet Sculptor, SOFR Sweeper, FX Corridor, RevRec Waterfall & LBO Optimizer'
+            : activeGroup === 'INSTITUTIONAL_TAX_PE'
+            ? 'Layers 62–75: IRC §41 R&D Credits, QOF §1031, QSBS §1202, PTET & Captive Insurance'
+            : activeGroup === 'EXTENDED_100_MATRIX'
+            ? 'All 100 Autonomous Sovereign Layers: Full Operational Matrix & Deep Space Infrastructure'
             : 'Autonomous Banking Rails, Cryptographic Ledger & War-Room Defense'}
         </div>
       </div>
 
-      {/* 41-Layer Quick Status & Jump Banner */}
+      {/* 100-Layer Master Quick Status & Jump Banner */}
       <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-1.5 bg-slate-50/90 rounded-xl border border-slate-200/80 text-[11px] font-mono text-slate-600">
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="font-bold text-slate-800">41 Sovereign Layers Operational (Tiers 1–6)</span>
+          <span className="font-bold text-slate-800">100 Sovereign Layers Fully Operational (Tiers 1–9)</span>
           <span className="text-slate-400 hidden sm:inline">•</span>
-          <span className="text-slate-500 hidden sm:inline">Current: {activeGroup === 'CORE_OS' ? 'Tier 1 Foundational' : activeGroup === 'V2_STRATEGIC' ? 'Tier 2 Strategic' : activeGroup === 'SOVEREIGN_INFRA' ? 'Tier 3 Sovereign Rails' : activeGroup === 'PLANETARY_SYSTEMS' ? 'Tier 4 Planetary Grid' : activeGroup === 'CIVILIZATIONAL_FRONTIER' ? 'Tier 5 Civilizational Frontier' : 'Tier 6 Omni-Access Singularity'}</span>
+          <span className="text-slate-500 hidden sm:inline">
+            Active: {
+              activeGroup === 'CORE_OS' ? 'Tier 1 Foundational (L1–4)' : 
+              activeGroup === 'V2_STRATEGIC' ? 'Tier 2 Strategic (L5–9)' : 
+              activeGroup === 'SOVEREIGN_INFRA' ? 'Tier 3 Sovereign Rails (L11–19)' : 
+              activeGroup === 'PLANETARY_SYSTEMS' ? 'Tier 4 Planetary Grid (L22–26)' : 
+              activeGroup === 'CIVILIZATIONAL_FRONTIER' ? 'Tier 5 Civilizational Frontier (L27–31)' : 
+              activeGroup === 'OMNI_SINGULARITY' ? 'Tier 6 Omni-Access (L32–41)' :
+              activeGroup === 'ENTERPRISE_SYNTHETICS' ? 'Tier 7 Enterprise Synthetics (L42–61)' :
+              activeGroup === 'INSTITUTIONAL_TAX_PE' ? 'Tier 8 Tax & Private Equity (L62–75)' :
+              'Tier 9 Complete 100-Layer Sovereign Matrix'
+            }
+          </span>
         </div>
         <div className="flex items-center gap-1.5 text-[10px]">
-          {activeGroup !== 'OMNI_SINGULARITY' && (
-            <button
-              onClick={() => {
-                setActiveGroup('OMNI_SINGULARITY');
-                onSelectLayer('OMNI_TELEMETRY_BUS');
-              }}
-              className="px-2 py-0.5 rounded bg-gradient-to-r from-amber-100 to-indigo-100 hover:from-amber-200 hover:to-indigo-200 text-slate-900 font-bold border border-amber-300 transition flex items-center gap-1 cursor-pointer"
-            >
-              <span>🌐 Omni-Access Singularity (L32–41)</span>
-            </button>
-          )}
-          {activeGroup !== 'CIVILIZATIONAL_FRONTIER' && (
-            <button
-              onClick={() => {
-                setActiveGroup('CIVILIZATIONAL_FRONTIER');
-                onSelectLayer('RELATIVISTIC_LIGHT_CONE');
-              }}
-              className="px-2 py-0.5 rounded bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold transition flex items-center gap-1 cursor-pointer"
-            >
-              <span>🚀 Jump to Frontier (L27–31)</span>
-            </button>
-          )}
-          {activeGroup !== 'PLANETARY_SYSTEMS' && (
-            <button
-              onClick={() => {
-                setActiveGroup('PLANETARY_SYSTEMS');
-                onSelectLayer('SYNTHETIC_CENTRAL_BANK');
-              }}
-              className="px-2 py-0.5 rounded bg-purple-100 hover:bg-purple-200 text-purple-900 font-bold transition flex items-center gap-1 cursor-pointer"
-            >
-              <span>⚡ Planetary Grid (L22–26)</span>
-            </button>
-          )}
-          {activeGroup !== 'SOVEREIGN_INFRA' && (
-            <button
-              onClick={() => {
-                setActiveGroup('SOVEREIGN_INFRA');
-                onSelectLayer('AUTONOMOUS_EXECUTION');
-              }}
-              className="px-2 py-0.5 rounded bg-emerald-100 hover:bg-emerald-200 text-emerald-900 font-bold transition flex items-center gap-1 cursor-pointer"
-            >
-              <span>🛡️ Sovereign Rails (L11–19)</span>
-            </button>
-          )}
+          <button
+            onClick={() => {
+              setActiveGroup('CORE_OS');
+              onSelectLayer('SOVEREIGN_COMMAND');
+            }}
+            className="px-2.5 py-0.5 rounded bg-slate-900 hover:bg-slate-800 text-amber-300 font-bold border border-amber-500/40 transition flex items-center gap-1 cursor-pointer shadow-xs"
+          >
+            <span>Ω Concept C Dashboard</span>
+          </button>
+          <button
+            onClick={() => {
+              setActiveGroup('ENTERPRISE_SYNTHETICS');
+              onSelectLayer('LAYER_42_SYNTHETIC_BALANCE_SHEET');
+            }}
+            className="px-2 py-0.5 rounded bg-blue-100 hover:bg-blue-200 text-blue-900 font-bold transition flex items-center gap-1 cursor-pointer"
+          >
+            <span>⚡ Check Layers 42–61</span>
+          </button>
+          <button
+            onClick={() => {
+              setActiveGroup('INSTITUTIONAL_TAX_PE');
+              onSelectLayer('LAYER_62_RD_TAX_CREDIT');
+            }}
+            className="px-2 py-0.5 rounded bg-amber-100 hover:bg-amber-200 text-amber-950 font-bold border border-amber-300 transition flex items-center gap-1 cursor-pointer ring-1 ring-amber-400/40"
+          >
+            <span>🏛️ Check Layer 62 (R&amp;D Tax)</span>
+          </button>
+          <button
+            onClick={() => {
+              setActiveGroup('EXTENDED_100_MATRIX');
+              onSelectLayer('EXTENDED_LAYERS_WORKSPACE');
+            }}
+            className="px-2 py-0.5 rounded bg-gradient-to-r from-purple-100 to-indigo-100 hover:from-purple-200 hover:to-indigo-200 text-purple-950 font-bold border border-purple-300 transition flex items-center gap-1 cursor-pointer"
+          >
+            <span>🌐 100-Layer Grid</span>
+          </button>
         </div>
       </div>
 

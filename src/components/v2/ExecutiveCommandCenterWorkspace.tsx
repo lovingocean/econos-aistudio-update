@@ -29,9 +29,17 @@ import {
   ExecutiveQuestionAnswer, 
   MaDealPipelineItem 
 } from '../../types/econosV2';
+import { AppLayer } from '../../types/econos';
+import { SovereignInstitutionalDashboard } from '../dashboard/SovereignInstitutionalDashboard';
 
-export const ExecutiveCommandCenterWorkspace: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'EXECUTIVE_QUESTIONS' | 'MA_PIPELINE'>('EXECUTIVE_QUESTIONS');
+interface ExecutiveCommandCenterWorkspaceProps {
+  onSelectLayer?: (layer: AppLayer) => void;
+}
+
+export const ExecutiveCommandCenterWorkspace: React.FC<ExecutiveCommandCenterWorkspaceProps> = ({
+  onSelectLayer
+}) => {
+  const [activeTab, setActiveTab] = useState<'SOVEREIGN_COMMAND_C' | 'EXECUTIVE_QUESTIONS' | 'MA_PIPELINE'>('SOVEREIGN_COMMAND_C');
   const [kpis] = useState<ExecutiveKPI[]>(INITIAL_EXECUTIVE_KPIS);
   const [questions] = useState<ExecutiveQuestionAnswer[]>(INITIAL_EXECUTIVE_QUESTIONS);
   const [deals, setDeals] = useState<MaDealPipelineItem[]>(INITIAL_MA_DEALS);
@@ -123,10 +131,25 @@ export const ExecutiveCommandCenterWorkspace: React.FC = () => {
       </div>
 
       {/* Sub-Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-200 bg-white px-4 py-2 rounded-xl text-xs font-mono">
+      <div className="flex items-center gap-2 border-b border-slate-200 bg-white px-4 py-2 rounded-xl text-xs font-mono flex-wrap">
+        <button
+          onClick={() => setActiveTab('SOVEREIGN_COMMAND_C')}
+          className={`px-3 py-1.5 rounded-lg font-semibold transition flex items-center gap-1.5 cursor-pointer ${
+            activeTab === 'SOVEREIGN_COMMAND_C'
+              ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-slate-950 font-bold shadow-xs'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+          }`}
+        >
+          <Compass className="w-3.5 h-3.5 text-amber-600" />
+          <span>Sovereign Command Center (4-Quadrant OS)</span>
+          <span className="px-1.5 py-0.2 rounded bg-amber-950 text-amber-300 text-[9px] font-mono">
+            CONCEPT C
+          </span>
+        </button>
+
         <button
           onClick={() => setActiveTab('EXECUTIVE_QUESTIONS')}
-          className={`px-3 py-1.5 rounded-lg font-semibold transition flex items-center gap-1.5 ${
+          className={`px-3 py-1.5 rounded-lg font-semibold transition flex items-center gap-1.5 cursor-pointer ${
             activeTab === 'EXECUTIVE_QUESTIONS'
               ? 'bg-[#132338] text-white shadow-xs'
               : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
@@ -138,7 +161,7 @@ export const ExecutiveCommandCenterWorkspace: React.FC = () => {
 
         <button
           onClick={() => setActiveTab('MA_PIPELINE')}
-          className={`px-3 py-1.5 rounded-lg font-semibold transition flex items-center gap-1.5 ${
+          className={`px-3 py-1.5 rounded-lg font-semibold transition flex items-center gap-1.5 cursor-pointer ${
             activeTab === 'MA_PIPELINE'
               ? 'bg-[#132338] text-white shadow-xs'
               : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
@@ -148,6 +171,15 @@ export const ExecutiveCommandCenterWorkspace: React.FC = () => {
           <span>M&amp;A Intelligence Network (Agent 03 16-Stage Pipeline)</span>
         </button>
       </div>
+
+      {/* TAB 0: SOVEREIGN 4-QUADRANT COMMAND CENTER (CONCEPT C) */}
+      {activeTab === 'SOVEREIGN_COMMAND_C' && (
+        <div className="pt-1">
+          <SovereignInstitutionalDashboard 
+            onSelectLayer={onSelectLayer || (() => {})} 
+          />
+        </div>
+      )}
 
       {/* TAB 1: THE 7 EXECUTIVE QUESTIONS */}
       {activeTab === 'EXECUTIVE_QUESTIONS' && (

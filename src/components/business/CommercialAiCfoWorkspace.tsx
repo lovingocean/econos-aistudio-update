@@ -13,7 +13,9 @@ import {
   Calendar,
   Clock,
   Zap,
-  ArrowUpRight
+  ArrowUpRight,
+  PhoneCall,
+  MapPin
 } from 'lucide-react';
 import { DailyTreasuryBriefing, TreasuryAnomalyAlert, AiCfoChatMessage } from '../../types/enterprise-ops';
 
@@ -294,6 +296,37 @@ How else may I assist with board decks, scenario modeling, or vendor negotiation
                 1 Price Escalation • 1 Collection Lag
               </div>
             </div>
+          </div>
+
+          {/* Client Acquisition & Google Maps Lead Scraper Card */}
+          <div className="bg-gradient-to-r from-emerald-950 via-slate-900 to-slate-950 text-white rounded-2xl p-5 border border-emerald-500/30 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 font-mono">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold border border-emerald-500/30 flex items-center gap-1">
+                  <MapPin className="w-3 h-3" />
+                  MAPS SCRAPER KIT + VOICE CALLS
+                </span>
+                <span className="text-[11px] text-slate-400">Automated B2B Client Acquisition</span>
+              </div>
+              <h4 className="text-sm font-bold text-white">
+                Discover Clients on Google Maps & Dispatch AI Voice Calls
+              </h4>
+              <p className="text-xs text-slate-300 leading-relaxed max-w-2xl">
+                Scrape local businesses by niche & location, send personalized 2026 Roadmap emails, connect prospects with live AI CFO Copilot, and trigger automated phone/voice calls on demand.
+              </p>
+            </div>
+            <button
+              onClick={() => {
+                if (typeof window !== 'undefined') {
+                  const event = new CustomEvent('navigate-layer', { detail: 'CLIENT_ACQUISITION' });
+                  window.dispatchEvent(event);
+                }
+              }}
+              className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shrink-0 flex items-center gap-1.5 transition shadow-lg shadow-emerald-900/40"
+            >
+              <PhoneCall className="w-3.5 h-3.5" />
+              <span>Launch Maps Scraper & Calls</span>
+            </button>
           </div>
 
           {/* AI Executive Commentary Card */}

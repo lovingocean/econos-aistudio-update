@@ -10,16 +10,18 @@ import {
   Edit3, 
   Clock, 
   ArrowUpRight,
-  Sparkles
+  Sparkles,
+  FileJson
 } from 'lucide-react';
 
 interface WealthDashboardProps {
   profile: WealthProfile | null;
   onRefresh: () => void;
   onOpenAdvisor: () => void;
+  onOpenExport?: () => void;
 }
 
-export const WealthDashboard: React.FC<WealthDashboardProps> = ({ profile, onRefresh, onOpenAdvisor }) => {
+export const WealthDashboard: React.FC<WealthDashboardProps> = ({ profile, onRefresh, onOpenAdvisor, onOpenExport }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -140,6 +142,17 @@ export const WealthDashboard: React.FC<WealthDashboardProps> = ({ profile, onRef
               <Edit3 className="w-3.5 h-3.5 text-slate-400" />
               <span>Adjust Targets & Balances</span>
             </button>
+
+            {onOpenExport && (
+              <button
+                id="wealth-dashboard-export-btn"
+                onClick={onOpenExport}
+                className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-amber-50/80 hover:bg-amber-100 text-amber-900 border border-amber-200 text-xs font-bold font-mono transition shadow-2xs cursor-pointer"
+              >
+                <FileJson className="w-3.5 h-3.5 text-amber-600" />
+                <span>Sovereign Data Export</span>
+              </button>
+            )}
           </div>
         </div>
       </div>

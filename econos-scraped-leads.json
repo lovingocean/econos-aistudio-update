@@ -1,0 +1,704 @@
+{
+  "leads": [
+    {
+      "id": "lead_1789997139111_1",
+      "name": "Reliant Mechanical Services",
+      "category": "Commercial HVAC & Mechanical",
+      "location": "Dallas, TX",
+      "address": "11400 N Stemmons Fwy",
+      "city": "Dallas",
+      "state": "TX",
+      "zip": "75229",
+      "phone": "+1 (214) 555-0192",
+      "website": "https://www.reliantmechanical.com",
+      "rating": 4.6,
+      "reviewCount": 245,
+      "status": "OPERATIONAL",
+      "priceLevel": "$$",
+      "openingHours": "Mon-Fri 7:00 AM - 6:00 PM",
+      "estimatedRevenueRange": "$2.5M - $5.0M",
+      "monthlyInvoiceVolume": 210,
+      "icpScore": 92,
+      "cashFlowFriction": "High accounts receivable lag, manual check processing, seasonal cash spikes",
+      "contactEmail": "finance@reliantmechanical.com",
+      "outreachStatus": "EMAIL_SENT",
+      "callCount": 3,
+      "tags": [
+        "Commercial",
+        "Mechanical",
+        "Industrial"
+      ],
+      "lastInteractionAt": "2026-09-21T13:45:30.597Z",
+      "lastEmailSentAt": "2026-09-21T13:45:30.597Z",
+      "lastEmailSubject": "Financial operations / Reliant Mechanical Services",
+      "lastEmailBody": "Subject: ECONOS Flywheel Blueprint & Working Capital Audit\n\nReliant Mechanical Services Executive Team,\n\nIn the high-velocity commercial HVAC landscape of Dallas, operational drag is the primary inhibitor of enterprise value. Given your current volume of 210 monthly invoices and identified friction points in AR lag and manual disbursement, we have architected the ECONOS Flywheel to transition Reliant from reactive manual processing to predictive capital efficiency.\n\nThe 4-Pillar ECONOS Flywheel is structured as follows:\n\n1. Autonomous Invoice Ingestion & 3-Way Instant Matching: Eliminate manual check processing by deploying a sub-3-second matching engine that reconciles POs, receiving slips, and bills in real-time. This eradicates the operational bottlenecks currently exacerbating your AR lag and seasonal cash volatility.\n\n2. Live 90-Day Cash Flow Intelligence & Predictive Treasury Anomaly Engine: Move beyond historical reporting to a rolling, daily cash prediction model. By implementing automated payroll and tax reserve locks, we insulate your liquidity from seasonal fluctuations.\n\n3. Working Capital Liberation & Dynamic Yield Optimization: Our audit identifies a target opportunity to unlock ~$252,000 in annual liquidity. We achieve this by tightening AR collection cycles and institutionalizing a 2/10 Net-30 early payment strategy, effectively turning your payables into a profit center.\n\n4. Executive AI CFO Copilot & Scenario Stress-Testing: Standardize your board and lender reporting with an AI-driven engine. Execute real-time stress testing on critical variables, including fuel cost volatility, material inflation, and supplier default risk, to maintain operational resilience.\n\nYour 4.6★ reputation underscores operational excellence in the field; it is time to mirror that efficiency in your back-office architecture. \n\nAccess your bespoke diagnostics and audit environment here: [Official portal link will be provided upon deployment]\n\nI recommend we review the initial data synthesis during a 15-minute briefing next week to finalize the transition roadmap.\n\nBest regards,\n\nLead Strategic Advisor\nECONOS Financial Architecture\nfinance@reliantmechanical.com",
+      "emailHistory": [
+        {
+          "subject": "ECONOS Flywheel Blueprint & Working Capital Audit",
+          "body": "Subject: ECONOS Flywheel Blueprint & Working Capital Audit\n\nReliant Mechanical Services Executive Team,\n\nIn the high-velocity commercial HVAC landscape of Dallas, operational drag is the primary inhibitor of enterprise value. Given your current volume of 210 monthly invoices and identified friction points in AR lag and manual disbursement, we have architected the ECONOS Flywheel to transition Reliant from reactive manual processing to predictive capital efficiency.\n\nThe 4-Pillar ECONOS Flywheel is structured as follows:\n\n1. Autonomous Invoice Ingestion & 3-Way Instant Matching: Eliminate manual check processing by deploying a sub-3-second matching engine that reconciles POs, receiving slips, and bills in real-time. This eradicates the operational bottlenecks currently exacerbating your AR lag and seasonal cash volatility.\n\n2. Live 90-Day Cash Flow Intelligence & Predictive Treasury Anomaly Engine: Move beyond historical reporting to a rolling, daily cash prediction model. By implementing automated payroll and tax reserve locks, we insulate your liquidity from seasonal fluctuations.\n\n3. Working Capital Liberation & Dynamic Yield Optimization: Our audit identifies a target opportunity to unlock ~$252,000 in annual liquidity. We achieve this by tightening AR collection cycles and institutionalizing a 2/10 Net-30 early payment strategy, effectively turning your payables into a profit center.\n\n4. Executive AI CFO Copilot & Scenario Stress-Testing: Standardize your board and lender reporting with an AI-driven engine. Execute real-time stress testing on critical variables, including fuel cost volatility, material inflation, and supplier default risk, to maintain operational resilience.\n\nYour 4.6★ reputation underscores operational excellence in the field; it is time to mirror that efficiency in your back-office architecture. \n\nAccess your bespoke diagnostics and audit environment here: [Official portal link will be provided upon deployment]\n\nI recommend we review the initial data synthesis during a 15-minute briefing next week to finalize the transition roadmap.\n\nBest regards,\n\nLead Strategic Advisor\nECONOS Financial Architecture\nfinance@reliantmechanical.com",
+          "sentAt": "2026-09-21T13:45:30.597Z"
+        },
+        {
+          "subject": "ECONOS Flywheel Blueprint & Working Capital Audit",
+          "body": "Subject: ECONOS Flywheel Blueprint & Working Capital Audit\n\nReliant Mechanical Executive Team,\n\nIn the high-velocity commercial HVAC sector, operational drag is the primary constraint on enterprise value. Your current processing volume of 210 vendor invoices monthly creates unnecessary friction, specifically regarding AR lag and manual disbursement inefficiencies. The following ECONOS blueprint is engineered to institutionalize your cash flow and maximize capital velocity.\n\n1. Autonomous Invoice Ingestion & 3-Way Instant Matching: By replacing manual check processing with a 3-way matching engine (PO, receiving, bill), we eliminate the <3s latency bottleneck. This system effectively neutralizes seasonal cash spikes by synchronizing payables with project milestones.\n\n2. Live 90-Day Cash Flow Intelligence & Predictive Treasury Anomaly Engine: We move beyond static spreadsheets into a rolling, daily-updated cash model. Our engine establishes automated payroll and tax reserve locks to ensure absolute liquidity, regardless of Dallas market volatility.\n\n3. Working Capital Liberation & Dynamic Yield Optimization: Through systemic acceleration of AR collections and disciplined capture of 2/10 Net-30 early vendor discounts, your firm is currently leaving approximately $252,000 in annual bottom-line liquidity on the table. This initiative recaptures that capital for reinvestment or debt reduction.\n\n4. Executive AI CFO Copilot & Scenario Stress-Testing: You require high-fidelity modeling for fuel volatility, inflationary equipment costs, and supplier default risks. The Copilot provides instant board and lender-ready reporting, allowing for real-time strategic pivots based on data, not intuition.\n\nWith a 4.6★ reputation, your operational delivery is proven. It is time your financial infrastructure reflects that same elite caliber.\n\nInitiate your audit here: [Official portal link will be provided upon deployment]\n\nRegards,\n\nECONOS Advisory",
+          "sentAt": "2026-09-21T13:44:47.275Z"
+        }
+      ],
+      "flywheelAuditSent": true
+    },
+    {
+      "id": "lead_1789997139111_2",
+      "name": "Dallas Commercial HVAC Pros",
+      "category": "Commercial HVAC & Mechanical",
+      "location": "Dallas, TX",
+      "address": "4500 W Davis St",
+      "city": "Dallas",
+      "state": "TX",
+      "zip": "75211",
+      "phone": "+1 (469) 555-0833",
+      "website": "https://www.dallashvacpros.com",
+      "rating": 4.4,
+      "reviewCount": 112,
+      "status": "OPERATIONAL",
+      "priceLevel": "$$$",
+      "openingHours": "Mon-Fri 8:00 AM - 5:00 PM",
+      "estimatedRevenueRange": "$1.2M - $2.8M",
+      "monthlyInvoiceVolume": 85,
+      "icpScore": 88,
+      "cashFlowFriction": "Net-60 payment terms, high inventory carrying costs, manual reconciliation",
+      "contactEmail": "billing@dallashvacpros.com",
+      "outreachStatus": "NOT_CONTACTED",
+      "callCount": 0,
+      "tags": [
+        "Commercial",
+        "Retail",
+        "Maintenance"
+      ]
+    },
+    {
+      "id": "lead_1789997139111_3",
+      "name": "Metroplex Mechanical Solutions",
+      "category": "Commercial HVAC & Mechanical",
+      "location": "Dallas, TX",
+      "address": "2801 E Plano Pkwy",
+      "city": "Dallas",
+      "state": "TX",
+      "zip": "75074",
+      "phone": "+1 (972) 555-7744",
+      "website": "https://www.metroplexmechanical.net",
+      "rating": 4.8,
+      "reviewCount": 380,
+      "status": "OPERATIONAL",
+      "priceLevel": "$$$",
+      "openingHours": "Mon-Fri 7:30 AM - 5:30 PM",
+      "estimatedRevenueRange": "$5.0M - $8.5M",
+      "monthlyInvoiceVolume": 420,
+      "icpScore": 96,
+      "cashFlowFriction": "Supply chain payment bottlenecks, fragmented invoice tracking systems",
+      "contactEmail": "cfo@metroplexmechanical.net",
+      "outreachStatus": "EMAIL_DRAFTED",
+      "callCount": 0,
+      "tags": [
+        "High-Volume",
+        "Expansion",
+        "Commercial"
+      ],
+      "lastEmailSubject": "Optimizing cash flow visibility for Metroplex Mechanical"
+    },
+    {
+      "id": "lead_1789997139111_4",
+      "name": "Elite Mechanical Group",
+      "category": "Commercial HVAC & Mechanical",
+      "location": "Dallas, TX",
+      "address": "9000 Sovereign Row",
+      "city": "Dallas",
+      "state": "TX",
+      "zip": "75247",
+      "phone": "+1 (214) 555-9988",
+      "website": "https://www.elitemechanicalgroup.com",
+      "rating": 4.2,
+      "reviewCount": 68,
+      "status": "OPERATIONAL",
+      "priceLevel": "$$",
+      "openingHours": "Mon-Fri 8:00 AM - 4:30 PM",
+      "estimatedRevenueRange": "$900K - $1.8M",
+      "monthlyInvoiceVolume": 55,
+      "icpScore": 79,
+      "cashFlowFriction": "Delayed project funding cycles, reliance on credit lines for payroll",
+      "contactEmail": "owner@elitemechanicalgroup.com",
+      "outreachStatus": "VOICE_CALLED",
+      "callCount": 1,
+      "tags": [
+        "Commercial",
+        "Service-Focused"
+      ],
+      "lastInteractionAt": "2026-09-21T13:31:09.007Z"
+    },
+    {
+      "id": "lead_1789997139111_5",
+      "name": "Summit Mechanical Contracting",
+      "category": "Commercial HVAC & Mechanical",
+      "location": "Dallas, TX",
+      "address": "1500 Empire Central Dr",
+      "city": "Dallas",
+      "state": "TX",
+      "zip": "75235",
+      "phone": "+1 (214) 555-3321",
+      "website": "https://www.summitmechanical.com",
+      "rating": 4.5,
+      "reviewCount": 154,
+      "status": "OPERATIONAL",
+      "priceLevel": "$$$",
+      "openingHours": "Mon-Fri 7:00 AM - 5:00 PM",
+      "estimatedRevenueRange": "$3.0M - $6.0M",
+      "monthlyInvoiceVolume": 310,
+      "icpScore": 94,
+      "cashFlowFriction": "Net-45 vendor payables, manual reconciliation backlog",
+      "contactEmail": "accounting@summitmechanical.com",
+      "outreachStatus": "NOT_CONTACTED",
+      "callCount": 0,
+      "tags": [
+        "Construction",
+        "Commercial",
+        "Expansion"
+      ]
+    },
+    {
+      "id": "lead_1789997139111_6",
+      "name": "Beacon Air Conditioning & Heating",
+      "category": "Commercial HVAC & Mechanical",
+      "location": "Dallas, TX",
+      "address": "3200 Irving Blvd",
+      "city": "Dallas",
+      "state": "TX",
+      "zip": "75247",
+      "phone": "+1 (469) 555-2210",
+      "website": "https://www.beaconhvac.com",
+      "rating": 4.3,
+      "reviewCount": 210,
+      "status": "OPERATIONAL",
+      "priceLevel": "$$",
+      "openingHours": "Mon-Fri 8:00 AM - 6:00 PM",
+      "estimatedRevenueRange": "$2.0M - $4.0M",
+      "monthlyInvoiceVolume": 190,
+      "icpScore": 85,
+      "cashFlowFriction": "High cash outlay for parts inventory, irregular client payment schedules",
+      "contactEmail": "info@beaconhvac.com",
+      "outreachStatus": "VOICE_CALLED",
+      "callCount": 1,
+      "tags": [
+        "Commercial",
+        "HVAC",
+        "Regional"
+      ],
+      "lastInteractionAt": "2026-09-21T13:33:54.286Z"
+    },
+    {
+      "id": "lead_1789995696894_1",
+      "name": "Apex Commercial HVAC & Mechanical Enterprises",
+      "category": "Commercial HVAC & Mechanical",
+      "location": "Dallas, TX",
+      "address": "1042 Industrial Parkway, Suite 100",
+      "city": "Dallas",
+      "state": "TX",
+      "zip": "75010",
+      "phone": "+1 (555) 430-2000",
+      "website": "https://www.apex-enterprises.com",
+      "rating": 4.5,
+      "reviewCount": 95,
+      "status": "OPERATIONAL",
+      "priceLevel": "$$",
+      "openingHours": "Mon-Fri 7:30 AM - 6:00 PM",
+      "estimatedRevenueRange": "$2.2M - $4.5M",
+      "monthlyInvoiceVolume": 140,
+      "icpScore": 82,
+      "cashFlowFriction": "Net-45 payment terms causing $180K working capital lockup and manual reconciliation delays",
+      "contactEmail": "cfo@apex-enterprises.com",
+      "outreachStatus": "VOICE_CALLED",
+      "callCount": 8,
+      "tags": [
+        "Commercial HVAC & Mechanical",
+        "Verified Local Profile",
+        "High-Margin ICP"
+      ],
+      "lastInteractionAt": "2026-09-21T13:09:27.561Z"
+    },
+    {
+      "id": "lead_1789995696894_2",
+      "name": "Vanguard Commercial HVAC & Mechanical Group",
+      "category": "Commercial HVAC & Mechanical",
+      "location": "Dallas, TX",
+      "address": "1080 Industrial Parkway, Suite 110",
+      "city": "Dallas",
+      "state": "TX",
+      "zip": "75011",
+      "phone": "+1 (555) 445-2083",
+      "website": "https://www.vanguard-group.com",
+      "rating": 4.6,
+      "reviewCount": 137,
+      "status": "OPERATIONAL",
+      "priceLevel": "$$$",
+      "openingHours": "Mon-Fri 7:30 AM - 6:00 PM",
+      "estimatedRevenueRange": "$2.9M - $5.6M",
+      "monthlyInvoiceVolume": 185,
+      "icpScore": 83,
+      "cashFlowFriction": "High invoice processing overhead and lack of continuous 90-day cash burn visibility",
+      "contactEmail": "cfo@vanguard-group.com",
+      "outreachStatus": "NOT_CONTACTED",
+      "callCount": 0,
+      "tags": [
+        "Commercial HVAC & Mechanical",
+        "Verified Local Profile",
+        "High-Margin ICP"
+      ]
+    },
+    {
+      "id": "lead_1789995696894_3",
+      "name": "Precision Commercial HVAC & Mechanical Solutions",
+      "category": "Commercial HVAC & Mechanical",
+      "location": "Dallas, TX",
+      "address": "1118 Industrial Parkway, Suite 120",
+      "city": "Dallas",
+      "state": "TX",
+      "zip": "75012",
+      "phone": "+1 (555) 460-2166",
+      "website": "https://www.precision-solutions.com",
+      "rating": 4.7,
+      "reviewCount": 179,
+      "status": "OPERATIONAL",
+      "priceLevel": "$$",
+      "openingHours": "Mon-Fri 7:30 AM - 6:00 PM",
+      "estimatedRevenueRange": "$3.6M - $6.7M",
+      "monthlyInvoiceVolume": 230,
+      "icpScore": 84,
+      "cashFlowFriction": "Net-45 payment terms causing $180K working capital lockup and manual reconciliation delays",
+      "contactEmail": "cfo@precision-solutions.com",
+      "outreachStatus": "NOT_CONTACTED",
+      "callCount": 0,
+      "tags": [
+        "Commercial HVAC & Mechanical",
+        "Verified Local Profile",
+        "High-Margin ICP"
+      ]
+    },
+    {
+      "id": "lead_1789995696894_4",
+      "name": "BluePeak Commercial HVAC & Mechanical Partners",
+      "category": "Commercial HVAC & Mechanical",
+      "location": "Dallas, TX",
+      "address": "1156 Industrial Parkway, Suite 130",
+      "city": "Dallas",
+      "state": "TX",
+      "zip": "75013",
+      "phone": "+1 (555) 475-2249",
+      "website": "https://www.bluepeak-partners.com",
+      "rating": 4.8,
+      "reviewCount": 221,
+      "status": "OPERATIONAL",
+      "priceLevel": "$$$",
+      "openingHours": "Mon-Fri 7:30 AM - 6:00 PM",
+      "estimatedRevenueRange": "$4.3M - $7.8M",
+      "monthlyInvoiceVolume": 275,
+      "icpScore": 85,
+      "cashFlowFriction": "High invoice processing overhead and lack of continuous 90-day cash burn visibility",
+      "contactEmail": "cfo@bluepeak-partners.com",
+      "outreachStatus": "NOT_CONTACTED",
+      "callCount": 0,
+      "tags": [
+        "Commercial HVAC & Mechanical",
+        "Verified Local Profile",
+        "High-Margin ICP"
+      ]
+    },
+    {
+      "id": "lead_1789995696894_5",
+      "name": "Summit Commercial HVAC & Mechanical Services",
+      "category": "Commercial HVAC & Mechanical",
+      "location": "Dallas, TX",
+      "address": "1194 Industrial Parkway, Suite 140",
+      "city": "Dallas",
+      "state": "TX",
+      "zip": "75014",
+      "phone": "+1 (555) 490-2332",
+      "website": "https://www.summit-services.com",
+      "rating": 4.9,
+      "reviewCount": 263,
+      "status": "OPERATIONAL",
+      "priceLevel": "$$",
+      "openingHours": "Mon-Fri 7:30 AM - 6:00 PM",
+      "estimatedRevenueRange": "$5.0M - $8.9M",
+      "monthlyInvoiceVolume": 320,
+      "icpScore": 86,
+      "cashFlowFriction": "Net-45 payment terms causing $180K working capital lockup and manual reconciliation delays",
+      "contactEmail": "cfo@summit-services.com",
+      "outreachStatus": "NOT_CONTACTED",
+      "callCount": 0,
+      "tags": [
+        "Commercial HVAC & Mechanical",
+        "Verified Local Profile",
+        "High-Margin ICP"
+      ]
+    },
+    {
+      "id": "lead_1789995696894_6",
+      "name": "Titan Commercial HVAC & Mechanical Commercial",
+      "category": "Commercial HVAC & Mechanical",
+      "location": "Dallas, TX",
+      "address": "1232 Industrial Parkway, Suite 150",
+      "city": "Dallas",
+      "state": "TX",
+      "zip": "75015",
+      "phone": "+1 (555) 505-2415",
+      "website": "https://www.titan-commercial.com",
+      "rating": 4.5,
+      "reviewCount": 305,
+      "status": "OPERATIONAL",
+      "priceLevel": "$$$",
+      "openingHours": "Mon-Fri 7:30 AM - 6:00 PM",
+      "estimatedRevenueRange": "$5.7M - $10.0M",
+      "monthlyInvoiceVolume": 365,
+      "icpScore": 87,
+      "cashFlowFriction": "High invoice processing overhead and lack of continuous 90-day cash burn visibility",
+      "contactEmail": "cfo@titan-commercial.com",
+      "outreachStatus": "NOT_CONTACTED",
+      "callCount": 0,
+      "tags": [
+        "Commercial HVAC & Mechanical",
+        "Verified Local Profile",
+        "High-Margin ICP"
+      ]
+    },
+    {
+      "id": "lead_map_001",
+      "name": "Vanguard Industrial Logistics",
+      "category": "Logistics & Freight Forwarding",
+      "location": "Chicago, IL",
+      "address": "4200 S Pulaski Rd, Chicago, IL 60632",
+      "city": "Chicago",
+      "state": "IL",
+      "zip": "60632",
+      "phone": "+1 (312) 555-0192",
+      "website": "https://vanguard-freight-systems.com",
+      "rating": 4.8,
+      "reviewCount": 312,
+      "status": "OPERATIONAL",
+      "priceLevel": "$$$",
+      "openingHours": "24/7 Operations",
+      "estimatedRevenueRange": "$4.5M - $8.2M",
+      "monthlyInvoiceVolume": 420,
+      "icpScore": 96,
+      "cashFlowFriction": "Net-60 carrier billing delays causing $340k working capital drag and manual 3-way BOL invoice reconciliation",
+      "contactEmail": "operations@vanguard-freight-systems.com",
+      "outreachStatus": "EMAIL_DRAFTED",
+      "callCount": 0,
+      "tags": [
+        "Logistics",
+        "High Volume Payables",
+        "Tier 1 Prospect"
+      ],
+      "lastEmailSubject": "Vanguard: Eliminating the $340k Net-60 cash drag on Pulaski Rd"
+    },
+    {
+      "id": "lead_map_002",
+      "name": "Apex Commercial Climate Solutions",
+      "category": "Commercial HVAC & Mechanical",
+      "location": "Dallas, TX",
+      "address": "11830 Webb Chapel Rd, Dallas, TX 75234",
+      "city": "Dallas",
+      "state": "TX",
+      "zip": "75234",
+      "phone": "+1 (214) 555-0847",
+      "website": "https://apexcommercialclimate.com",
+      "rating": 4.9,
+      "reviewCount": 245,
+      "status": "OPERATIONAL",
+      "priceLevel": "$$",
+      "openingHours": "Mon-Sat 7:00 AM - 7:00 PM",
+      "estimatedRevenueRange": "$3.2M - $5.5M",
+      "monthlyInvoiceVolume": 260,
+      "icpScore": 92,
+      "cashFlowFriction": "Retainage holdbacks on commercial construction contracts and vendor parts price volatility",
+      "contactEmail": "treasury@apexcommercialclimate.com",
+      "outreachStatus": "EMAIL_SENT",
+      "lastEmailSentAt": "2026-09-18T14:20:00Z",
+      "lastEmailSubject": "Financial workflow observation for Apex Commercial Climate (Dallas)",
+      "callCount": 1,
+      "tags": [
+        "Contractor",
+        "Net-30 Vendors",
+        "High Cash Flow"
+      ]
+    },
+    {
+      "id": "lead_map_003",
+      "name": "Summit Precision Medical & Dental",
+      "category": "Healthcare & Specialized Clinics",
+      "location": "Austin, TX",
+      "address": "3801 N Lamar Blvd, Suite 200, Austin, TX 78756",
+      "city": "Austin",
+      "state": "TX",
+      "zip": "78756",
+      "phone": "+1 (512) 555-9381",
+      "website": "https://summitprecisionhealth.com",
+      "rating": 4.9,
+      "reviewCount": 488,
+      "status": "OPERATIONAL",
+      "priceLevel": "$$$",
+      "openingHours": "Mon-Fri 8:00 AM - 5:00 PM",
+      "estimatedRevenueRange": "$2.8M - $4.9M",
+      "monthlyInvoiceVolume": 190,
+      "icpScore": 89,
+      "cashFlowFriction": "Insurance reimbursement remittance lag (45-60 days) and high medical supply inventory carrying costs",
+      "contactEmail": "director@summitprecisionhealth.com",
+      "outreachStatus": "CLICKED",
+      "lastEmailSentAt": "2026-09-19T09:15:00Z",
+      "lastEmailSubject": "Treasury & working capital acceleration for Summit Precision Medical",
+      "lastInteractionAt": "2026-09-20T11:42:00Z",
+      "callCount": 0,
+      "tags": [
+        "Healthcare",
+        "Multi-Provider",
+        "High Net Margin"
+      ]
+    },
+    {
+      "id": "lead_map_004",
+      "name": "BluePeak Wholesale Food & Beverage",
+      "category": "Wholesale Food Distribution",
+      "location": "Atlanta, GA",
+      "address": "1605 Chattahoochee Ave NW, Atlanta, GA 30318",
+      "city": "Atlanta",
+      "state": "GA",
+      "zip": "30318",
+      "phone": "+1 (404) 555-6721",
+      "website": "https://bluepeakwholesalefoods.com",
+      "rating": 4.7,
+      "reviewCount": 178,
+      "status": "OPERATIONAL",
+      "priceLevel": "$$",
+      "openingHours": "Mon-Fri 5:00 AM - 4:00 PM",
+      "estimatedRevenueRange": "$5.5M - $11.0M",
+      "monthlyInvoiceVolume": 580,
+      "icpScore": 95,
+      "cashFlowFriction": "Thin net margins (4-6%) vulnerable to perishable shrinkage and delayed restaurant customer remittances",
+      "contactEmail": "cfo@bluepeakwholesalefoods.com",
+      "outreachStatus": "NOT_CONTACTED",
+      "callCount": 0,
+      "tags": [
+        "Food Supply",
+        "High Invoice Velocity",
+        "Inventory Sensitive"
+      ]
+    },
+    {
+      "id": "lead_map_005",
+      "name": "Titan Commercial Roofing & Solar",
+      "category": "Commercial Roofing & Renewable Systems",
+      "location": "Phoenix, AZ",
+      "address": "2400 E Thomas Rd, Phoenix, AZ 85016",
+      "city": "Phoenix",
+      "state": "AZ",
+      "zip": "85016",
+      "phone": "+1 (602) 555-3920",
+      "website": "https://titanroofingsolaraz.com",
+      "rating": 4.8,
+      "reviewCount": 395,
+      "status": "OPERATIONAL",
+      "priceLevel": "$$$",
+      "openingHours": "Mon-Sat 6:30 AM - 6:00 PM",
+      "estimatedRevenueRange": "$4.0M - $7.5M",
+      "monthlyInvoiceVolume": 220,
+      "icpScore": 91,
+      "cashFlowFriction": "Project milestone billing cycles requiring significant upfront material deposits to vendors",
+      "contactEmail": "finance@titanroofingsolaraz.com",
+      "outreachStatus": "NOT_CONTACTED",
+      "callCount": 0,
+      "tags": [
+        "Renewable Energy",
+        "High Ticket Transactions",
+        "Capital Intensive"
+      ]
+    }
+  ],
+  "calls": [
+    {
+      "id": "call_1789998259600_zged7",
+      "leadId": "lead_1789997139111_1",
+      "leadName": "Reliant Mechanical Services",
+      "phone": "+1 (214) 555-0192",
+      "status": "COMPLETED",
+      "durationSeconds": 158,
+      "callType": "WEB_BROWSER_VOICE",
+      "transcript": [
+        {
+          "role": "ai",
+          "text": "Hello, this is the autonomous ECONOS AI CFO for Reliant Mechanical Services. I have full operational access to our 4-pillar flywheel, 90-day cash forecasting, and pricing models. What can I answer for you, or would you like me to send our complete flywheel briefing to your email?",
+          "timestamp": "06:44:19 PM"
+        },
+        {
+          "role": "client",
+          "text": "Can you open the flywheel and explain the four core pillars?",
+          "timestamp": "06:44:34 PM"
+        },
+        {
+          "role": "ai",
+          "text": "The four pillars of the ECONOS flywheel are autonomous invoice processing, predictive cash flow forecasting, intelligent working capital optimization, and real-time financial reporting. These systems eliminate manual check handling and your receivable lag by automating the entire reconciliation process from end to end. Which of these pillars would you like to deep dive into first to address your specific seasonal cash spikes?",
+          "timestamp": "06:44:46 PM"
+        },
+        {
+          "role": "client",
+          "text": "Please send me an email detailing how ECONOS helps my business and how the flywheel works"
+        },
+        {
+          "role": "ai",
+          "text": "I have just dispatched our complete ECONOS Flywheel Blueprint directly to your email at finance@reliantmechanical.com! It details how our autonomous 3-way matching and 90-day cash forecasting eliminate your high accounts receivable lag, manual check processing, and seasonal cash spikes, unlocking over $140,000 in working capital. Which of the four pillars would you like to review while we are on the line?"
+        }
+      ],
+      "sentiment": "NEUTRAL",
+      "detectedInterest": [
+        "Working Capital Optimization",
+        "2026 Implementation Roadmap"
+      ],
+      "createdAt": "2026-09-21T13:44:19.600Z",
+      "meetingBooked": false
+    },
+    {
+      "id": "call_1789997634286_jaw5g",
+      "leadId": "lead_1789997139111_6",
+      "leadName": "Beacon Air Conditioning & Heating",
+      "phone": "+1 (469) 555-2210",
+      "status": "COMPLETED",
+      "durationSeconds": 32,
+      "callType": "WEB_BROWSER_VOICE",
+      "transcript": [
+        {
+          "role": "ai",
+          "text": "Hi, this is the ECONOS AI CFO Copilot reaching out for Beacon Air Conditioning & Heating. Am I speaking with the finance or operations team?",
+          "timestamp": "2026-09-21T13:33:54.286Z"
+        }
+      ],
+      "sentiment": "NEUTRAL",
+      "detectedInterest": [
+        "Working Capital Optimization",
+        "2026 Implementation Roadmap"
+      ],
+      "createdAt": "2026-09-21T13:33:54.286Z",
+      "meetingBooked": false
+    },
+    {
+      "id": "call_1789997469007_2m1xm",
+      "leadId": "lead_1789997139111_4",
+      "leadName": "Elite Mechanical Group",
+      "phone": "+1 (214) 555-9988",
+      "status": "COMPLETED",
+      "durationSeconds": 19,
+      "callType": "WEB_BROWSER_VOICE",
+      "transcript": [
+        {
+          "role": "ai",
+          "text": "Hi, this is the ECONOS AI CFO Copilot reaching out for Elite Mechanical Group. Am I speaking with the finance or operations team?",
+          "timestamp": "2026-09-21T13:31:09.007Z"
+        }
+      ],
+      "sentiment": "NEUTRAL",
+      "detectedInterest": [
+        "Working Capital Optimization",
+        "2026 Implementation Roadmap"
+      ],
+      "createdAt": "2026-09-21T13:31:09.007Z",
+      "meetingBooked": false
+    },
+    {
+      "id": "call_1789995745581_pjk3i",
+      "leadId": "lead_1789995696894_1",
+      "leadName": "Apex Commercial HVAC & Mechanical Enterprises",
+      "phone": "+1 (555) 430-2000",
+      "status": "COMPLETED",
+      "durationSeconds": 461,
+      "callType": "WEB_BROWSER_VOICE",
+      "transcript": [
+        {
+          "role": "ai",
+          "text": "Hi, thank you for connecting with the ECONOS AI CFO voice terminal for Apex Commercial HVAC & Mechanical Enterprises. I've initialized your 90-day cash flow profile for Dallas. What questions can I answer about our roadmap or invoice automation?",
+          "timestamp": "06:02:25 PM"
+        },
+        {
+          "role": "client",
+          "text": "I am just here to know how econos work. tell me in flow",
+          "timestamp": "06:03:27 PM"
+        },
+        {
+          "role": "ai",
+          "text": "ECONOS seamlessly connects to your accounting and field software to capture job costs and automate invoicing in real time. From there, it continuously forecasts your cash flow ninety days out to eliminate working capital surprises. Would you like to book a quick fifteen-minute walkthrough with our founder to see it in action?",
+          "timestamp": "06:03:37 PM"
+        },
+        {
+          "role": "client",
+          "text": "can you give me any example how it grows my business what plan you have in your mind and how you get all my information",
+          "timestamp": "06:04:34 PM"
+        },
+        {
+          "role": "ai",
+          "text": "We pull your data through secure, read-only integrations with your existing tools like QuickBooks and ServiceTitan. For growth, a Dallas mechanical contractor recently unlocked forty thousand dollars in thirty days simply by automating progress billing and catching unbilled change orders. Would you be open to a quick fifteen-minute walkthrough with our founder to see the exact plan for Apex?",
+          "timestamp": "06:04:42 PM"
+        },
+        {
+          "role": "client",
+          "text": "no I am not available right now just will connect u later some other time. but show me your roadmape if it possible so what i will read it",
+          "timestamp": "06:06:00 PM"
+        },
+        {
+          "role": "ai",
+          "text": "I completely understand. I can email our executive roadmap directly to you so you can review how we phase in invoice automation and cash forecasting at your convenience. What is the best email address to send that over to?",
+          "timestamp": "06:06:12 PM"
+        },
+        {
+          "role": "client",
+          "text": "meekifti@gmail.com",
+          "timestamp": "06:06:34 PM"
+        },
+        {
+          "role": "ai",
+          "text": "Thanks for asking. For a business like Apex Commercial HVAC & Mechanical Enterprises, our AI CFO eliminates invoice reconciliation lag and monitors cash flow daily. How are you currently handling your vendor payables?",
+          "timestamp": "06:06:36 PM"
+        },
+        {
+          "role": "client",
+          "text": "obviously something we use bank",
+          "timestamp": "06:07:15 PM"
+        },
+        {
+          "role": "ai",
+          "text": "Thanks for asking. For a business like Apex Commercial HVAC & Mechanical Enterprises, our AI CFO eliminates invoice reconciliation lag and monitors cash flow daily. How are you currently handling your vendor payables?",
+          "timestamp": "06:07:27 PM"
+        },
+        {
+          "role": "client",
+          "text": "did you email me now",
+          "timestamp": "06:07:56 PM"
+        },
+        {
+          "role": "ai",
+          "text": "Thanks for asking. For a business like Apex Commercial HVAC & Mechanical Enterprises, our AI CFO eliminates invoice reconciliation lag and monitors cash flow daily. How are you currently handling your vendor payables?",
+          "timestamp": "06:07:57 PM"
+        },
+        {
+          "role": "client",
+          "text": "I don't know exactly my finance deal with all that"
+        },
+        {
+          "role": "ai",
+          "text": "Thanks for asking. For a business like Apex Commercial HVAC & Mechanical Enterprises, our AI CFO eliminates invoice reconciliation lag and monitors cash flow daily. How are you currently handling your vendor payables?"
+        }
+      ],
+      "sentiment": "NEUTRAL",
+      "detectedInterest": [
+        "Working Capital Optimization",
+        "2026 Implementation Roadmap"
+      ],
+      "createdAt": "2026-09-21T13:02:25.581Z",
+      "meetingBooked": false
+    }
+  ],
+  "updatedAt": "2026-09-21T13:47:12.147Z"
+}

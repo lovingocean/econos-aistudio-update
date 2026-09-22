@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { 
   Building2, 
@@ -19,9 +19,11 @@ import {
   Milestone,
   Zap,
   Globe2,
-  Layers
+  Layers,
+  Command
 } from 'lucide-react';
 import { UserRole, AppLayer } from '../../types/econos';
+import { GlobalLayerSearch } from './GlobalLayerSearch';
 
 interface NavbarProps {
   onOpenTestSuite: () => void;
@@ -68,7 +70,20 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [showCommercialMenu, setShowCommercialMenu] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showLayerMenu, setShowLayerMenu] = useState(false);
+  const [showGlobalSearch, setShowGlobalSearch] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
+
+  // Global Keyboard Shortcut: Cmd+K / Ctrl+K to toggle global layer search
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setShowGlobalSearch(prev => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const handleResetDemo = async () => {
     if (confirm('Reset demo environment to original seed baseline?')) {
@@ -121,6 +136,26 @@ export const Navbar: React.FC<NavbarProps> = ({
                             <span className="text-xs font-bold text-slate-800 font-mono uppercase">41-Layer Architecture</span>
                           </div>
                           <span className="text-[10px] text-slate-400 font-mono">Click to jump</span>
+                        </div>
+
+                        {/* Search 100 System Layers quick CTA */}
+                        <div className="mb-2">
+                          <button
+                            id="navbar-layers-menu-search-trigger"
+                            onClick={() => {
+                              setShowLayerMenu(false);
+                              setShowGlobalSearch(true);
+                            }}
+                            className="w-full px-2.5 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-900 text-xs font-mono font-bold flex items-center justify-between transition cursor-pointer"
+                          >
+                            <div className="flex items-center gap-2">
+                              <Search className="w-3.5 h-3.5 text-amber-600" />
+                              <span>Search All 100 Layers</span>
+                            </div>
+                            <span className="px-1.5 py-0.5 rounded bg-white text-[10px] text-amber-800 border border-amber-300/60 font-bold">
+                              ⌘K
+                            </span>
+                          </button>
                         </div>
 
                         {/* Tier 6: Omni-Access Singularity (L32-41) */}
@@ -529,6 +564,26 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
           )}
 
+          {/* Sovereign Command Center (Concept C 4-Quadrant Institutional OS) */}
+          {onSelectLayer && (
+            <button
+              id="navbar-sovereign-command-btn"
+              onClick={() => onSelectLayer('SOVEREIGN_COMMAND')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-mono font-bold transition shadow-xs cursor-pointer ${
+                currentLayer === 'SOVEREIGN_COMMAND'
+                  ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-slate-950 border-amber-400 shadow-md ring-2 ring-amber-400/30'
+                  : 'bg-[#080d1a] hover:bg-[#0f172a] text-amber-300 border-amber-500/50 shadow-sm'
+              }`}
+              title="Open Concept C 4-Quadrant Institutional Sovereign Command Center"
+            >
+              <span className="text-amber-400 font-black">Ω</span>
+              <span className="hidden md:inline">Sovereign Command</span>
+              <span className="px-1.5 py-0.2 rounded text-[9px] bg-amber-950 text-amber-300 border border-amber-500/40 font-black">
+                4Q
+              </span>
+            </button>
+          )}
+
           {/* Implementation Roadmap & Vision Button */}
           <button
             id="roadmap-matrix-btn"
@@ -600,10 +655,17 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Round Pill Action Buttons (Search, Notification, Profile dropdown) */}
           <div className="flex items-center gap-1.5 pl-1">
             <button 
-              className="w-9 h-9 rounded-full bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 hover:text-slate-900 flex items-center justify-center transition shadow-xs"
-              title="Search"
+              id="navbar-global-search-btn"
+              onClick={() => setShowGlobalSearch(true)}
+              className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 hover:text-slate-900 transition shadow-xs cursor-pointer group"
+              title="Search 100 System Layers by Name or ID (⌘K / Ctrl+K)"
+              aria-label="Open 100 System Layers Search"
             >
-              <Search className="w-4 h-4" />
+              <Search className="w-4 h-4 text-slate-400 group-hover:text-amber-500 transition" />
+              <span className="hidden xl:inline text-xs font-mono text-slate-600 font-medium">Search Layers...</span>
+              <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 text-[10px] text-slate-500 font-mono font-semibold">
+                ⌘K
+              </kbd>
             </button>
 
             <button 
@@ -749,6 +811,16 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
 
       </div>
+
+      {/* Global Layer Search Modal (100 System Layers) */}
+      {onSelectLayer && (
+        <GlobalLayerSearch
+          isOpen={showGlobalSearch}
+          onClose={() => setShowGlobalSearch(false)}
+          currentLayer={currentLayer}
+          onSelectLayer={onSelectLayer}
+        />
+      )}
     </header>
   );
 };

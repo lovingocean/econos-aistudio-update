@@ -41,6 +41,13 @@ import { PostHumanEnterpriseWorkspace } from './components/v5/PostHumanEnterpris
 import { BiologicalNeuromorphicGridWorkspace } from './components/v5/BiologicalNeuromorphicGridWorkspace';
 import { KardashevOmegaProtocolWorkspace } from './components/v5/KardashevOmegaProtocolWorkspace';
 import { OmniAccessNexusWorkspace } from './components/v6/OmniAccessNexusWorkspace';
+import { LeadDiscoveryWorkspace } from './components/leads/LeadDiscoveryWorkspace';
+import { Layer62RdTaxCreditWorkspace } from './components/layers/Layer62RdTaxCreditWorkspace';
+import { ExtendedMasterLayersWorkspace } from './components/layers/ExtendedMasterLayersWorkspace';
+import { SovereignInstitutionalDashboard } from './components/dashboard/SovereignInstitutionalDashboard';
+import { GlobalLayersProgressBar } from './components/layout/GlobalLayersProgressBar';
+import { LayerActivityHeatmap } from './components/layout/LayerActivityHeatmap';
+import { SystemTelemetryFeed } from './components/telemetry/SystemTelemetryFeed';
 import { AppLayer } from './types/econos';
 import { 
   Building2, 
@@ -51,7 +58,9 @@ import {
   ExternalLink,
   DollarSign,
   Milestone,
-  Zap
+  Zap,
+  PhoneCall,
+  MapPin
 } from 'lucide-react';
 import { ErrorBoundary } from './components/layout/ErrorBoundary';
 
@@ -66,6 +75,14 @@ const AppContent: React.FC = () => {
   const [isCommercialSuiteOpen, setIsCommercialSuiteOpen] = useState(false);
   const [isRoadmapOpen, setIsRoadmapOpen] = useState(false);
   const [isSolutionsOpen, setIsSolutionsOpen] = useState(false);
+
+  React.useEffect(() => {
+    const handler = (e: any) => {
+      if (e.detail) setCurrentLayer(e.detail);
+    };
+    window.addEventListener('navigate-layer', handler);
+    return () => window.removeEventListener('navigate-layer', handler);
+  }, []);
 
   if (isLoading && !user) {
     return (
@@ -85,6 +102,12 @@ const AppContent: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#f8f9f6] text-slate-900 bg-architect-grid flex flex-col selection:bg-amber-500/20 selection:text-amber-900">
+      {/* Global 100 System Layers Progress Bar */}
+      <GlobalLayersProgressBar
+        currentLayer={currentLayer}
+        onSelectLayer={setCurrentLayer}
+      />
+
       {/* Top Fixed Navbar */}
       <Navbar
         onOpenTestSuite={() => setIsTestModalOpen(true)}
@@ -109,8 +132,16 @@ const AppContent: React.FC = () => {
         {/* Dynamic Layer Content */}
         <div className="transition-all duration-200">
           <ErrorBoundary key={currentLayer} fallbackTitle={`Layer Shield (${currentLayer})`} onReset={() => setCurrentLayer('BUSINESS')}>
+          {currentLayer === 'SOVEREIGN_COMMAND' && (
+            <SovereignInstitutionalDashboard onSelectLayer={setCurrentLayer} />
+          )}
+
           {currentLayer === 'BUSINESS' && (
             <BusinessWorkspace onNavigateToLayer={setCurrentLayer} />
+          )}
+
+          {currentLayer === 'CLIENT_ACQUISITION' && (
+            <LeadDiscoveryWorkspace />
           )}
 
           {currentLayer === 'WEALTH' && (
@@ -138,7 +169,7 @@ const AppContent: React.FC = () => {
           )}
 
           {currentLayer === 'EXECUTIVE' && (
-            <ExecutiveCommandCenterWorkspace />
+            <ExecutiveCommandCenterWorkspace onSelectLayer={setCurrentLayer} />
           )}
 
           {currentLayer === 'MODEL_REGISTRY' && (
@@ -242,9 +273,33 @@ const AppContent: React.FC = () => {
               onSelectLayer={setCurrentLayer}
             />
           )}
+
+          {(currentLayer === 'LAYER_62_RD_TAX_CREDIT' || currentLayer === 'LAYER_62') && (
+            <Layer62RdTaxCreditWorkspace />
+          )}
+
+          {(currentLayer === 'EXTENDED_LAYERS_WORKSPACE' || 
+            (typeof currentLayer === 'string' && currentLayer.startsWith('LAYER_') && currentLayer !== 'LAYER_62_RD_TAX_CREDIT' && currentLayer !== 'LAYER_62')) && (
+            <ExtendedMasterLayersWorkspace 
+              currentLayer={currentLayer}
+              onSelectLayer={setCurrentLayer}
+            />
+          )}
           </ErrorBoundary>
         </div>
+
+        {/* Real-Time System Telemetry & Autonomous Event Stream */}
+        <SystemTelemetryFeed
+          currentLayer={currentLayer}
+          onSelectLayer={setCurrentLayer}
+        />
       </main>
+
+      {/* Layer Activity Heatmap Visualization in Footer */}
+      <LayerActivityHeatmap
+        currentLayer={currentLayer}
+        onSelectLayer={setCurrentLayer}
+      />
 
       {/* Footer */}
       <footer className="border-t border-slate-200/80 bg-white/80 backdrop-blur-sm py-6 px-4 sm:px-6 lg:px-8 text-xs font-mono text-slate-500">
@@ -256,6 +311,14 @@ const AppContent: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-4">
+            <button
+              onClick={() => setCurrentLayer('CLIENT_ACQUISITION')}
+              className="hover:text-emerald-700 flex items-center gap-1 transition text-emerald-800 font-bold"
+            >
+              <PhoneCall className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Maps Scraper & AI Calls</span>
+            </button>
+            <span className="text-slate-300">|</span>
             <button
               onClick={() => setIsSolutionsOpen(true)}
               className="hover:text-amber-600 flex items-center gap-1 transition text-slate-800 font-bold"

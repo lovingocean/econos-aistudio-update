@@ -139,7 +139,9 @@ export interface OutcomeVerification {
 
 // Application Navigation Layers
 export type AppLayer = 
+  | 'SOVEREIGN_COMMAND'
   | 'BUSINESS' 
+  | 'CLIENT_ACQUISITION'
   | 'WEALTH' 
   | 'TRUST' 
   | 'GRAPH'
@@ -177,7 +179,63 @@ export type AppLayer =
   | 'OMNI_ROBOTIC_LABOR'
   | 'OMNI_INTENT_TRANSLATION'
   | 'OMNI_QUANTUM_CITADEL'
-  | 'OMNI_CIVILIZATION_ANCHOR';
+  | 'OMNI_CIVILIZATION_ANCHOR'
+  | 'LAYER_62_RD_TAX_CREDIT'
+  | 'EXTENDED_LAYERS_WORKSPACE'
+  | `LAYER_${number}`
+  | (string & {});
+
+export interface MasterLayerSpec {
+  layerNumber: number;
+  id: string;
+  name: string;
+  shortName: string;
+  subtitle: string;
+  category: 
+    | 'CORE_OS' 
+    | 'V2_STRATEGIC' 
+    | 'SOVEREIGN_INFRA' 
+    | 'PLANETARY_SYSTEMS' 
+    | 'CIVILIZATIONAL_FRONTIER' 
+    | 'OMNI_SINGULARITY'
+    | 'ENTERPRISE_SYNTHETICS' 
+    | 'INSTITUTIONAL_TAX_PE' 
+    | 'DEEP_SPACE_CONTINUUM';
+  categoryLabel: string;
+  businessBenefit: string;
+  paymentCriteria: string;
+  monetizationType: 'FLAT_MONTHLY' | 'PERFORMANCE_VALUE_SHARE' | 'PER_ENTITY_ASSET' | 'SOVEREIGN_INSTITUTIONAL';
+  suggestedFee: string;
+  metric: string;
+  status: 'OPERATIONAL' | 'LIVE_EXECUTION' | 'VERIFIED' | 'PILOT';
+  description: string;
+  keyOutputs: string[];
+  complianceStandard?: string;
+}
+
+export interface RdTaxCreditState {
+  taxYear: number;
+  entityType: 'C_CORP' | 'S_CORP' | 'LLC_PARTNERSHIP';
+  grossReceiptsPrior5Yrs: number;
+  isStartupPayrollEligible: boolean;
+  w2WageQre: number;
+  suppliesQre: number;
+  contractorQre: number;
+  cloudComputeQre: number;
+  historicalQre3YrAvg: number;
+  calculationMethod: 'ASC' | 'REGULAR';
+  auditReadinessScore: number;
+  documentationRecords: Array<{
+    id: string;
+    projectCode: string;
+    projectName: string;
+    technicalUncertainty: string;
+    experimentationMethod: string;
+    qualifyingAmount: number;
+    evidenceLinksCount: number;
+    isAuditReady: boolean;
+  }>;
+}
 
 // Layer 2: Wealth Types
 export type WealthEngineCategory = 
@@ -929,3 +987,66 @@ export * from './billing';
 export * from './cashflow';
 export * from './commercial-ops';
 export * from './enterprise-ops';
+
+// ==========================================
+// Client Acquisition, Google Maps Discovery & AI Outbound Calling
+// ==========================================
+export type OutreachStatus = 
+  | 'NOT_CONTACTED' 
+  | 'EMAIL_DRAFTED' 
+  | 'EMAIL_SENT' 
+  | 'OPENED' 
+  | 'CLICKED' 
+  | 'IN_CHAT' 
+  | 'VOICE_CALLED' 
+  | 'CONVERTED';
+
+export interface ScrapedLead {
+  id: string;
+  name: string;
+  category: string;
+  location: string;
+  address: string;
+  city: string;
+  state: string;
+  zip?: string;
+  phone: string;
+  website: string;
+  rating: number;
+  reviewCount: number;
+  status: 'OPERATIONAL' | 'VERIFIED' | 'CLOSING_SOON';
+  priceLevel: string;
+  openingHours?: string;
+  estimatedRevenueRange: string;
+  monthlyInvoiceVolume: number;
+  icpScore: number; // 0-100
+  cashFlowFriction: string;
+  contactEmail: string;
+  outreachStatus: OutreachStatus;
+  lastEmailSentAt?: string;
+  lastEmailSubject?: string;
+  lastEmailBody?: string;
+  emailHistory?: Array<{ subject: string; body: string; sentAt: string }>;
+  flywheelAuditSent?: boolean;
+  lastInteractionAt?: string;
+  notes?: string;
+  callCount: number;
+  tags: string[];
+}
+
+export interface OutboundCallRecord {
+  id: string;
+  leadId: string;
+  leadName: string;
+  phone: string;
+  status: 'INITIATED' | 'RINGING' | 'CONNECTED' | 'COMPLETED' | 'MISSED' | 'FAILED';
+  durationSeconds: number;
+  callType: 'WEB_BROWSER_VOICE' | 'AUTOMATED_PHONE_OUTBOUND';
+  transcript: Array<{ role: 'ai' | 'client'; text: string; timestamp: string }>;
+  sentiment: 'POSITIVE' | 'NEUTRAL' | 'SKEPTICAL' | 'HIGH_INTENT';
+  detectedInterest: string[];
+  meetingBooked?: boolean;
+  scheduledMeetingTime?: string;
+  createdAt: string;
+}
+

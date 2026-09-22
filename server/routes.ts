@@ -9,6 +9,7 @@ import { verifyPassportSignature } from './crypto-authority';
 import { computeCashFlowForecast } from './cashflow-engine';
 import { PlanId, BillingInterval } from '../src/types/billing';
 import { Organization } from '../src/types/econos';
+import { leadAcquisitionService } from './lead-service';
 
 export const apiRouter = Router();
 
@@ -53,6 +54,7 @@ apiRouter.use((req: Request, res: Response, next) => {
   const isPublicRoute = req.path.startsWith('/auth') || 
                         req.path.startsWith('/health') || 
                         req.path.startsWith('/billing/webhook') ||
+                        req.path.startsWith('/leads') ||
                         req.path === '/organizations';
 
   if (!isPublicRoute && targetOrgId) {
@@ -2084,3 +2086,141 @@ apiRouter.post('/demo/reset', (req, res) => {
   db.resetDemoTenant();
   res.json({ message: 'Demo environment reset to baseline seed state.' });
 });
+
+// ==========================================
+// 17. Client Acquisition & Outbound AI Voice Engine
+// ==========================================
+apiRouter.get('/leads', (req, res) => {
+  try {
+    const leads = leadAcquisitionService.getLeads();
+    res.json(leads);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+apiRouter.get('/leads/:id', (req, res) => {
+  const lead = leadAcquisitionService.getLeadById(req.params.id);
+  if (!lead) return res.status(404).json({ error: 'Lead not found' });
+  res.json(lead);
+});
+
+apiRouter.post('/leads/discover', async (req, res) => {
+  const { category, location, limit } = req.body;
+  if (!category || !location) {
+    return res.status(400).json({ error: 'category and location are required' });
+  }
+  try {
+    const discovered = await leadAcquisitionService.discoverLeads(category, location, limit ? Number(limit) : 6);
+    res.json({
+      success: true,
+      category,
+      location,
+      count: discovered.length,
+      leads: discovered
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+apiRouter.post('/leads/generate-email', async (req, res) => {
+  const { leadId, focus } = req.body;
+  if (!leadId) return res.status(400).json({ error: 'leadId is required' });
+  try {
+    const email = await leadAcquisitionService.generateEmailForLead(leadId, focus);
+    res.json(email);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+apiRouter.post('/leads/send-email', (req, res) => {
+  const { leadId, subject, body } = req.body;
+  if (!leadId || !subject || !body) {
+    return res.status(400).json({ error: 'leadId, subject, and body are required' });
+  }
+  try {
+    const updatedLead = leadAcquisitionService.sendEmailToLead(leadId, { subject, body });
+    res.json({
+      success: true,
+      message: `Outbound email dispatched to ${updatedLead.contactEmail}`,
+      lead: updatedLead
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+apiRouter.post('/leads/chat', async (req, res) => {
+  const { leadId, message, history } = req.body;
+  if (!leadId || !message) {
+    return res.status(400).json({ error: 'leadId and message are required' });
+  }
+  try {
+    const result = await leadAcquisitionService.chatWithProspect(leadId, message, history || []);
+    res.json(result);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+apiRouter.post('/leads/:id/dispatch-flywheel-brief', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await leadAcquisitionService.dispatchFlywheelBrief(id);
+    res.json({
+      success: true,
+      message: `Bespoke ECONOS Flywheel Blueprint dispatched to ${result.lead.contactEmail}`,
+      lead: result.lead,
+      email: result.email
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+apiRouter.post('/leads/voice-turn', async (req, res) => {
+  const { leadId, speechText, history } = req.body;
+  if (!leadId || !speechText) {
+    return res.status(400).json({ error: 'leadId and speechText are required' });
+  }
+  try {
+    const turn = await leadAcquisitionService.processVoiceTurn(leadId, speechText, history || []);
+    res.json(turn);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+apiRouter.post('/leads/dispatch-call', (req, res) => {
+  const { leadId, phone, callType } = req.body;
+  if (!leadId) return res.status(400).json({ error: 'leadId is required' });
+  try {
+    const callRecord = leadAcquisitionService.initiateOutboundCall(leadId, phone, callType);
+    res.json({
+      success: true,
+      message: `Automated call initiated to ${callRecord.phone}`,
+      call: callRecord
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+apiRouter.get('/leads/calls/history', (req, res) => {
+  const leadId = req.query.leadId as string | undefined;
+  res.json(leadAcquisitionService.getCalls(leadId));
+});
+
+apiRouter.patch('/leads/calls/:callId', (req, res) => {
+  const updated = leadAcquisitionService.updateCallRecord(req.params.callId, req.body);
+  if (!updated) return res.status(404).json({ error: 'Call record not found' });
+  res.json(updated);
+});
+
+apiRouter.post('/leads/reset', (req, res) => {
+  leadAcquisitionService.resetToDefaultSeed();
+  res.json({ message: 'Leads reset to default Google Maps seed set.' });
+});
+

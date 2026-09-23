@@ -27,8 +27,11 @@ import {
   Maximize2, 
   Minimize2, 
   Radio, 
-  Flame 
+  Flame,
+  Headphones,
+  Sparkles
 } from 'lucide-react';
+import { TelemetryPodcastPlayer } from './TelemetryPodcastPlayer';
 
 export type TelemetrySeverity = 'INFO' | 'SUCCESS' | 'WARNING' | 'CRITICAL';
 export type TelemetryEventType = 
@@ -61,6 +64,7 @@ export interface TelemetryEvent {
 interface SystemTelemetryFeedProps {
   currentLayer?: AppLayer;
   onSelectLayer: (layer: AppLayer) => void;
+  onOpenFullPodcast?: () => void;
 }
 
 let globalEventCounter = 10000;
@@ -301,11 +305,13 @@ const DYNAMIC_EVENT_TEMPLATES = [
 
 export const SystemTelemetryFeed: React.FC<SystemTelemetryFeedProps> = ({
   currentLayer,
-  onSelectLayer
+  onSelectLayer,
+  onOpenFullPodcast
 }) => {
   const [events, setEvents] = useState<TelemetryEvent[]>(INITIAL_TELEMETRY_EVENTS);
   const [isLiveStreaming, setIsLiveStreaming] = useState<boolean>(true);
   const [isExpanded, setIsExpanded] = useState<boolean>(true);
+  const [isPodcastPlayerOpen, setIsPodcastPlayerOpen] = useState<boolean>(true);
   const [selectedSeverity, setSelectedSeverity] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [inspectedEvent, setInspectedEvent] = useState<TelemetryEvent | null>(INITIAL_TELEMETRY_EVENTS[0]);
@@ -470,6 +476,26 @@ export const SystemTelemetryFeed: React.FC<SystemTelemetryFeedProps> = ({
 
         {/* Action Controls: Pause/Play, Clear, Export, Expand/Collapse */}
         <div className="flex items-center gap-2 self-end md:self-auto text-xs font-mono">
+          {/* AI Podcast Voice Synthesis Engine Toggle */}
+          <button
+            id="telemetry-podcast-toggle-btn"
+            onClick={() => setIsPodcastPlayerOpen(!isPodcastPlayerOpen)}
+            className={`px-2.5 py-1 rounded-lg border font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs ${
+              isPodcastPlayerOpen
+                ? 'bg-amber-500 hover:bg-amber-400 text-slate-950 border-amber-400 ring-1 ring-amber-400/40'
+                : 'bg-slate-800 hover:bg-slate-700 text-amber-300 border-amber-500/40'
+            }`}
+            title="Toggle AI Voice Synthesis Podcast Player"
+          >
+            <Headphones className="w-3.5 h-3.5" />
+            <span>Podcast Engine</span>
+            <span className={`text-[9px] px-1 py-0.2 rounded font-black ${
+              isPodcastPlayerOpen ? 'bg-slate-950 text-amber-300' : 'bg-amber-950 text-amber-300'
+            }`}>
+              AI
+            </span>
+          </button>
+
           <button
             id="telemetry-pause-play-btn"
             onClick={() => setIsLiveStreaming(!isLiveStreaming)}
@@ -508,6 +534,15 @@ export const SystemTelemetryFeed: React.FC<SystemTelemetryFeedProps> = ({
 
       {isExpanded && (
         <div className="p-4 space-y-3">
+          {/* Integrated AI Voice Synthesis Podcast Player Component */}
+          {isPodcastPlayerOpen && (
+            <TelemetryPodcastPlayer
+              currentLayer={currentLayer}
+              onSelectLayer={onSelectLayer}
+              onOpenFullPodcast={onOpenFullPodcast}
+            />
+          )}
+
           {/* Secondary Control Bar: Search & Severity Filters */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
             {/* Filter Pills */}

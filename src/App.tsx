@@ -48,6 +48,7 @@ import { SovereignInstitutionalDashboard } from './components/dashboard/Sovereig
 import { GlobalLayersProgressBar } from './components/layout/GlobalLayersProgressBar';
 import { LayerActivityHeatmap } from './components/layout/LayerActivityHeatmap';
 import { SystemTelemetryFeed } from './components/telemetry/SystemTelemetryFeed';
+import { EconosIlluminatePodcast } from './components/podcast/EconosIlluminatePodcast';
 import { AppLayer } from './types/econos';
 import { 
   Building2, 
@@ -75,6 +76,7 @@ const AppContent: React.FC = () => {
   const [isCommercialSuiteOpen, setIsCommercialSuiteOpen] = useState(false);
   const [isRoadmapOpen, setIsRoadmapOpen] = useState(false);
   const [isSolutionsOpen, setIsSolutionsOpen] = useState(false);
+  const [isPodcastModalOpen, setIsPodcastModalOpen] = useState(false);
 
   React.useEffect(() => {
     const handler = (e: any) => {
@@ -117,6 +119,7 @@ const AppContent: React.FC = () => {
         onOpenCommercialSuite={() => setIsCommercialSuiteOpen(true)}
         onOpenRoadmap={() => setIsRoadmapOpen(true)}
         onOpenSolutions={() => setIsSolutionsOpen(true)}
+        onOpenPodcast={() => setIsPodcastModalOpen(true)}
         currentLayer={currentLayer}
         onSelectLayer={setCurrentLayer}
       />
@@ -292,6 +295,7 @@ const AppContent: React.FC = () => {
         <SystemTelemetryFeed
           currentLayer={currentLayer}
           onSelectLayer={setCurrentLayer}
+          onOpenFullPodcast={() => setIsPodcastModalOpen(true)}
         />
       </main>
 
@@ -405,6 +409,12 @@ const AppContent: React.FC = () => {
       <CommercialTestSuiteModal
         isOpen={isCommercialSuiteOpen}
         onClose={() => setIsCommercialSuiteOpen(false)}
+      />
+
+      {/* Two-Way ECONOS Podcast & Reel Syndicate Studio Modal */}
+      <EconosIlluminatePodcast
+        isOpen={isPodcastModalOpen}
+        onClose={() => setIsPodcastModalOpen(false)}
       />
     </div>
   );

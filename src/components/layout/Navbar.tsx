@@ -20,7 +20,8 @@ import {
   Zap,
   Globe2,
   Layers,
-  Command
+  Command,
+  Headphones
 } from 'lucide-react';
 import { UserRole, AppLayer } from '../../types/econos';
 import { GlobalLayerSearch } from './GlobalLayerSearch';
@@ -33,6 +34,7 @@ interface NavbarProps {
   onOpenCommercialSuite: () => void;
   onOpenRoadmap: () => void;
   onOpenSolutions?: () => void;
+  onOpenPodcast?: () => void;
   currentLayer?: AppLayer;
   onSelectLayer?: (layer: AppLayer) => void;
 }
@@ -45,6 +47,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenCommercialSuite,
   onOpenRoadmap,
   onOpenSolutions,
+  onOpenPodcast,
   currentLayer,
   onSelectLayer
 }) => {
@@ -594,6 +597,22 @@ export const Navbar: React.FC<NavbarProps> = ({
             <Milestone className="w-3.5 h-3.5 text-amber-400" />
             <span className="hidden sm:inline">Roadmap</span>
           </button>
+
+          {/* AI Podcast Studio Button */}
+          {onOpenPodcast && (
+            <button
+              id="navbar-podcast-studio-btn"
+              onClick={onOpenPodcast}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-cyan-950 to-slate-900 hover:from-cyan-900 hover:to-slate-800 border border-cyan-500/40 text-cyan-300 text-xs font-mono font-bold transition shadow-xs"
+              title="Open Two-Way AI Voice Podcast Studio & YouTube Syndicate"
+            >
+              <Headphones className="w-3.5 h-3.5 text-cyan-400" />
+              <span className="hidden md:inline">Podcast Studio</span>
+              <span className="px-1 py-0.2 rounded text-[9px] bg-cyan-500 text-slate-950 font-black">
+                AI
+              </span>
+            </button>
+          )}
 
           {/* Test Suite Button */}
           <button

@@ -19,7 +19,9 @@ import {
   CreditCard,
   Layers,
   ArrowUpRight,
-  ArrowDownLeft
+  ArrowDownLeft,
+  Upload,
+  FileSpreadsheet
 } from 'lucide-react';
 
 export const CommercialTreasuryWorkspace: React.FC = () => {
@@ -31,6 +33,13 @@ export const CommercialTreasuryWorkspace: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'ALL' | 'UNRECONCILED' | 'RECONCILED'>('ALL');
   const [notification, setNotification] = useState<string | null>(null);
+
+  // CSV Import State
+  const [isCsvModalOpen, setIsCsvModalOpen] = useState(false);
+  const [csvAccountTarget, setCsvAccountTarget] = useState<string>('');
+  const [csvInputText, setCsvInputText] = useState<string>('');
+  const [isImportingCsv, setIsImportingCsv] = useState(false);
+  const [csvImportError, setCsvImportError] = useState<string | null>(null);
 
   // Transfer Funds Modal State
   const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
@@ -305,6 +314,20 @@ export const CommercialTreasuryWorkspace: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                setCsvAccountTarget(accounts[0]?.id || '');
+                setCsvImportError(null);
+                setCsvInputText(`Date,Description,Amount\n${new Date().toISOString().slice(0, 10)},Stripe Payout Client Deposit,12500.00\n${new Date().toISOString().slice(0, 10)},AWS Cloud Infrastructure Hosting,-1420.50\n${new Date().toISOString().slice(0, 10)},Google Workspace & Office Licenses,-350.00`);
+                setIsCsvModalOpen(true);
+              }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-mono font-bold transition shadow-xs cursor-pointer"
+              title="Upload bank statements in CSV format to populate real double-entry ledger"
+            >
+              <Upload className="w-3.5 h-3.5" />
+              <span>Import Bank Statement (.CSV)</span>
+            </button>
+
             <button
               onClick={handleOpenTransferModal}
               className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#132338] hover:bg-[#1e3450] text-white text-xs font-mono font-medium transition shadow-xs"
@@ -606,6 +629,114 @@ export const CommercialTreasuryWorkspace: React.FC = () => {
                   className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold shadow-xs"
                 >
                   Confirm Match
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* CSV Bank Statement Import Modal */}
+      {isCsvModalOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 font-mono text-xs">
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-lg w-full overflow-hidden">
+            <div className="p-4 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <FileSpreadsheet className="w-5 h-5 text-emerald-600" />
+                <h3 className="font-bold text-slate-900 text-sm">Import Bank Statement (.CSV)</h3>
+              </div>
+              <button
+                onClick={() => setIsCsvModalOpen(false)}
+                className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
+                setIsImportingCsv(true);
+                setCsvImportError(null);
+                try {
+                  const res = await api.importCsvBankStatement({
+                    accountId: csvAccountTarget || undefined,
+                    csvContent: csvInputText
+                  });
+                  await loadTreasuryData();
+                  setIsCsvModalOpen(false);
+                  showToast(`Successfully imported ${res.importedCount} bank transactions into the ledger!`);
+                } catch (err: any) {
+                  setCsvImportError(err.message || 'Failed to import CSV');
+                } finally {
+                  setIsImportingCsv(false);
+                }
+              }}
+              className="p-6 space-y-4"
+            >
+              <p className="text-slate-600 text-xs">
+                Import raw transaction rows exported from Chase, Mercury, Brex, or any standard bank CSV.
+              </p>
+
+              {csvImportError && (
+                <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-xs">
+                  {csvImportError}
+                </div>
+              )}
+
+              <div>
+                <label className="block text-slate-700 font-medium mb-1">Target Account</label>
+                <select
+                  value={csvAccountTarget}
+                  onChange={e => setCsvAccountTarget(e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl"
+                >
+                  {accounts.map(acc => (
+                    <option key={acc.id} value={acc.id}>
+                      {acc.institutionName || 'Bank'} - {acc.accountName} ({acc.accountNumberMasked})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-slate-700 font-medium">CSV Content (Date, Description, Amount)</label>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCsvInputText(`Date,Description,Amount\n${new Date().toISOString().slice(0, 10)},Client Retainer Deposit Acme Corp,25000.00\n${new Date().toISOString().slice(0, 10)},Salesforce Enterprise CRM License,-1250.00\n${new Date().toISOString().slice(0, 10)},Stripe Processing Fee,-45.20`);
+                    }}
+                    className="text-[10px] text-indigo-600 hover:underline cursor-pointer"
+                  >
+                    Load Sample Row
+                  </button>
+                </div>
+                <textarea
+                  rows={6}
+                  value={csvInputText}
+                  onChange={e => setCsvInputText(e.target.value)}
+                  placeholder="Date,Description,Amount&#10;2026-09-20,Client Wire Deposit,5000.00&#10;2026-09-21,Google Cloud,-420.00"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none"
+                  required
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setIsCsvModalOpen(false)}
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isImportingCsv || !csvInputText.trim()}
+                  className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white rounded-xl font-bold shadow-xs cursor-pointer flex items-center gap-1.5"
+                >
+                  <Upload className="w-3.5 h-3.5" />
+                  <span>{isImportingCsv ? 'Importing...' : 'Parse & Post to Ledger'}</span>
                 </button>
               </div>
             </form>

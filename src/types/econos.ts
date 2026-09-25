@@ -139,6 +139,7 @@ export interface OutcomeVerification {
 
 // Application Navigation Layers
 export type AppLayer = 
+  | 'OMNIFIN'
   | 'SOVEREIGN_COMMAND'
   | 'BUSINESS' 
   | 'CLIENT_ACQUISITION'

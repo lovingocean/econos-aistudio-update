@@ -2,6 +2,16 @@ import fs from 'fs';
 import path from 'path';
 import { signAgentPassportClaims, hashPassword, verifyPassword, verifyPassportSignature } from './crypto-authority';
 import {
+  ExchangePair,
+  ExchangeOrder,
+  TradeExecution,
+  OrderBookDepth,
+  OrderBookLevel,
+  MultiCurrencyBalance,
+  SettlementCycle
+} from '../src/types/exchange';
+import crypto from 'crypto';
+import {
   User,
   Organization,
   Business,
@@ -75,6 +85,8 @@ interface DatabaseSchema {
   pipelineDeals: PipelineDeal[];
   quarterlyTaxEstimates: Record<string, QuarterlyTaxEstimate[]>;
   vendorTaxComplianceRecords: VendorTaxComplianceRecord[];
+  exchangeOrders?: ExchangeOrder[];
+  exchangeTrades?: TradeExecution[];
 }
 
 const DB_FILE = process.env.DATABASE_PATH || (process.env.VERCEL ? path.join('/tmp', 'econos-database.json') : path.join(process.cwd(), 'econos-database.json'));
@@ -1770,6 +1782,96 @@ function getInitialSeedData(): DatabaseSchema {
       isDefaultDisbursementAccount: false,
       unreconciledItemsCount: 0,
       lastReconciledAt: '2026-09-15T09:00:00Z'
+    },
+    {
+      id: 'acct_real_eur_holdings',
+      organizationId: realOrgId,
+      accountName: 'European Commercial Treasury (EUR)',
+      accountNumberMasked: '•••• 7182',
+      institutionName: 'BNP Paribas Corporate Cash Management',
+      accountType: 'CHECKING_OPERATING',
+      currency: 'EUR',
+      currentBalanceUsd: 135525,
+      availableBalanceUsd: 135525,
+      annualYieldApyPct: 3.25,
+      isDefaultDisbursementAccount: false,
+      unreconciledItemsCount: 0,
+      lastReconciledAt: '2026-09-18T10:00:00Z'
+    },
+    {
+      id: 'acct_real_gbp_holdings',
+      organizationId: realOrgId,
+      accountName: 'UK & Sterling Clearing Desk (GBP)',
+      accountNumberMasked: '•••• 9931',
+      institutionName: 'Barclays Corporate Banking London',
+      accountType: 'CHECKING_OPERATING',
+      currency: 'GBP',
+      currentBalanceUsd: 103840,
+      availableBalanceUsd: 103840,
+      annualYieldApyPct: 4.10,
+      isDefaultDisbursementAccount: false,
+      unreconciledItemsCount: 0,
+      lastReconciledAt: '2026-09-18T10:00:00Z'
+    },
+    {
+      id: 'acct_real_jpy_holdings',
+      organizationId: realOrgId,
+      accountName: 'APAC Commercial Liquidity (JPY)',
+      accountNumberMasked: '•••• 4420',
+      institutionName: 'Sumitomo Mitsui Banking Corp (SMBC)',
+      accountType: 'CHECKING_OPERATING',
+      currency: 'JPY',
+      currentBalanceUsd: 97276,
+      availableBalanceUsd: 97276,
+      annualYieldApyPct: 0.10,
+      isDefaultDisbursementAccount: false,
+      unreconciledItemsCount: 0,
+      lastReconciledAt: '2026-09-18T10:00:00Z'
+    },
+    {
+      id: 'acct_real_cad_holdings',
+      organizationId: realOrgId,
+      accountName: 'North American Commercial Clearing (CAD)',
+      accountNumberMasked: '•••• 3301',
+      institutionName: 'Royal Bank of Canada (RBC)',
+      accountType: 'CHECKING_OPERATING',
+      currency: 'CAD',
+      currentBalanceUsd: 43956,
+      availableBalanceUsd: 43956,
+      annualYieldApyPct: 3.80,
+      isDefaultDisbursementAccount: false,
+      unreconciledItemsCount: 0,
+      lastReconciledAt: '2026-09-18T10:00:00Z'
+    },
+    {
+      id: 'acct_real_usdc_holdings',
+      organizationId: realOrgId,
+      accountName: 'Instant Settlement Prime Vault (USDC)',
+      accountNumberMasked: '0x71C...4B29',
+      institutionName: 'Circle Institutional / Coinbase Prime',
+      accountType: 'TREASURY_YIELD_TBILLS',
+      currency: 'USDC',
+      currentBalanceUsd: 250000,
+      availableBalanceUsd: 250000,
+      annualYieldApyPct: 5.15,
+      isDefaultDisbursementAccount: false,
+      unreconciledItemsCount: 0,
+      lastReconciledAt: '2026-09-18T10:00:00Z'
+    },
+    {
+      id: 'acct_real_btc_holdings',
+      organizationId: realOrgId,
+      accountName: 'Corporate Treasury Reserve Enclave (BTC)',
+      accountNumberMasked: 'bc1q...98e2',
+      institutionName: 'Fidelity Digital Asset Custody',
+      accountType: 'TREASURY_YIELD_TBILLS',
+      currency: 'BTC',
+      currentBalanceUsd: 284550,
+      availableBalanceUsd: 284550,
+      annualYieldApyPct: 0.0,
+      isDefaultDisbursementAccount: false,
+      unreconciledItemsCount: 0,
+      lastReconciledAt: '2026-09-18T10:00:00Z'
     },
     {
       id: 'acct_demo_checking',
@@ -3886,6 +3988,769 @@ class EconosDatabaseStore {
     };
     this.persist();
     return this.data.vendorTaxComplianceRecords[idx];
+  }
+
+
+  // =========================================================================
+  // TARGET D: REAL-WORLD MULTI-CURRENCY FX & ASSET EXCHANGE ENGINE
+  // =========================================================================
+
+  public getExchangePairs(): ExchangePair[] {
+    return [
+      {
+        symbol: 'EUR/USD',
+        name: 'Euro / US Dollar',
+        baseCurrency: 'EUR',
+        quoteCurrency: 'USD',
+        category: 'FIAT_FX',
+        lastPrice: 1.0842,
+        bid: 1.0841,
+        ask: 1.0843,
+        spread: 0.0002,
+        spreadBps: 1.84,
+        high24h: 1.0875,
+        low24h: 1.0820,
+        change24hPct: 0.24,
+        volume24h: 4250000,
+        tickSize: 0.0001,
+        minOrderSize: 100,
+        standardSettlement: 'T_PLUS_2'
+      },
+      {
+        symbol: 'GBP/USD',
+        name: 'British Pound / US Dollar',
+        baseCurrency: 'GBP',
+        quoteCurrency: 'USD',
+        category: 'FIAT_FX',
+        lastPrice: 1.2980,
+        bid: 1.2978,
+        ask: 1.2982,
+        spread: 0.0004,
+        spreadBps: 3.08,
+        high24h: 1.3020,
+        low24h: 1.2940,
+        change24hPct: -0.15,
+        volume24h: 2890000,
+        tickSize: 0.0001,
+        minOrderSize: 100,
+        standardSettlement: 'T_PLUS_2'
+      },
+      {
+        symbol: 'USD/JPY',
+        name: 'US Dollar / Japanese Yen',
+        baseCurrency: 'USD',
+        quoteCurrency: 'JPY',
+        category: 'FIAT_FX',
+        lastPrice: 154.20,
+        bid: 154.18,
+        ask: 154.22,
+        spread: 0.04,
+        spreadBps: 2.60,
+        high24h: 154.80,
+        low24h: 153.90,
+        change24hPct: 0.42,
+        volume24h: 6100000,
+        tickSize: 0.01,
+        minOrderSize: 100,
+        standardSettlement: 'T_PLUS_2'
+      },
+      {
+        symbol: 'USD/CAD',
+        name: 'US Dollar / Canadian Dollar',
+        baseCurrency: 'USD',
+        quoteCurrency: 'CAD',
+        category: 'FIAT_FX',
+        lastPrice: 1.3650,
+        bid: 1.3648,
+        ask: 1.3652,
+        spread: 0.0004,
+        spreadBps: 2.93,
+        high24h: 1.3690,
+        low24h: 1.3620,
+        change24hPct: -0.08,
+        volume24h: 1750000,
+        tickSize: 0.0001,
+        minOrderSize: 100,
+        standardSettlement: 'T_PLUS_1'
+      },
+      {
+        symbol: 'USDC/USD',
+        name: 'USD Coin / US Dollar',
+        baseCurrency: 'USDC',
+        quoteCurrency: 'USD',
+        category: 'STABLECOIN',
+        lastPrice: 1.0001,
+        bid: 1.0000,
+        ask: 1.0002,
+        spread: 0.0002,
+        spreadBps: 2.00,
+        high24h: 1.0005,
+        low24h: 0.9998,
+        change24hPct: 0.01,
+        volume24h: 8900000,
+        tickSize: 0.0001,
+        minOrderSize: 20,
+        standardSettlement: 'T_PLUS_0'
+      },
+      {
+        symbol: 'BTC/USD',
+        name: 'Bitcoin / US Dollar',
+        baseCurrency: 'BTC',
+        quoteCurrency: 'USD',
+        category: 'DIGITAL_ASSET',
+        lastPrice: 94850.00,
+        bid: 94840.00,
+        ask: 94860.00,
+        spread: 20.00,
+        spreadBps: 2.11,
+        high24h: 96200.00,
+        low24h: 93500.00,
+        change24hPct: 1.85,
+        volume24h: 14200000,
+        tickSize: 0.10,
+        minOrderSize: 0.001,
+        standardSettlement: 'T_PLUS_0'
+      },
+      {
+        symbol: 'ETH/USD',
+        name: 'Ethereum / US Dollar',
+        baseCurrency: 'ETH',
+        quoteCurrency: 'USD',
+        category: 'DIGITAL_ASSET',
+        lastPrice: 3480.00,
+        bid: 3478.50,
+        ask: 3481.50,
+        spread: 3.00,
+        spreadBps: 8.62,
+        high24h: 3560.00,
+        low24h: 3410.00,
+        change24hPct: -0.65,
+        volume24h: 7800000,
+        tickSize: 0.01,
+        minOrderSize: 0.01,
+        standardSettlement: 'T_PLUS_0'
+      }
+    ];
+  }
+
+  public getOrderBook(pairSymbol: string, orgId?: string): OrderBookDepth {
+    const pairs = this.getExchangePairs();
+    const pair = pairs.find(p => p.symbol === pairSymbol) || pairs[0];
+    const mid = pair.lastPrice;
+    const tick = pair.tickSize;
+
+    // Resting limit orders for this pair
+    const restingOrders = (this.data.exchangeOrders || []).filter(
+      o => o.pair === pair.symbol && o.status === 'OPEN'
+    );
+
+    // Build 7 bid levels down
+    const bids: OrderBookLevel[] = [];
+    let runningBidTotal = 0;
+    for (let i = 1; i <= 7; i++) {
+      const price = Number((pair.bid - (i - 1) * tick * (pair.category === 'DIGITAL_ASSET' ? 10 : 2)).toFixed(pair.category === 'DIGITAL_ASSET' ? 1 : 4));
+      // Add resting limit order quantities at this tick if any
+      const matchingResting = restingOrders.filter(o => o.side === 'BUY' && Math.abs(o.price - price) < tick * 1.5);
+      const restingQty = matchingResting.reduce((sum, o) => sum + o.remainingQuantity, 0);
+
+      // Deterministic market maker liquidity size
+      const baseQty = pair.category === 'DIGITAL_ASSET' 
+        ? Number((0.5 + i * 0.45 + (price % 3) * 0.1).toFixed(2))
+        : Math.round(25000 + i * 18000 + (price * 1000) % 5000);
+      
+      const totalLevelQty = baseQty + restingQty;
+      runningBidTotal += totalLevelQty;
+      bids.push({
+        price,
+        quantity: totalLevelQty,
+        total: runningBidTotal,
+        depthPct: 0 // computed below
+      });
+    }
+
+    // Build 7 ask levels up
+    const asks: OrderBookLevel[] = [];
+    let runningAskTotal = 0;
+    for (let i = 1; i <= 7; i++) {
+      const price = Number((pair.ask + (i - 1) * tick * (pair.category === 'DIGITAL_ASSET' ? 10 : 2)).toFixed(pair.category === 'DIGITAL_ASSET' ? 1 : 4));
+      const matchingResting = restingOrders.filter(o => o.side === 'SELL' && Math.abs(o.price - price) < tick * 1.5);
+      const restingQty = matchingResting.reduce((sum, o) => sum + o.remainingQuantity, 0);
+
+      const baseQty = pair.category === 'DIGITAL_ASSET'
+        ? Number((0.4 + i * 0.5 + (price % 2) * 0.15).toFixed(2))
+        : Math.round(22000 + i * 19500 + (price * 1000) % 4500);
+
+      const totalLevelQty = baseQty + restingQty;
+      runningAskTotal += totalLevelQty;
+      asks.push({
+        price,
+        quantity: totalLevelQty,
+        total: runningAskTotal,
+        depthPct: 0
+      });
+    }
+
+    const maxBidTotal = bids[bids.length - 1]?.total || 1;
+    const maxAskTotal = asks[asks.length - 1]?.total || 1;
+
+    bids.forEach(b => b.depthPct = Math.round((b.total / maxBidTotal) * 100));
+    asks.forEach(a => a.depthPct = Math.round((a.total / maxAskTotal) * 100));
+
+    const spread = Number((pair.ask - pair.bid).toFixed(pair.tickSize < 0.01 ? 4 : 2));
+    const spreadBps = Number(((spread / mid) * 10000).toFixed(2));
+
+    return {
+      pair: pair.symbol,
+      bids,
+      asks,
+      spread,
+      spreadBps,
+      midPrice: mid,
+      timestamp: new Date().toISOString()
+    };
+  }
+
+  public calculateSettlementDate(cycle: SettlementCycle): string {
+    const d = new Date();
+    let daysToAdd = cycle === 'T_PLUS_0' ? 0 : cycle === 'T_PLUS_1' ? 1 : 2;
+    while (daysToAdd > 0) {
+      d.setDate(d.getDate() + 1);
+      // Skip Saturday (6) and Sunday (0)
+      if (d.getDay() !== 0 && d.getDay() !== 6) {
+        daysToAdd--;
+      }
+    }
+    return d.toISOString().split('T')[0];
+  }
+
+  public getExchangeBalances(orgId: string): MultiCurrencyBalance[] {
+    const accounts = this.getTreasuryAccounts(orgId);
+    const restingOrders = (this.data.exchangeOrders || []).filter(
+      o => o.organizationId === orgId && o.status === 'OPEN'
+    );
+
+    const pairs = this.getExchangePairs();
+    const rateMap: Record<string, number> = {
+      USD: 1.0,
+      EUR: pairs.find(p => p.symbol === 'EUR/USD')?.lastPrice || 1.0842,
+      GBP: pairs.find(p => p.symbol === 'GBP/USD')?.lastPrice || 1.2980,
+      JPY: 1 / (pairs.find(p => p.symbol === 'USD/JPY')?.lastPrice || 154.20),
+      CAD: 1 / (pairs.find(p => p.symbol === 'USD/CAD')?.lastPrice || 1.3650),
+      USDC: 1.0,
+      BTC: pairs.find(p => p.symbol === 'BTC/USD')?.lastPrice || 94850.0,
+      ETH: pairs.find(p => p.symbol === 'ETH/USD')?.lastPrice || 3480.0
+    };
+
+    const currencyConfig: Record<string, { name: string; symbol: string; flag: string }> = {
+      USD: { name: 'US Dollar', symbol: '$', flag: '🇺🇸' },
+      EUR: { name: 'Euro', symbol: '€', flag: '🇪🇺' },
+      GBP: { name: 'British Pound', symbol: '£', flag: '🇬🇧' },
+      JPY: { name: 'Japanese Yen', symbol: '¥', flag: '🇯🇵' },
+      CAD: { name: 'Canadian Dollar', symbol: 'C$', flag: '🇨🇦' },
+      USDC: { name: 'USD Coin', symbol: 'USDC', flag: '🌐' },
+      BTC: { name: 'Bitcoin', symbol: '₿', flag: '₿' },
+      ETH: { name: 'Ethereum', symbol: 'Ξ', flag: '🔷' }
+    };
+
+    const results: MultiCurrencyBalance[] = [];
+
+    // Group accounts by currency
+    for (const [cur, meta] of Object.entries(currencyConfig)) {
+      const curAccounts = accounts.filter(a => (a.currency || 'USD').toUpperCase() === cur);
+      const primaryAcc = curAccounts[0];
+
+      let rawTotal = 0;
+      if (cur === 'USD') {
+        rawTotal = curAccounts.reduce((sum, a) => sum + a.currentBalanceUsd, 0);
+      } else if (primaryAcc) {
+        // Convert stored USD back to foreign currency units if stored in USD
+        const rate = rateMap[cur] || 1.0;
+        rawTotal = primaryAcc.currentBalanceUsd / rate;
+      }
+
+      // Calculate locked in resting limit orders
+      let locked = 0;
+      restingOrders.forEach(o => {
+        const [base, quote] = o.pair.split('/');
+        if (o.side === 'BUY' && quote === cur) {
+          locked += o.remainingQuantity * o.price * 1.002; // includes fee buffer
+        } else if (o.side === 'SELL' && base === cur) {
+          locked += o.remainingQuantity;
+        }
+      });
+
+      const totalBalance = Number(rawTotal.toFixed(cur === 'BTC' ? 4 : cur === 'ETH' ? 3 : 2));
+      const lockedInOrders = Number(locked.toFixed(cur === 'BTC' ? 4 : cur === 'ETH' ? 3 : 2));
+      const availableBalance = Math.max(0, Number((totalBalance - lockedInOrders).toFixed(cur === 'BTC' ? 4 : cur === 'ETH' ? 3 : 2)));
+      const rateToUsd = rateMap[cur] || 1.0;
+      const usdEquivalent = Math.round(totalBalance * rateToUsd);
+
+      results.push({
+        currency: cur,
+        name: meta.name,
+        symbol: meta.symbol,
+        flag: meta.flag,
+        totalBalance,
+        availableBalance,
+        lockedInOrders,
+        usdEquivalent,
+        rateToUsd,
+        accountId: primaryAcc?.id || '',
+        accountName: primaryAcc?.accountName || '',
+        institutionName: primaryAcc?.institutionName || 'Institutional Prime Clearing'
+      });
+    }
+
+    return results;
+  }
+
+  public placeExchangeOrder(
+    orgId: string,
+    params: {
+      pair: string;
+      side: 'BUY' | 'SELL';
+      type: 'MARKET' | 'LIMIT';
+      price?: number;
+      quantity: number;
+      settlementCycle?: SettlementCycle;
+    }
+  ): { success: boolean; order?: ExchangeOrder; trade?: TradeExecution; error?: string } {
+    if (!this.data.exchangeOrders) this.data.exchangeOrders = [];
+    if (!this.data.exchangeTrades) this.data.exchangeTrades = [];
+    if (!this.data.treasuryAccounts) this.data.treasuryAccounts = getInitialSeedData().treasuryAccounts;
+    if (!this.data.bankTransactions) this.data.bankTransactions = getInitialSeedData().bankTransactions;
+
+    const pairs = this.getExchangePairs();
+    const pair = pairs.find(p => p.symbol === params.pair);
+    if (!pair) {
+      return { success: false, error: 'Pair not found or unsupported.' };
+    }
+
+    const qty = Number(params.quantity);
+    if (!qty || qty <= 0) {
+      return { success: false, error: 'Order quantity must be greater than zero.' };
+    }
+    if (qty < pair.minOrderSize) {
+      return { success: false, error: `Order quantity is below minimum order size of ${pair.minOrderSize}.` };
+    }
+
+    const settlementCycle = params.settlementCycle || pair.standardSettlement;
+    const settlementDate = this.calculateSettlementDate(settlementCycle);
+    const [baseCur, quoteCur] = pair.symbol.split('/');
+
+    // Get current balances for validation
+    const balances = this.getExchangeBalances(orgId);
+    const baseBalance = balances.find(b => b.currency === baseCur);
+    const quoteBalance = balances.find(b => b.currency === quoteCur);
+
+    const orderBook = this.getOrderBook(pair.symbol, orgId);
+
+    // =========================================================================
+    // REAL-WORLD RULE 1: STRICT PRE-TRADE BALANCE VERIFICATION
+    // =========================================================================
+    if (params.side === 'BUY') {
+      // Buying Base currency requires Quote currency
+      const estimatedPrice = params.type === 'LIMIT' && params.price ? params.price : orderBook.asks[0].price;
+      const estimatedCost = qty * estimatedPrice;
+      const takerFeeRate = 0.0020; // 0.20% Taker fee
+      const requiredQuote = estimatedCost * (1 + takerFeeRate);
+
+      const availableQuote = quoteBalance ? quoteBalance.availableBalance : 0;
+      if (availableQuote < requiredQuote) {
+        return {
+          success: false,
+          error: `Insufficient available ${quoteCur} balance. Required: ${requiredQuote.toFixed(2)}, Available: ${availableQuote.toFixed(2)}`
+        };
+      }
+    } else {
+      // Selling Base currency requires Base currency
+      const availableBase = baseBalance ? baseBalance.availableBalance : 0;
+      if (availableBase < qty) {
+        return {
+          success: false,
+          error: `Insufficient available ${baseCur} balance. Required: ${qty}, Available: ${availableBase}`
+        };
+      }
+    }
+
+    // =========================================================================
+    // REAL-WORLD RULE 2: EXECUTION & BOOK WALKING
+    // =========================================================================
+    const nowIso = new Date().toISOString();
+    const orderId = 'ord-' + Date.now() + '-' + Math.random().toString(36).substring(2, 7);
+
+    if (params.type === 'MARKET') {
+      // Walk the order book
+      const bookLevels = params.side === 'BUY' ? orderBook.asks : orderBook.bids;
+      let remainingToFill = qty;
+      let totalCost = 0;
+      let levelIdx = 0;
+
+      while (remainingToFill > 0 && levelIdx < bookLevels.length) {
+        const lvl = bookLevels[levelIdx];
+        const fillAtLvl = Math.min(remainingToFill, lvl.quantity);
+        totalCost += fillAtLvl * lvl.price;
+        remainingToFill -= fillAtLvl;
+        levelIdx++;
+      }
+
+      // If market order size exceeded displayed depth, fill remainder at last level + 1 tick
+      if (remainingToFill > 0) {
+        const lastLvl = bookLevels[bookLevels.length - 1];
+        const penaltyPrice = params.side === 'BUY' ? lastLvl.price + pair.tickSize * 2 : lastLvl.price - pair.tickSize * 2;
+        totalCost += remainingToFill * penaltyPrice;
+      }
+
+      const weightedAvgPrice = Number((totalCost / qty).toFixed(pair.category === 'DIGITAL_ASSET' ? 2 : 4));
+      const mid = orderBook.midPrice;
+      const slippageBps = Number((Math.abs((weightedAvgPrice - mid) / mid) * 10000).toFixed(2));
+      const feeRatePct = 0.20; // 20 bps taker fee
+      const feeUsd = Number((totalCost * 0.0020 * (balances.find(b => b.currency === quoteCur)?.rateToUsd || 1.0)).toFixed(2));
+
+      const order: ExchangeOrder = {
+        id: orderId,
+        organizationId: orgId,
+        pair: pair.symbol,
+        side: params.side,
+        type: 'MARKET',
+        price: weightedAvgPrice,
+        quantity: qty,
+        filledQuantity: qty,
+        remainingQuantity: 0,
+        averageFillPrice: weightedAvgPrice,
+        status: 'FILLED',
+        feeUsd,
+        feeRatePct,
+        isMaker: false,
+        slippageBps,
+        settlementCycle,
+        settlementDate,
+        createdAt: nowIso,
+        updatedAt: nowIso
+      };
+
+      // =========================================================================
+      // REAL-WORLD RULE 3: DOUBLE-ENTRY LEDGER POSTING & ACCOUNT UPDATES
+      // =========================================================================
+      const quoteRateToUsd = balances.find(b => b.currency === quoteCur)?.rateToUsd || 1.0;
+      const baseRateToUsd = balances.find(b => b.currency === baseCur)?.rateToUsd || 1.0;
+
+      // Find accounts for org
+      let baseAcc = this.data.treasuryAccounts.find(a => a.organizationId === orgId && (a.currency || 'USD').toUpperCase() === baseCur);
+      let quoteAcc = this.data.treasuryAccounts.find(a => a.organizationId === orgId && (a.currency || 'USD').toUpperCase() === quoteCur);
+
+      if (!baseAcc) {
+        baseAcc = {
+          id: 'acc-' + baseCur.toLowerCase() + '-' + Date.now(),
+          organizationId: orgId,
+          accountName: baseCur + ' Primary Treasury Reserve',
+          accountNumberMasked: '•••• ' + Math.floor(Math.random() * 8999 + 1000),
+          institutionName: 'Institutional Prime Clearing Desk',
+          accountType: 'CHECKING_OPERATING',
+          currency: baseCur,
+          currentBalanceUsd: 0,
+          availableBalanceUsd: 0,
+          annualYieldApyPct: 1.5,
+          isDefaultDisbursementAccount: false,
+          unreconciledItemsCount: 0,
+          lastReconciledAt: nowIso
+        };
+        this.data.treasuryAccounts.push(baseAcc);
+      }
+
+      if (!quoteAcc) {
+        quoteAcc = {
+          id: 'acc-' + quoteCur.toLowerCase() + '-' + Date.now(),
+          organizationId: orgId,
+          accountName: quoteCur + ' Primary Treasury Reserve',
+          accountNumberMasked: '•••• ' + Math.floor(Math.random() * 8999 + 1000),
+          institutionName: 'Institutional Prime Clearing Desk',
+          accountType: 'CHECKING_OPERATING',
+          currency: quoteCur,
+          currentBalanceUsd: 0,
+          availableBalanceUsd: 0,
+          annualYieldApyPct: 1.5,
+          isDefaultDisbursementAccount: false,
+          unreconciledItemsCount: 0,
+          lastReconciledAt: nowIso
+        };
+        this.data.treasuryAccounts.push(quoteAcc);
+      }
+
+      const quoteDeltaUsd = totalCost * quoteRateToUsd;
+      const baseDeltaUsd = qty * baseRateToUsd;
+
+      const dateStr = nowIso.split('T')[0];
+      const tradeId = 'trd-' + Date.now() + '-' + Math.random().toString(36).substring(2, 7);
+      const txId1 = 'tx-ex-1-' + Date.now();
+      const txId2 = 'tx-ex-2-' + (Date.now() + 1);
+      const txFeeId = 'tx-ex-fee-' + (Date.now() + 2);
+
+      if (params.side === 'BUY') {
+        // Debiting Quote Currency (e.g. USD) and Fee
+        quoteAcc.currentBalanceUsd -= (quoteDeltaUsd + feeUsd);
+        quoteAcc.availableBalanceUsd -= (quoteDeltaUsd + feeUsd);
+
+        // Crediting Base Currency (e.g. EUR)
+        baseAcc.currentBalanceUsd += baseDeltaUsd;
+        baseAcc.availableBalanceUsd += baseDeltaUsd;
+
+        // Double-entry ledger records
+        this.data.bankTransactions.unshift({
+          id: txId1,
+          organizationId: orgId,
+          accountId: quoteAcc.id,
+          date: dateStr,
+          description: `FX / Digital Asset Buy Execution: -${totalCost.toFixed(2)} ${quoteCur} for +${qty} ${baseCur} @ ${weightedAvgPrice}`,
+          amount: -(totalCost),
+          category: 'SWEEP',
+          status: 'RECONCILED',
+          matchedReferenceType: 'SWEEP',
+          matchedReferenceId: tradeId
+        });
+
+        this.data.bankTransactions.unshift({
+          id: txId2,
+          organizationId: orgId,
+          accountId: baseAcc.id,
+          date: dateStr,
+          description: `FX / Digital Asset Trade Settlement Received: +${qty} ${baseCur}`,
+          amount: qty,
+          category: 'SWEEP',
+          status: 'RECONCILED',
+          matchedReferenceType: 'SWEEP',
+          matchedReferenceId: tradeId
+        });
+
+        this.data.bankTransactions.unshift({
+          id: txFeeId,
+          organizationId: orgId,
+          accountId: quoteAcc.id,
+          date: dateStr,
+          description: `Trading Liquidity & Execution Fee: -${feeUsd.toFixed(2)} USD`,
+          amount: -feeUsd,
+          category: 'SWEEP',
+          status: 'RECONCILED',
+          matchedReferenceType: 'SWEEP',
+          matchedReferenceId: tradeId
+        });
+      } else {
+        // Selling Base Currency, Receiving Quote Currency
+        baseAcc.currentBalanceUsd -= baseDeltaUsd;
+        baseAcc.availableBalanceUsd -= baseDeltaUsd;
+
+        quoteAcc.currentBalanceUsd += (quoteDeltaUsd - feeUsd);
+        quoteAcc.availableBalanceUsd += (quoteDeltaUsd - feeUsd);
+
+        this.data.bankTransactions.unshift({
+          id: txId1,
+          organizationId: orgId,
+          accountId: baseAcc.id,
+          date: dateStr,
+          description: `FX / Digital Asset Sell Delivery: -${qty} ${baseCur}`,
+          amount: -qty,
+          category: 'SWEEP',
+          status: 'RECONCILED',
+          matchedReferenceType: 'SWEEP',
+          matchedReferenceId: tradeId
+        });
+
+        this.data.bankTransactions.unshift({
+          id: txId2,
+          organizationId: orgId,
+          accountId: quoteAcc.id,
+          date: dateStr,
+          description: `FX / Digital Asset Proceeds: +${totalCost.toFixed(2)} ${quoteCur} from sale of ${qty} ${baseCur} @ ${weightedAvgPrice}`,
+          amount: totalCost,
+          category: 'SWEEP',
+          status: 'RECONCILED',
+          matchedReferenceType: 'SWEEP',
+          matchedReferenceId: tradeId
+        });
+
+        this.data.bankTransactions.unshift({
+          id: txFeeId,
+          organizationId: orgId,
+          accountId: quoteAcc.id,
+          date: dateStr,
+          description: `Trading Liquidity & Execution Fee: -${feeUsd.toFixed(2)} USD`,
+          amount: -feeUsd,
+          category: 'SWEEP',
+          status: 'RECONCILED',
+          matchedReferenceType: 'SWEEP',
+          matchedReferenceId: tradeId
+        });
+      }
+
+      // Generate FINRA / MiFID II Compliant Trade Confirmation Ticket
+      const confirmationNumber = 'CONF-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substring(2, 6).toUpperCase();
+      const sha256Verification = crypto.createHash('sha256')
+        .update(tradeId + orderId + nowIso + totalCost)
+        .digest('hex');
+
+      const trade: TradeExecution = {
+        tradeId,
+        orderId,
+        organizationId: orgId,
+        pair: pair.symbol,
+        side: params.side,
+        fillPrice: weightedAvgPrice,
+        quantity: qty,
+        quoteAmount: Number(totalCost.toFixed(2)),
+        fee: feeUsd,
+        feeCurrency: 'USD',
+        slippageBps,
+        isMaker: false,
+        executionTime: nowIso,
+        settlementDate,
+        settlementCycle,
+        counterparty: 'Citadel FX / Apex Prime Institutional Liquidity Pool',
+        confirmationNumber,
+        sha256Verification,
+        ledgerTransactionIds: [txId1, txId2, txFeeId]
+      };
+
+      this.data.exchangeOrders.unshift(order);
+      this.data.exchangeTrades.unshift(trade);
+      this.persist();
+
+      return { success: true, order, trade };
+    } else {
+      // LIMIT ORDER
+      const limitPrice = Number(params.price);
+      if (!limitPrice || limitPrice <= 0) {
+        return { success: false, error: 'Valid limit price required.' };
+      }
+
+      // Check crossing
+      const bestAsk = orderBook.asks[0].price;
+      const bestBid = orderBook.bids[0].price;
+      const isCrossed = (params.side === 'BUY' && limitPrice >= bestAsk) || (params.side === 'SELL' && limitPrice <= bestBid);
+
+      if (isCrossed) {
+        // Immediate fill as taker
+        return this.placeExchangeOrder(orgId, {
+          ...params,
+          type: 'MARKET'
+        });
+      }
+
+      // Non-crossing: Place as resting limit order on the book (MAKER)
+      const order: ExchangeOrder = {
+        id: orderId,
+        organizationId: orgId,
+        pair: pair.symbol,
+        side: params.side,
+        type: 'LIMIT',
+        price: limitPrice,
+        quantity: qty,
+        filledQuantity: 0,
+        remainingQuantity: qty,
+        averageFillPrice: 0,
+        status: 'OPEN',
+        feeUsd: 0,
+        feeRatePct: 0.10, // Maker fee
+        isMaker: true,
+        slippageBps: 0,
+        settlementCycle,
+        settlementDate,
+        createdAt: nowIso,
+        updatedAt: nowIso
+      };
+
+      this.data.exchangeOrders.unshift(order);
+      this.persist();
+      return { success: true, order };
+    }
+  }
+
+  public cancelExchangeOrder(id: string, orgId: string): { success: boolean; order?: ExchangeOrder; error?: string } {
+    if (!this.data.exchangeOrders) this.data.exchangeOrders = [];
+    const order = this.data.exchangeOrders.find(o => o.id === id && o.organizationId === orgId);
+    if (!order) {
+      return { success: false, error: 'Order not found.' };
+    }
+    if (order.status !== 'OPEN') {
+      return { success: false, error: 'Only open orders can be cancelled.' };
+    }
+
+    order.status = 'CANCELLED';
+    order.updatedAt = new Date().toISOString();
+    this.persist();
+    return { success: true, order };
+  }
+
+  public getExchangeOrders(orgId: string): ExchangeOrder[] {
+    if (!this.data.exchangeOrders) this.data.exchangeOrders = [];
+    return this.data.exchangeOrders.filter(o => o.organizationId === orgId);
+  }
+
+  public getExchangeTrades(orgId: string): TradeExecution[] {
+    if (!this.data.exchangeTrades) this.data.exchangeTrades = [];
+    return this.data.exchangeTrades.filter(t => t.organizationId === orgId);
+  }
+
+  public depositExchangeCurrency(
+    orgId: string,
+    currency: string,
+    amount: number
+  ): { success: boolean; account?: TreasuryAccount; error?: string } {
+    if (!this.data.treasuryAccounts) this.data.treasuryAccounts = getInitialSeedData().treasuryAccounts;
+    if (!this.data.bankTransactions) this.data.bankTransactions = getInitialSeedData().bankTransactions;
+
+    const cur = currency.toUpperCase();
+    const pairs = this.getExchangePairs();
+    const rateMap: Record<string, number> = {
+      USD: 1.0,
+      EUR: pairs.find(p => p.symbol === 'EUR/USD')?.lastPrice || 1.0842,
+      GBP: pairs.find(p => p.symbol === 'GBP/USD')?.lastPrice || 1.2980,
+      JPY: 1 / (pairs.find(p => p.symbol === 'USD/JPY')?.lastPrice || 154.20),
+      CAD: 1 / (pairs.find(p => p.symbol === 'USD/CAD')?.lastPrice || 1.3650),
+      USDC: 1.0,
+      BTC: pairs.find(p => p.symbol === 'BTC/USD')?.lastPrice || 94850.0,
+      ETH: pairs.find(p => p.symbol === 'ETH/USD')?.lastPrice || 3480.0
+    };
+
+    const rate = rateMap[cur] || 1.0;
+    const addedUsd = amount * rate;
+
+    let acc = this.data.treasuryAccounts.find(a => a.organizationId === orgId && (a.currency || 'USD').toUpperCase() === cur);
+    if (!acc) {
+      acc = {
+        id: 'acc-' + cur.toLowerCase() + '-' + Date.now(),
+        organizationId: orgId,
+        accountName: cur + ' Operational Account',
+        accountNumberMasked: '•••• ' + Math.floor(Math.random() * 8999 + 1000),
+        institutionName: 'Institutional Prime Clearing Desk',
+        accountType: 'CHECKING_OPERATING',
+        currency: cur,
+        currentBalanceUsd: addedUsd,
+        availableBalanceUsd: addedUsd,
+        annualYieldApyPct: 1.5,
+        isDefaultDisbursementAccount: false,
+        unreconciledItemsCount: 0,
+        lastReconciledAt: new Date().toISOString()
+      };
+      this.data.treasuryAccounts.push(acc);
+    } else {
+      acc.currentBalanceUsd += addedUsd;
+      acc.availableBalanceUsd += addedUsd;
+    }
+
+    const txDepId = 'tx-dep-' + Date.now();
+    this.data.bankTransactions.unshift({
+      id: txDepId,
+      organizationId: orgId,
+      accountId: acc.id,
+      date: new Date().toISOString().split('T')[0],
+      description: `Institutional Treasury Deposit: +${amount} ${cur}`,
+      amount: amount,
+      category: 'INTERNAL_SWEEP',
+      status: 'RECONCILED'
+    });
+
+    this.persist();
+    return { success: true, account: acc };
   }
 
   public resetDemoTenant() {

@@ -23,7 +23,9 @@ import {
 import { AppLayer } from '../../types/econos';
 import { getLayerByNumber } from '../../data/master100LayersData';
 import marcusImg from '../../assets/images/marcus_vance_host_1790155174205.jpg';
+import marcusTalkingImg from '../../assets/images/marcus_vance_talking_1790156795899.jpg';
 import elenaImg from '../../assets/images/elena_rostova_host_1790155197061.jpg';
+import elenaTalkingImg from '../../assets/images/elena_rostova_talking_1790156817395.jpg';
 import studioDeskImg from '../../assets/images/podcast_studio_desk_1790155140572.jpg';
 
 interface TelemetryPodcastPlayerProps {
@@ -198,17 +200,43 @@ export const TelemetryPodcastPlayer: React.FC<TelemetryPodcastPlayerProps> = ({
   const activeLine = podcastData.lines[currentLineIdx] || podcastData.lines[0];
 
   const synthRef = useRef<SpeechSynthesis | null>(null);
+  const [mouthOpen, setMouthOpen] = useState<boolean>(false);
+  const mouthIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       synthRef.current = window.speechSynthesis;
+      const v = window.speechSynthesis.getVoices();
+      if (v && v.length > 0) setVoices(v);
+      window.speechSynthesis.onvoiceschanged = () => {
+        setVoices(window.speechSynthesis.getVoices());
+      };
     }
     return () => {
       if (synthRef.current) {
         synthRef.current.cancel();
       }
+      if (mouthIntervalRef.current) {
+        clearInterval(mouthIntervalRef.current);
+      }
     };
   }, []);
+
+  // Animate mouth flapping during active speech in Telemetry
+  useEffect(() => {
+    if (isPlaying) {
+      mouthIntervalRef.current = setInterval(() => {
+        setMouthOpen(prev => !prev);
+      }, 180);
+    } else {
+      if (mouthIntervalRef.current) clearInterval(mouthIntervalRef.current);
+      setMouthOpen(false);
+    }
+    return () => {
+      if (mouthIntervalRef.current) clearInterval(mouthIntervalRef.current);
+    };
+  }, [isPlaying, currentLineIdx]);
 
   // Stop speech if layer changes
   useEffect(() => {
@@ -221,30 +249,72 @@ export const TelemetryPodcastPlayer: React.FC<TelemetryPodcastPlayerProps> = ({
 
   const speakDialogueLine = (line: PodcastDialogue, onFinished?: () => void) => {
     if (!synthRef.current || isMuted) {
-      if (onFinished) setTimeout(onFinished, 3800 / playbackSpeed);
+      if (onFinished) setTimeout(onFinished, Math.max(3000, line.text.length * 55) / playbackSpeed);
       return;
     }
 
-    synthRef.current.cancel();
-    const utterance = new SpeechSynthesisUtterance(line.text);
-    utterance.rate = playbackSpeed;
+    try {
+      synthRef.current.cancel();
 
-    // Pitch: Marcus deeper (0.88), Elena clearer/higher (1.18)
-    if (line.speaker === 'marcus') {
-      utterance.pitch = 0.88;
-    } else {
-      utterance.pitch = 1.18;
+      if (synthRef.current.paused) {
+        synthRef.current.resume();
+      }
+
+      const utterance = new SpeechSynthesisUtterance(line.text);
+      utterance.rate = playbackSpeed;
+
+      const avail = voices.length > 0 ? voices : synthRef.current.getVoices();
+
+      // Pitch: Marcus deeper (0.85), Elena clearer/higher (1.15)
+      if (line.speaker === 'marcus') {
+        utterance.pitch = 0.85;
+        const maleVoice = avail.find(v => 
+          (v.name.toLowerCase().includes('male') || 
+           v.name.toLowerCase().includes('david') || 
+           v.name.toLowerCase().includes('george') || 
+           v.name.toLowerCase().includes('daniel') ||
+           v.name.toLowerCase().includes('james')) && v.lang.startsWith('en')
+        );
+        if (maleVoice) utterance.voice = maleVoice;
+      } else {
+        utterance.pitch = 1.15;
+        const femaleVoice = avail.find(v => 
+          (v.name.toLowerCase().includes('female') || 
+           v.name.toLowerCase().includes('zira') || 
+           v.name.toLowerCase().includes('samantha') || 
+           v.name.toLowerCase().includes('victoria') ||
+           v.name.toLowerCase().includes('karen') ||
+           v.name.toLowerCase().includes('aria')) && v.lang.startsWith('en')
+        );
+        if (femaleVoice) utterance.voice = femaleVoice;
+      }
+
+      let ended = false;
+      const finish = () => {
+        if (!ended) {
+          ended = true;
+          if (onFinished) onFinished();
+        }
+      };
+
+      utterance.onend = () => finish();
+      utterance.onerror = () => finish();
+
+      // Watchdog
+      const watchdog = setTimeout(() => {
+        if (!ended && isPlaying) finish();
+      }, (line.text.length * 80) / playbackSpeed + 2000);
+
+      const orig = utterance.onend;
+      utterance.onend = (e) => {
+        clearTimeout(watchdog);
+        if (typeof orig === 'function') orig.call(utterance, e);
+      };
+
+      synthRef.current.speak(utterance);
+    } catch {
+      if (onFinished) setTimeout(onFinished, 3500 / playbackSpeed);
     }
-
-    utterance.onend = () => {
-      if (onFinished) onFinished();
-    };
-
-    utterance.onerror = () => {
-      if (onFinished) onFinished();
-    };
-
-    synthRef.current.speak(utterance);
   };
 
   const playSequence = (idx: number) => {
@@ -398,18 +468,23 @@ export const TelemetryPodcastPlayer: React.FC<TelemetryPodcastPlayerProps> = ({
             {/* Host 1: Marcus */}
             <div className={`p-2 rounded-lg border transition-all flex flex-col justify-between ${
               activeLine.speaker === 'marcus' && isPlaying
-                ? 'bg-amber-950/60 border-amber-500 text-amber-200 ring-1 ring-amber-500/50 shadow-md'
+                ? 'bg-amber-950/70 border-amber-500 text-amber-200 ring-2 ring-amber-500/40 shadow-lg animate-avatar-speaking animate-glow-amber'
                 : 'bg-slate-950/60 border-slate-800 text-slate-400'
             }`}>
               <div className="flex items-center gap-2">
-                <div className="relative shrink-0">
+                <div className="relative shrink-0 w-9 h-9 rounded-lg overflow-hidden border border-amber-400 shadow-xs">
                   <img 
-                    src={marcusImg} 
+                    src={(activeLine.speaker === 'marcus' && isPlaying && mouthOpen) ? marcusTalkingImg : marcusImg} 
                     alt="Dr. Marcus Vance" 
-                    className="w-8 h-8 rounded-lg object-cover border border-amber-400 shadow-xs"
+                    className="w-full h-full object-cover"
                   />
                   {activeLine.speaker === 'marcus' && isPlaying && (
                     <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-amber-400 rounded-full animate-ping" />
+                  )}
+                  {activeLine.speaker === 'marcus' && isPlaying && (
+                    <div className="absolute bottom-0 inset-x-0 bg-amber-500/90 text-slate-950 text-[6px] font-black text-center animate-mouth-talking">
+                      TALK
+                    </div>
                   )}
                 </div>
                 <div className="text-left overflow-hidden">
@@ -421,7 +496,7 @@ export const TelemetryPodcastPlayer: React.FC<TelemetryPodcastPlayerProps> = ({
                 <span className="text-slate-500 font-mono">Left Mic</span>
                 {activeLine.speaker === 'marcus' && isPlaying && (
                   <span className="px-1 py-0.2 rounded bg-amber-500 text-slate-950 font-black animate-pulse">
-                    TALKING
+                    SPEAKING
                   </span>
                 )}
               </div>
@@ -430,18 +505,23 @@ export const TelemetryPodcastPlayer: React.FC<TelemetryPodcastPlayerProps> = ({
             {/* Host 2: Elena */}
             <div className={`p-2 rounded-lg border transition-all flex flex-col justify-between ${
               activeLine.speaker === 'elena' && isPlaying
-                ? 'bg-cyan-950/60 border-cyan-500 text-cyan-200 ring-1 ring-cyan-500/50 shadow-md'
+                ? 'bg-cyan-950/70 border-cyan-500 text-cyan-200 ring-2 ring-cyan-500/40 shadow-lg animate-avatar-speaking animate-glow-cyan'
                 : 'bg-slate-950/60 border-slate-800 text-slate-400'
             }`}>
               <div className="flex items-center gap-2">
-                <div className="relative shrink-0">
+                <div className="relative shrink-0 w-9 h-9 rounded-lg overflow-hidden border border-cyan-400 shadow-xs">
                   <img 
-                    src={elenaImg} 
+                    src={(activeLine.speaker === 'elena' && isPlaying && mouthOpen) ? elenaTalkingImg : elenaImg} 
                     alt="Elena Rostova" 
-                    className="w-8 h-8 rounded-lg object-cover border border-cyan-400 shadow-xs"
+                    className="w-full h-full object-cover"
                   />
                   {activeLine.speaker === 'elena' && isPlaying && (
                     <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-cyan-400 rounded-full animate-ping" />
+                  )}
+                  {activeLine.speaker === 'elena' && isPlaying && (
+                    <div className="absolute bottom-0 inset-x-0 bg-cyan-400/90 text-slate-950 text-[6px] font-black text-center animate-mouth-talking">
+                      TALK
+                    </div>
                   )}
                 </div>
                 <div className="text-left overflow-hidden">
@@ -453,7 +533,7 @@ export const TelemetryPodcastPlayer: React.FC<TelemetryPodcastPlayerProps> = ({
                 <span className="text-slate-500 font-mono">Right Mic</span>
                 {activeLine.speaker === 'elena' && isPlaying && (
                   <span className="px-1 py-0.2 rounded bg-cyan-400 text-slate-950 font-black animate-pulse">
-                    TALKING
+                    SPEAKING
                   </span>
                 )}
               </div>

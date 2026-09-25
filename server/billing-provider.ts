@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import Stripe from 'stripe';
 import { PlanId, BillingInterval } from '../src/types/billing';
 
 export interface CheckoutSessionParams {
@@ -28,12 +29,10 @@ export interface BillingProvider {
   parseWebhookEvent(rawBody: string, signature: string): { eventId: string; type: string; data: any };
 }
 
-let stripeClient: any = null;
-function getStripeClient(): any {
+let stripeClient: Stripe | null = null;
+function getStripeClient(): Stripe | null {
   if (!stripeClient && process.env.STRIPE_SECRET_KEY) {
     try {
-      // Lazy load official Stripe SDK
-      const Stripe = require('stripe');
       stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY);
     } catch (e: any) {
       console.warn('[BillingProvider] Official Stripe SDK initialization deferred:', e.message);

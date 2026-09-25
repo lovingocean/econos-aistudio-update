@@ -182,6 +182,20 @@ class EconosApiClient {
     return res;
   }
 
+  public async loginWithFirebase(payload: { email: string; name?: string; uid?: string }): Promise<{ authenticated: boolean; user: User; token: string; currentOrg: Organization; subscription?: Subscription; organizations: Organization[] }> {
+    const res = await this.request<any>('/api/auth/firebase-login', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+    if (res.token) {
+      this.setToken(res.token);
+      if (res.user?.id && res.currentOrg?.id) {
+        this.setContext(res.currentOrg.id, res.user.id);
+      }
+    }
+    return res;
+  }
+
   public async logout(): Promise<void> {
     try {
       await this.request('/api/auth/logout', { method: 'POST' });
@@ -674,6 +688,16 @@ class EconosApiClient {
     params: { matchedReferenceType?: 'INVOICE' | 'EXPENSE' | 'SWEEP'; matchedReferenceId?: string }
   ): Promise<BankTransaction> {
     return this.request(`/api/treasury/transactions/${id}/reconcile`, {
+      method: 'POST',
+      body: JSON.stringify(params)
+    });
+  }
+
+  public async importCsvBankStatement(params: {
+    accountId?: string;
+    csvContent: string;
+  }): Promise<{ success: boolean; importedCount: number; totalDelta: number; transactions: BankTransaction[] }> {
+    return this.request('/api/treasury/import-csv', {
       method: 'POST',
       body: JSON.stringify(params)
     });

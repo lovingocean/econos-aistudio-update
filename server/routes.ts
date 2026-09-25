@@ -253,6 +253,77 @@ apiRouter.post('/auth/signup', (req, res) => {
   });
 });
 
+apiRouter.post('/auth/firebase-login', (req, res) => {
+  const { email, name, uid } = req.body;
+  if (!email) {
+    return res.status(400).json({ error: 'Email is required for Firebase authentication.' });
+  }
+
+  let user = db.getUserByEmail(email);
+  let currentOrg: any = undefined;
+
+  if (!user) {
+    const newUserId = uid ? `usr_fb_${uid}` : `usr_${Date.now()}`;
+    const newOrgId = `org_${Date.now()}`;
+    const newBizId = `biz_${Date.now()}`;
+    const orgTitle = name ? `${name}'s Enterprise Holdings` : `${email.split('@')[0]} Capital`;
+
+    currentOrg = db.createOrganization({
+      id: newOrgId,
+      name: orgTitle,
+      slug: orgTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      isDemo: false,
+      ownerId: newUserId,
+      createdAt: new Date().toISOString(),
+      tier: 'ENTERPRISE'
+    });
+
+    db.createBusiness({
+      id: newBizId,
+      organizationId: newOrgId,
+      name: `${orgTitle} Core Operations`,
+      industry: 'Enterprise Operations & Strategic Capital',
+      currency: 'USD',
+      fiscalYearEnd: '12-31',
+      createdAt: new Date().toISOString()
+    });
+
+    const newSub = db.createOrUpdateSubscription({
+      organizationId: newOrgId,
+      planId: 'enterprise',
+      status: 'ACTIVE',
+      billingInterval: 'monthly',
+      cancelAtPeriodEnd: false,
+      billingCustomerId: `cus_${newOrgId}`
+    });
+
+    user = db.createUser({
+      id: newUserId,
+      email: email.toLowerCase(),
+      name: name || email.split('@')[0],
+      role: 'OWNER',
+      currentOrgId: newOrgId,
+      createdAt: new Date().toISOString(),
+      password: 'FirebaseGoogleOAuthVerified!'
+    });
+  } else {
+    currentOrg = db.getOrganizationById(user.currentOrgId) || db.getOrganizations()[0];
+  }
+
+  const token = db.createSession(user.id);
+  const organizations = db.getOrganizations().filter(o => o.ownerId === user.id || !o.isDemo);
+  const subscription = currentOrg ? db.getSubscriptionByOrg(currentOrg.id) : null;
+
+  res.json({
+    authenticated: true,
+    user,
+    token,
+    currentOrg,
+    subscription,
+    organizations
+  });
+});
+
 apiRouter.post('/auth/logout', (req, res) => {
   const authHeader = req.headers['authorization'] as string;
   if (authHeader) {
@@ -1865,6 +1936,70 @@ apiRouter.post('/treasury/transactions/:id/reconcile', (req, res) => {
   const reconciled = db.reconcileBankTransaction(req.params.id, orgId, matchedReferenceType, matchedReferenceId);
   if (!reconciled) return res.status(404).json({ error: 'Bank transaction not found' });
   res.json(reconciled);
+});
+
+// CSV Bank Statement Import (Parses and adds real transactions to user treasury)
+apiRouter.post('/treasury/import-csv', (req, res) => {
+  const orgId = (req as any).orgId;
+  const { accountId, csvContent } = req.body;
+
+  if (!orgId) return res.status(400).json({ error: 'Organization context required' });
+  if (!csvContent || typeof csvContent !== 'string') {
+    return res.status(400).json({ error: 'CSV file content string is required' });
+  }
+
+  const lines = csvContent.split(/\r?\n/).filter(line => line.trim().length > 0);
+  if (lines.length < 2) {
+    return res.status(400).json({ error: 'CSV must contain a header row and at least one transaction row' });
+  }
+
+  const header = lines[0].toLowerCase().split(',').map(h => h.trim().replace(/^["']|["']$/g, ''));
+  const dateIdx = header.findIndex(h => h.includes('date') || h.includes('time'));
+  const descIdx = header.findIndex(h => h.includes('desc') || h.includes('memo') || h.includes('payee') || h.includes('name'));
+  const amountIdx = header.findIndex(h => h.includes('amount') || h.includes('total') || h.includes('value'));
+
+  const parsedTransactions = [];
+  const targetAccountId = accountId || (db.getTreasuryAccounts(orgId)[0]?.id || 'acc_chase_operating');
+
+  for (let i = 1; i < lines.length; i++) {
+    const row = lines[i].split(',').map(cell => cell.trim().replace(/^["']|["']$/g, ''));
+    if (row.length < 2) continue;
+
+    const dateStr = dateIdx !== -1 && row[dateIdx] ? row[dateIdx] : new Date().toISOString().slice(0, 10);
+    const descStr = descIdx !== -1 && row[descIdx] ? row[descIdx] : (row[1] || `Bank Transaction ${i}`);
+    
+    let rawAmount = amountIdx !== -1 ? row[amountIdx] : row[2];
+    rawAmount = (rawAmount || '0').replace(/[\$,]/g, '').trim();
+    const amountNum = parseFloat(rawAmount);
+
+    if (isNaN(amountNum)) continue;
+
+    const category = amountNum < 0 ? 'VENDOR_PAYMENT' : 'CUSTOMER_PAYMENT';
+    const tx = db.addBankTransaction(orgId, {
+      accountId: targetAccountId,
+      date: dateStr,
+      description: descStr,
+      amount: amountNum,
+      category: category as any,
+      status: 'UNRECONCILED'
+    });
+    parsedTransactions.push(tx);
+  }
+
+  // Update account balance
+  const totalImportDelta = parsedTransactions.reduce((acc, t) => acc + t.amount, 0);
+  const targetAcc = db.getTreasuryAccounts(orgId).find(a => a.id === targetAccountId);
+  if (targetAcc) {
+    targetAcc.currentBalanceUsd = Math.round(targetAcc.currentBalanceUsd + totalImportDelta);
+    targetAcc.unreconciledItemsCount += parsedTransactions.length;
+  }
+
+  res.json({
+    success: true,
+    importedCount: parsedTransactions.length,
+    totalDelta: totalImportDelta,
+    transactions: parsedTransactions
+  });
 });
 
 // =========================================================================

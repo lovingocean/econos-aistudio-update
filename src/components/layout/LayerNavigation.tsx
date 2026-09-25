@@ -112,6 +112,15 @@ export const LayerNavigation: React.FC<LayerNavigationProps> = ({
 
   const coreLayers = [
     {
+      id: 'OMNIFIN' as AppLayer,
+      name: '⚡ OMNIFIN Global Layer',
+      subtitle: 'State + Intelligence + Clearing + Settlement',
+      question: '15 Asset Classes • 14 Surfaces • Proof-Carrying Rail',
+      icon: Globe2,
+      color: 'sky',
+      badge: 'GLOBAL OS'
+    },
+    {
       id: 'SOVEREIGN_COMMAND' as AppLayer,
       name: 'Ω. Sovereign Command',
       subtitle: 'Concept C 4-Quadrant Institutional Mission Architecture',

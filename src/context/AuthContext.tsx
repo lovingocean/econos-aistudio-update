@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { User, Organization, Business, UserRole, Subscription, PricingPlan, PlanEntitlements, PlanId, BillingInterval } from '../types/econos';
 import { api } from '../api/client';
+import { auth, googleProvider, signInWithPopup } from '../lib/firebase';
 
 // Sovereign Admin baseline default for Meek Ifti
 const DEFAULT_ADMIN_USER: User = {
@@ -88,6 +89,7 @@ interface AuthContextType {
   login: (email: string, password?: string) => Promise<void>;
   loginAsMeek: () => Promise<void>;
   loginAsDemo: () => Promise<void>;
+  loginWithGoogle: () => Promise<void>;
   signup: (data: { name: string; email: string; password?: string; organizationName?: string; businessName?: string; tier?: string }) => Promise<void>;
   logout: () => Promise<void>;
   switchOrganization: (orgId: string) => Promise<void>;
@@ -387,6 +389,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const loginWithGoogle = async () => {
+    setIsLoading(true);
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const fbUser = result.user;
+      if (!fbUser.email) {
+        throw new Error('No email found in Google account profile.');
+      }
+      const res = await api.loginWithFirebase({
+        email: fbUser.email,
+        name: fbUser.displayName || undefined,
+        uid: fbUser.uid
+      });
+      if (res.user) {
+        setUser(res.user);
+        if (res.organizations) setOrganizations(res.organizations);
+        if (res.currentOrg) {
+          setCurrentOrg(res.currentOrg);
+          api.setContext(res.currentOrg.id, res.user.id);
+        }
+        if (res.subscription) setSubscription(res.subscription);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('econos_user_cache', JSON.stringify(res.user));
+        }
+        await loadData();
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const signup = async (data: { name: string; email: string; password?: string; organizationName?: string; businessName?: string; tier?: string }) => {
     setIsLoading(true);
     try {
@@ -600,6 +633,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         login,
         loginAsMeek,
         loginAsDemo,
+        loginWithGoogle,
         signup,
         logout,
         switchOrganization,

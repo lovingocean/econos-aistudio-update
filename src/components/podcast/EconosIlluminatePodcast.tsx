@@ -23,11 +23,14 @@ import {
   Send,
   Zap,
   Check,
-  Copy
+  Copy,
+  Activity
 } from 'lucide-react';
 
 import marcusImg from '../../assets/images/marcus_vance_host_1790155174205.jpg';
+import marcusTalkingImg from '../../assets/images/marcus_vance_talking_1790156795899.jpg';
 import elenaImg from '../../assets/images/elena_rostova_host_1790155197061.jpg';
+import elenaTalkingImg from '../../assets/images/elena_rostova_talking_1790156817395.jpg';
 import studioDeskImg from '../../assets/images/podcast_studio_desk_1790155140572.jpg';
 
 export interface DialogueLine {
@@ -238,6 +241,88 @@ const EPISODES: PodcastEpisode[] = [
         focusTopic: 'True Enterprise Sovereignty'
       }
     ]
+  },
+  {
+    id: 'ep-4',
+    title: 'The Master Tour: All ECONOS Features & 10 Enterprise Problem Solvers',
+    duration: '7:40',
+    season: 1,
+    episode: 4,
+    description: 'Dr. Marcus Vance and Elena Rostova conduct an exhaustive master walkthrough of all ECONOS features: 100 System Layers, 10 Enterprise Problem Solvers, Sovereign Command, Wealth & Trust Engines, and AI Autonomous Execution.',
+    reelScript: {
+      hook: "What actually happens when you combine 100 financial layers with 10 autonomous enterprise problem solvers? Complete financial sovereignty.",
+      body: "Marcus and Elena unpack the complete ECONOS operating system: from lead discovery swarms and zero-knowledge audits to post-quantum collateral enclaves.",
+      callToAction: "Explore all 100 features inside the ECONOS workspace today.",
+      suggestedTags: ['#ECONOSFeatures', '#EnterpriseOS', '#FinTechDisruption', '#AutonomousFinance', '#SolvencyFirst']
+    },
+    dialogue: [
+      {
+        id: 'd-401',
+        speaker: 'marcus',
+        speakerName: 'Dr. Marcus Vance',
+        role: 'Chief Macro Systems Architect',
+        avatar: 'MV',
+        color: 'from-amber-500 to-amber-700',
+        text: "Welcome back! In this special session, Elena and I are discussing every major feature inside ECONOS so founders, operators, and institutional treasurers understand the complete powerhouse at their fingertips.",
+        timestamp: '00:04',
+        focusTopic: 'Master Tour: Full ECONOS Capabilities'
+      },
+      {
+        id: 'd-402',
+        speaker: 'elena',
+        speakerName: 'Elena Rostova',
+        role: 'AI & Autonomous Governance Lead',
+        avatar: 'ER',
+        color: 'from-cyan-500 to-blue-600',
+        text: "Let's start with the Core Triad: Business Operations, Wealth Management, and Trust Architecture. Traditional software separates your company's P&L from your family office and trusts. ECONOS synthesizes all three in real time so capital flows tax-efficiently without manual friction.",
+        timestamp: '00:22',
+        focusTopic: 'Core Triad: Business, Wealth & Trust'
+      },
+      {
+        id: 'd-403',
+        speaker: 'marcus',
+        speakerName: 'Dr. Marcus Vance',
+        role: 'Chief Macro Systems Architect',
+        avatar: 'MV',
+        color: 'from-amber-500 to-amber-700',
+        text: "And sitting right above that are the 10 Enterprise Problem Solvers! Each one attacks a massive corporate bottleneck: automated lead discovery, autonomous AI voice outreach, real-time Section 41 R&D tax credit extraction, crisis liquidity war rooms, and cross-border clearing.",
+        timestamp: '00:44',
+        focusTopic: '10 Enterprise Problem Solvers'
+      },
+      {
+        id: 'd-404',
+        speaker: 'elena',
+        speakerName: 'Elena Rostova',
+        role: 'AI & Autonomous Governance Lead',
+        avatar: 'ER',
+        color: 'from-cyan-500 to-blue-600',
+        text: "Then we have the Sovereign Command Center: four distinct risk quadrants that monitor balance sheets, cryptographic collateral, and algorithmic hedges 24/7. When volatility strikes, Quadrant 2 isolates contagion before human analysts even finish refreshing their feeds.",
+        timestamp: '01:06',
+        focusTopic: 'Sovereign Command Center & 4 Quadrants'
+      },
+      {
+        id: 'd-405',
+        speaker: 'marcus',
+        speakerName: 'Dr. Marcus Vance',
+        role: 'Chief Macro Systems Architect',
+        avatar: 'MV',
+        color: 'from-amber-500 to-amber-700',
+        text: "And for multi-tenant organizations, the new Organization Switcher lets you seamlessly spin up new corporate entities or family offices with isolated role-based permissions, custom tier entitlements, and instant baseline seed resets.",
+        timestamp: '01:28',
+        focusTopic: 'Multi-Tenant RBAC & Organization Architecture'
+      },
+      {
+        id: 'd-406',
+        speaker: 'elena',
+        speakerName: 'Elena Rostova',
+        role: 'AI & Autonomous Governance Lead',
+        avatar: 'ER',
+        color: 'from-cyan-500 to-blue-600',
+        text: "Whether you are a founder running a single company or a multi-billion dollar sovereign treasury, ECONOS gives you mathematical certainty, zero counterparty drag, and complete autonomous execution across all 100 system layers!",
+        timestamp: '01:50',
+        focusTopic: 'Deterministic Execution Across 100 Layers'
+      }
+    ]
   }
 ];
 
@@ -276,12 +361,73 @@ export const EconosIlluminatePodcast: React.FC<EconosIlluminatePodcastProps> = (
   // Speech synthesis ref
   const synthRef = useRef<SpeechSynthesis | null>(null);
   const reelTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [mouthOpen, setMouthOpen] = useState<boolean>(false);
+  const mouthIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const audioCtxRef = useRef<AudioContext | null>(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       synthRef.current = window.speechSynthesis;
+
+      const updateVoices = () => {
+        const v = window.speechSynthesis.getVoices();
+        if (v && v.length > 0) {
+          setVoices(v);
+        }
+      };
+
+      updateVoices();
+      if (window.speechSynthesis.onvoiceschanged !== undefined) {
+        window.speechSynthesis.onvoiceschanged = updateVoices;
+      }
     }
+
+    try {
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      if (AudioCtx) {
+        audioCtxRef.current = new AudioCtx();
+      }
+    } catch (_) {}
   }, []);
+
+  // Subtle studio mic chime when speaker starts
+  const playMicTone = (speaker: 'marcus' | 'elena') => {
+    try {
+      if (!audioCtxRef.current) return;
+      if (audioCtxRef.current.state === 'suspended') {
+        audioCtxRef.current.resume();
+      }
+      const ctx = audioCtxRef.current;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = speaker === 'marcus' ? 'triangle' : 'sine';
+      osc.frequency.setValueAtTime(speaker === 'marcus' ? 160 : 320, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(speaker === 'marcus' ? 240 : 480, ctx.currentTime + 0.1);
+      gain.gain.setValueAtTime(0.03, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.13);
+    } catch (_) {}
+  };
+
+  // Animate mouth flapping during active speech
+  useEffect(() => {
+    if (isPlaying) {
+      mouthIntervalRef.current = setInterval(() => {
+        setMouthOpen(prev => !prev);
+      }, 150);
+    } else {
+      if (mouthIntervalRef.current) clearInterval(mouthIntervalRef.current);
+      setMouthOpen(false);
+    }
+
+    return () => {
+      if (mouthIntervalRef.current) clearInterval(mouthIntervalRef.current);
+    };
+  }, [isPlaying, currentLineIndex]);
 
   // Stop speech when component unmounts
   useEffect(() => {
@@ -292,35 +438,97 @@ export const EconosIlluminatePodcast: React.FC<EconosIlluminatePodcastProps> = (
       if (reelTimerRef.current) {
         clearInterval(reelTimerRef.current);
       }
+      if (mouthIntervalRef.current) {
+        clearInterval(mouthIntervalRef.current);
+      }
     };
   }, []);
 
   const speakLine = (line: DialogueLine, onEnd?: () => void) => {
-    if (!synthRef.current || isMuted) {
-      if (onEnd) setTimeout(onEnd, 3500 / audioSpeed);
+    if (isMuted) {
+      if (onEnd) setTimeout(onEnd, Math.max(3000, line.text.length * 55) / audioSpeed);
       return;
     }
 
-    synthRef.current.cancel();
-    const utterance = new SpeechSynthesisUtterance(line.text);
-    utterance.rate = audioSpeed;
-    
-    // Choose voice characteristics: Marcus deeper/lower pitch, Elena slightly higher pitch
-    if (line.speaker === 'marcus') {
-      utterance.pitch = 0.85;
-    } else {
-      utterance.pitch = 1.15;
+    playMicTone(line.speaker);
+
+    if (!synthRef.current) {
+      // Fallback timer when muted or speech synthesis unavailable
+      if (onEnd) setTimeout(onEnd, Math.max(3000, line.text.length * 55) / audioSpeed);
+      return;
     }
 
-    utterance.onend = () => {
-      if (onEnd) onEnd();
-    };
+    try {
+      synthRef.current.cancel(); // Clear any queued utterances
 
-    utterance.onerror = () => {
-      if (onEnd) onEnd();
-    };
+      // Resume speech synthesis in case browser paused it
+      if (synthRef.current.paused) {
+        synthRef.current.resume();
+      }
 
-    synthRef.current.speak(utterance);
+      const utterance = new SpeechSynthesisUtterance(line.text);
+      utterance.rate = audioSpeed;
+
+      // Select distinct realistic voices for Marcus (male) and Elena (female)
+      const availableVoices = voices.length > 0 ? voices : synthRef.current.getVoices();
+      
+      if (line.speaker === 'marcus') {
+        utterance.pitch = 0.85; // Deeper male authority tone
+        // Try finding a male English voice
+        const maleVoice = availableVoices.find(v => 
+          (v.name.toLowerCase().includes('male') || 
+           v.name.toLowerCase().includes('david') || 
+           v.name.toLowerCase().includes('george') || 
+           v.name.toLowerCase().includes('daniel') ||
+           v.name.toLowerCase().includes('james') ||
+           v.name.toLowerCase().includes('mark') ||
+           v.name.toLowerCase().includes('guy')) && v.lang.startsWith('en')
+        );
+        if (maleVoice) utterance.voice = maleVoice;
+      } else {
+        utterance.pitch = 1.15; // Higher clear female tone
+        // Try finding a female English voice
+        const femaleVoice = availableVoices.find(v => 
+          (v.name.toLowerCase().includes('female') || 
+           v.name.toLowerCase().includes('zira') || 
+           v.name.toLowerCase().includes('samantha') || 
+           v.name.toLowerCase().includes('victoria') ||
+           v.name.toLowerCase().includes('karen') ||
+           v.name.toLowerCase().includes('aria') ||
+           v.name.toLowerCase().includes('jenny')) && v.lang.startsWith('en')
+        );
+        if (femaleVoice) utterance.voice = femaleVoice;
+      }
+
+      let ended = false;
+      const finishLine = () => {
+        if (!ended) {
+          ended = true;
+          if (onEnd) onEnd();
+        }
+      };
+
+      utterance.onend = () => finishLine();
+      utterance.onerror = () => finishLine();
+
+      // Safety watchdog: ensure playback advances even if audio stalls
+      const maxSpeechMs = (line.text.length * 80) / audioSpeed + 2000;
+      const watchdog = setTimeout(() => {
+        if (!ended && isPlaying) {
+          finishLine();
+        }
+      }, maxSpeechMs);
+
+      const origOnEnd = utterance.onend;
+      utterance.onend = (e) => {
+        clearTimeout(watchdog);
+        if (typeof origOnEnd === 'function') origOnEnd.call(utterance, e);
+      };
+
+      synthRef.current.speak(utterance);
+    } catch {
+      if (onEnd) setTimeout(onEnd, 3500 / audioSpeed);
+    }
   };
 
   const handlePlayToggle = () => {
@@ -639,30 +847,54 @@ export const EconosIlluminatePodcast: React.FC<EconosIlluminatePodcastProps> = (
                   {/* Left Co-Host: Dr. Marcus Vance */}
                   <div className={`absolute bottom-3 left-3 sm:left-6 z-20 p-2 sm:p-3 rounded-2xl backdrop-blur-md transition-all duration-300 max-w-[210px] sm:max-w-[260px] border ${
                     currentSpeaker === 'marcus' && isPlaying
-                      ? 'bg-amber-950/90 border-amber-400 shadow-lg shadow-amber-500/30 ring-2 ring-amber-400/50 scale-102'
+                      ? 'bg-amber-950/90 border-amber-400 shadow-xl shadow-amber-500/40 ring-2 ring-amber-400/50 scale-105 animate-marcus-speaking animate-glow-amber'
                       : 'bg-black/75 border-slate-700/80 opacity-85'
                   }`}>
                     <div className="flex items-center gap-2.5">
                       <div className="relative">
-                        <img 
-                          src={marcusImg} 
-                          alt="Dr. Marcus Vance" 
-                          className="w-11 h-11 sm:w-13 sm:h-13 rounded-xl object-cover border-2 border-amber-400 shadow-md"
-                        />
+                        {/* Dynamic Talking Avatar Swap & Head Movement */}
+                        <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden border-2 border-amber-400 shadow-md relative ${
+                          currentSpeaker === 'marcus' && isPlaying ? 'ring-2 ring-amber-400 animate-pulse' : ''
+                        }`}>
+                          <img 
+                            src={(currentSpeaker === 'marcus' && isPlaying && mouthOpen) ? marcusTalkingImg : marcusImg} 
+                            alt="Dr. Marcus Vance" 
+                            className={`w-full h-full object-cover transition-transform duration-150 ${
+                              currentSpeaker === 'marcus' && isPlaying ? 'scale-110' : 'scale-100'
+                            }`}
+                          />
+                          {/* Animated Lip Overlay Indicator */}
+                          {currentSpeaker === 'marcus' && isPlaying && (
+                            <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 px-1.5 py-0.2 rounded-full bg-amber-400 text-[7px] text-slate-950 font-black animate-mouth-talking shadow-sm">
+                              SPEAKING
+                            </div>
+                          )}
+                        </div>
+
                         {currentSpeaker === 'marcus' && isPlaying && (
                           <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-amber-400 rounded-full animate-ping" />
                         )}
-                        <span className="absolute bottom-0 right-0 px-1 py-0.2 rounded bg-amber-500 text-slate-950 text-[8px] font-black">
+                        <span className="absolute bottom-0 right-0 px-1 py-0.2 rounded bg-amber-500 text-slate-950 text-[8px] font-black shadow-xs">
                           HOST
                         </span>
                       </div>
                       <div className="text-left">
                         <div className="flex items-center gap-1">
                           <span className="font-extrabold text-xs sm:text-sm text-white">Dr. Marcus Vance</span>
-                          <Mic className={`w-3 h-3 ${currentSpeaker === 'marcus' && isPlaying ? 'text-amber-400 animate-bounce' : 'text-slate-500'}`} />
+                          <Mic className={`w-3.5 h-3.5 ${currentSpeaker === 'marcus' && isPlaying ? 'text-amber-400 animate-bounce' : 'text-slate-500'}`} />
                         </div>
-                        <div className="text-[10px] text-amber-300/90 font-mono">Macro Architect</div>
-                        <div className="text-[9px] text-slate-300">Desk Position: Left Mic</div>
+                        <div className="text-[10px] text-amber-300 font-mono flex items-center gap-1">
+                          <span>Macro Architect</span>
+                          {currentSpeaker === 'marcus' && isPlaying && (
+                            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
+                          )}
+                        </div>
+                        <div className="text-[9px] text-slate-300 flex items-center gap-1">
+                          <span>Desk Position: Left Mic</span>
+                          {currentSpeaker === 'marcus' && isPlaying && (
+                            <span className="text-[8px] px-1 rounded bg-amber-400/20 text-amber-300 font-bold">Active</span>
+                          )}
+                        </div>
                       </div>
                     </div>
 
@@ -672,8 +904,8 @@ export const EconosIlluminatePodcast: React.FC<EconosIlluminatePodcastProps> = (
                         [40, 80, 55, 100, 65, 85, 45, 95, 70, 50, 85, 60].map((h, i) => (
                           <div
                             key={i}
-                            className="flex-1 bg-amber-400 rounded-full transition-all duration-150"
-                            style={{ height: `${h}%` }}
+                            className="flex-1 bg-amber-400 rounded-full transition-all duration-100"
+                            style={{ height: `${Math.max(25, (h * (mouthOpen ? 1 : 0.6)))}%` }}
                           />
                         ))
                       ) : (
@@ -685,30 +917,54 @@ export const EconosIlluminatePodcast: React.FC<EconosIlluminatePodcastProps> = (
                   {/* Right Co-Host: Elena Rostova */}
                   <div className={`absolute bottom-3 right-3 sm:right-6 z-20 p-2 sm:p-3 rounded-2xl backdrop-blur-md transition-all duration-300 max-w-[210px] sm:max-w-[260px] border ${
                     currentSpeaker === 'elena' && isPlaying
-                      ? 'bg-cyan-950/90 border-cyan-400 shadow-lg shadow-cyan-500/30 ring-2 ring-cyan-400/50 scale-102'
+                      ? 'bg-cyan-950/90 border-cyan-400 shadow-xl shadow-cyan-500/40 ring-2 ring-cyan-400/50 scale-105 animate-elena-speaking animate-glow-cyan'
                       : 'bg-black/75 border-slate-700/80 opacity-85'
                   }`}>
                     <div className="flex items-center gap-2.5">
                       <div className="relative">
-                        <img 
-                          src={elenaImg} 
-                          alt="Elena Rostova" 
-                          className="w-11 h-11 sm:w-13 sm:h-13 rounded-xl object-cover border-2 border-cyan-400 shadow-md"
-                        />
+                        {/* Dynamic Talking Avatar Swap & Head Movement */}
+                        <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden border-2 border-cyan-400 shadow-md relative ${
+                          currentSpeaker === 'elena' && isPlaying ? 'ring-2 ring-cyan-400 animate-pulse' : ''
+                        }`}>
+                          <img 
+                            src={(currentSpeaker === 'elena' && isPlaying && mouthOpen) ? elenaTalkingImg : elenaImg} 
+                            alt="Elena Rostova" 
+                            className={`w-full h-full object-cover transition-transform duration-150 ${
+                              currentSpeaker === 'elena' && isPlaying ? 'scale-110' : 'scale-100'
+                            }`}
+                          />
+                          {/* Animated Lip Overlay Indicator */}
+                          {currentSpeaker === 'elena' && isPlaying && (
+                            <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 px-1.5 py-0.2 rounded-full bg-cyan-400 text-[7px] text-slate-950 font-black animate-mouth-talking shadow-sm">
+                              SPEAKING
+                            </div>
+                          )}
+                        </div>
+
                         {currentSpeaker === 'elena' && isPlaying && (
                           <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-cyan-400 rounded-full animate-ping" />
                         )}
-                        <span className="absolute bottom-0 right-0 px-1 py-0.2 rounded bg-cyan-400 text-slate-950 text-[8px] font-black">
+                        <span className="absolute bottom-0 right-0 px-1 py-0.2 rounded bg-cyan-400 text-slate-950 text-[8px] font-black shadow-xs">
                           HOST
                         </span>
                       </div>
                       <div className="text-left">
                         <div className="flex items-center gap-1">
                           <span className="font-extrabold text-xs sm:text-sm text-white">Elena Rostova</span>
-                          <Mic className={`w-3 h-3 ${currentSpeaker === 'elena' && isPlaying ? 'text-cyan-400 animate-bounce' : 'text-slate-500'}`} />
+                          <Mic className={`w-3.5 h-3.5 ${currentSpeaker === 'elena' && isPlaying ? 'text-cyan-400 animate-bounce' : 'text-slate-500'}`} />
                         </div>
-                        <div className="text-[10px] text-cyan-300/90 font-mono">Autonomous AI Lead</div>
-                        <div className="text-[9px] text-slate-300">Desk Position: Right Mic</div>
+                        <div className="text-[10px] text-cyan-300 font-mono flex items-center gap-1">
+                          <span>Autonomous AI Lead</span>
+                          {currentSpeaker === 'elena' && isPlaying && (
+                            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
+                          )}
+                        </div>
+                        <div className="text-[9px] text-slate-300 flex items-center gap-1">
+                          <span>Desk Position: Right Mic</span>
+                          {currentSpeaker === 'elena' && isPlaying && (
+                            <span className="text-[8px] px-1 rounded bg-cyan-400/20 text-cyan-300 font-bold">Active</span>
+                          )}
+                        </div>
                       </div>
                     </div>
 
@@ -718,8 +974,8 @@ export const EconosIlluminatePodcast: React.FC<EconosIlluminatePodcastProps> = (
                         [50, 90, 60, 95, 45, 80, 75, 100, 65, 80, 50, 70].map((h, i) => (
                           <div
                             key={i}
-                            className="flex-1 bg-cyan-400 rounded-full transition-all duration-150"
-                            style={{ height: `${h}%` }}
+                            className="flex-1 bg-cyan-400 rounded-full transition-all duration-100"
+                            style={{ height: `${Math.max(25, (h * (mouthOpen ? 1 : 0.6)))}%` }}
                           />
                         ))
                       ) : (
@@ -954,17 +1210,46 @@ export const EconosIlluminatePodcast: React.FC<EconosIlluminatePodcastProps> = (
                 ) : (
                   <>
                     <div className="relative w-16 h-16 mx-auto rounded-full bg-gradient-to-tr from-amber-500 via-rose-500 to-cyan-500 p-0.5 shadow-lg shadow-rose-500/30">
-                      <div className="w-full h-full bg-slate-950 rounded-full flex items-center justify-center text-xs font-bold text-white relative">
+                      <div className="w-full h-full bg-slate-950 rounded-full flex items-center justify-center text-xs font-bold text-white relative overflow-hidden">
                         {isReelPlaying ? (
-                          <div className="flex items-end gap-0.5 h-6">
-                            <span className="w-1 bg-amber-400 animate-pulse h-4 rounded-full" />
-                            <span className="w-1 bg-rose-400 animate-pulse h-6 rounded-full" />
-                            <span className="w-1 bg-cyan-400 animate-pulse h-3 rounded-full" />
-                            <span className="w-1 bg-emerald-400 animate-pulse h-5 rounded-full" />
-                          </div>
+                          <img 
+                            src={mouthOpen ? marcusTalkingImg : marcusImg} 
+                            alt="Host" 
+                            className="w-full h-full object-cover animate-avatar-speaking"
+                          />
                         ) : (
-                          <span>9:16</span>
+                          <div className="flex items-center justify-center font-mono text-[10px] text-amber-300">
+                            9:16
+                          </div>
                         )}
+                      </div>
+                    </div>
+
+                    {/* Both Hosts in Reel Avatar Bar */}
+                    <div className="flex items-center justify-center gap-2">
+                      <div className={`flex items-center gap-1.5 px-2 py-1 rounded-full border text-[9px] ${
+                        isReelPlaying 
+                          ? 'bg-amber-950/80 border-amber-400 text-amber-200 animate-glow-amber' 
+                          : 'bg-slate-900 border-slate-700 text-slate-400'
+                      }`}>
+                        <img 
+                          src={(isReelPlaying && mouthOpen) ? marcusTalkingImg : marcusImg} 
+                          alt="Marcus" 
+                          className="w-4 h-4 rounded-full object-cover" 
+                        />
+                        <span>Marcus</span>
+                      </div>
+                      <div className={`flex items-center gap-1.5 px-2 py-1 rounded-full border text-[9px] ${
+                        isReelPlaying 
+                          ? 'bg-cyan-950/80 border-cyan-400 text-cyan-200 animate-glow-cyan' 
+                          : 'bg-slate-900 border-slate-700 text-slate-400'
+                      }`}>
+                        <img 
+                          src={(isReelPlaying && !mouthOpen) ? elenaTalkingImg : elenaImg} 
+                          alt="Elena" 
+                          className="w-4 h-4 rounded-full object-cover" 
+                        />
+                        <span>Elena</span>
                       </div>
                     </div>
 

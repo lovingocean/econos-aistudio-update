@@ -49,6 +49,7 @@ import { GlobalLayersProgressBar } from './components/layout/GlobalLayersProgres
 import { LayerActivityHeatmap } from './components/layout/LayerActivityHeatmap';
 import { SystemTelemetryFeed } from './components/telemetry/SystemTelemetryFeed';
 import { EconosIlluminatePodcast } from './components/podcast/EconosIlluminatePodcast';
+import { OmnifinWorkspace } from './components/omnifin/OmnifinWorkspace';
 import { AppLayer } from './types/econos';
 import { 
   Building2, 
@@ -66,7 +67,7 @@ import {
 import { ErrorBoundary } from './components/layout/ErrorBoundary';
 
 const AppContent: React.FC = () => {
-  const { user, isLoading, isAuthenticated } = useAuth();
+  const { user, isLoading, isAuthenticated, openOnboarding, setOpenOnboarding } = useAuth();
   const [currentLayer, setCurrentLayer] = useState<AppLayer>('BUSINESS');
   const [isTestModalOpen, setIsTestModalOpen] = useState(false);
   const [isOnboardingModalOpen, setIsOnboardingModalOpen] = useState(false);
@@ -77,6 +78,18 @@ const AppContent: React.FC = () => {
   const [isRoadmapOpen, setIsRoadmapOpen] = useState(false);
   const [isSolutionsOpen, setIsSolutionsOpen] = useState(false);
   const [isPodcastModalOpen, setIsPodcastModalOpen] = useState(false);
+
+  // Sync AuthContext openOnboarding state with local onboarding modal state
+  React.useEffect(() => {
+    if (openOnboarding) {
+      setIsOnboardingModalOpen(true);
+    }
+  }, [openOnboarding]);
+
+  const handleCloseOnboarding = () => {
+    setIsOnboardingModalOpen(false);
+    setOpenOnboarding(false);
+  };
 
   React.useEffect(() => {
     const handler = (e: any) => {
@@ -120,12 +133,13 @@ const AppContent: React.FC = () => {
         onOpenRoadmap={() => setIsRoadmapOpen(true)}
         onOpenSolutions={() => setIsSolutionsOpen(true)}
         onOpenPodcast={() => setIsPodcastModalOpen(true)}
+        onOpenOnboarding={() => setIsOnboardingModalOpen(true)}
         currentLayer={currentLayer}
         onSelectLayer={setCurrentLayer}
       />
 
       {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+      <main className="flex-1 max-w-[1720px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
         {/* Layer Selector Bar */}
         <LayerNavigation
           currentLayer={currentLayer}
@@ -135,6 +149,10 @@ const AppContent: React.FC = () => {
         {/* Dynamic Layer Content */}
         <div className="transition-all duration-200">
           <ErrorBoundary key={currentLayer} fallbackTitle={`Layer Shield (${currentLayer})`} onReset={() => setCurrentLayer('BUSINESS')}>
+          {currentLayer === 'OMNIFIN' && (
+            <OmnifinWorkspace />
+          )}
+
           {currentLayer === 'SOVEREIGN_COMMAND' && (
             <SovereignInstitutionalDashboard onSelectLayer={setCurrentLayer} />
           )}
@@ -307,7 +325,7 @@ const AppContent: React.FC = () => {
 
       {/* Footer */}
       <footer className="border-t border-slate-200/80 bg-white/80 backdrop-blur-sm py-6 px-4 sm:px-6 lg:px-8 text-xs font-mono text-slate-500">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="max-w-[1720px] w-full mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
             <span className="font-bold text-slate-800">ECONOS Sovereign Operating Core</span>
@@ -382,7 +400,7 @@ const AppContent: React.FC = () => {
       {/* Onboarding / Tenant Setup Modal */}
       <OnboardingModal
         isOpen={isOnboardingModalOpen}
-        onClose={() => setIsOnboardingModalOpen(false)}
+        onClose={handleCloseOnboarding}
       />
 
       {/* Pricing & Commercial Model Modal */}

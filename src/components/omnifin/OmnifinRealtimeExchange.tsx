@@ -42,7 +42,9 @@ import {
   ArrowUpRight,
   Download,
   CreditCard,
-  Coins
+  Coins,
+  Brain,
+  Crown
 } from 'lucide-react';
 import {
   MarketInstrument,
@@ -64,6 +66,10 @@ import {
   Web3WalletProvider
 } from '../../types/omnifinExchange';
 import { OmnifinWalletFunding } from './OmnifinWalletFunding';
+import { AiCryptoIntelligenceWorkspace } from './AiCryptoIntelligenceWorkspace';
+import { EnterprisePrimeDesk } from './EnterprisePrimeDesk';
+import { CommercialAlphaStore } from './CommercialAlphaStore';
+import { OmniTokenomicsHub } from './OmniTokenomicsHub';
 import {
   INITIAL_EXCHANGE_INSTRUMENTS,
   INITIAL_ORDER_BOOK,
@@ -75,11 +81,19 @@ import {
   INITIAL_SOLVENCY_AUDIT,
   INITIAL_DETERMINISTIC_REPLAY_LOG
 } from '../../data/omnifinExchangeData';
+import { cryptoMarketService } from '../../services/cryptoService';
+import { web3WalletManager } from '../../services/web3WalletService';
 
 export const OmnifinRealtimeExchange: React.FC = () => {
   // Active selected instrument
   const [instruments, setInstruments] = useState<MarketInstrument[]>(INITIAL_EXCHANGE_INSTRUMENTS);
   const [selectedSymbol, setSelectedSymbol] = useState<string>('BTC-PERP');
+
+  // Real-Time Live Feed Metadata
+  const [feedSource, setFeedSource] = useState<string>('Binance Global Liquidity Feed');
+  const [feedLatencyMs, setFeedLatencyMs] = useState<number>(85);
+  const [lastLiveUpdate, setLastLiveUpdate] = useState<string>('Connecting...');
+  const [walletNotice, setWalletNotice] = useState<{ type: 'success' | 'error' | 'info'; message: string } | null>(null);
 
   // Order Book & Trade State
   const [orderBook, setOrderBook] = useState<RealtimeOrderBook>(INITIAL_ORDER_BOOK);
@@ -94,52 +108,135 @@ export const OmnifinRealtimeExchange: React.FC = () => {
   // Web3 Wallet & Exchange Deposit State
   const [showFundingModal, setShowFundingModal] = useState<boolean>(false);
   const [walletState, setWalletState] = useState<Web3WalletState>({
-    isConnected: true,
-    address: '0x71C8349281aE4aC9128490B82019482901a84b29',
-    walletProvider: 'metamask',
+    isConnected: false,
+    address: null,
+    walletProvider: null,
     network: 'arbitrum',
     chainId: 42161,
     walletBalances: {
-      usdo: 38400,
-      btc: 1.45,
-      eth: 12.8,
-      sol: 85.0
+      usdo: 0,
+      btc: 0,
+      eth: 0,
+      sol: 0
     },
-    isSignatureVerified: true
+    isSignatureVerified: false
   });
+
+  // Check if browser wallet is already authorized on mount & listen to state changes
+  useEffect(() => {
+    web3WalletManager.getConnectedAccount().then(acc => {
+      if (acc) {
+        web3WalletManager.connect('metamask').then(res => {
+          if (res.success && res.address) {
+            setWalletState(prev => ({
+              ...prev,
+              isConnected: true,
+              address: res.address!,
+              walletProvider: 'metamask',
+              network: res.network || prev.network,
+              chainId: res.chainId || prev.chainId,
+              walletBalances: {
+                ...prev.walletBalances,
+                eth: res.ethBalance || 0
+              },
+              isSignatureVerified: true
+            }));
+          }
+        });
+      }
+    });
+
+    web3WalletManager.setStateCallback(updated => {
+      setWalletState(prev => ({ ...prev, ...updated }));
+    });
+  }, []);
 
   // Active Terminal View / Tab
   const [activeTerminalTab, setActiveTerminalTab] = useState<
-    'TRADING' | 'WALLET_FUNDING' | 'ROUTING' | 'MARKET_MAKING' | 'SURVEILLANCE' | 'STRATEGIES' | 'CROSS_CHAIN_BANKING' | 'SOLVENCY' | 'REPLAY'
+    'TRADING' | 'AI_INTELLIGENCE' | 'PRIME_DESK' | 'VIP_STORE' | 'TOKENOMICS' | 'WALLET_FUNDING' | 'ROUTING' | 'MARKET_MAKING' | 'SURVEILLANCE' | 'STRATEGIES' | 'CROSS_CHAIN_BANKING' | 'SOLVENCY' | 'REPLAY'
   >('TRADING');
   const [selectedAssetFilter, setSelectedAssetFilter] = useState<string>('ALL');
 
-  // Web3 Wallet Handlers
+  // Real Web3 Wallet Handlers
   const handleConnectWallet = async (provider: Web3WalletProvider) => {
-    try {
-      if (typeof window !== 'undefined' && (window as any).ethereum && provider === 'metamask') {
-        const accounts = await (window as any).ethereum.request({ method: 'eth_requestAccounts' });
-        if (accounts && accounts[0]) {
-          setWalletState(prev => ({
-            ...prev,
-            isConnected: true,
-            address: accounts[0],
-            walletProvider: provider
-          }));
-          return;
-        }
-      }
-    } catch (err) {
-      console.warn('Web3 real connect fallback to simulated institutional provider', err);
+    setWalletNotice(null);
+    const result = await web3WalletManager.connect(provider);
+    if (result.success && result.address) {
+      setWalletState(prev => ({
+        ...prev,
+        isConnected: true,
+        address: result.address!,
+        walletProvider: provider,
+        network: result.network || prev.network,
+        chainId: result.chainId || prev.chainId,
+        walletBalances: {
+          ...prev.walletBalances,
+          eth: result.ethBalance || 0
+        },
+        isSignatureVerified: true
+      }));
+      setWalletNotice({
+        type: 'success',
+        message: `Connected ${provider.toUpperCase()}: ${result.address.substring(0, 6)}...${result.address.slice(-4)} • Balance: ${(result.ethBalance || 0).toFixed(4)} ETH`
+      });
+    } else {
+      setWalletNotice({
+        type: 'error',
+        message: result.error || 'Failed to connect Web3 wallet.'
+      });
     }
+  };
 
+  const handleConnectAddress = async (rawAddress: string) => {
+    setWalletNotice(null);
+    const result = await web3WalletManager.connectAddress(rawAddress, walletState.network);
+    if (result.success && result.address) {
+      setWalletState(prev => ({
+        ...prev,
+        isConnected: true,
+        address: result.address!,
+        walletProvider: 'metamask',
+        network: result.network || prev.network,
+        chainId: result.chainId || prev.chainId,
+        walletBalances: {
+          ...prev.walletBalances,
+          eth: result.ethBalance || 0
+        },
+        isSignatureVerified: true
+      }));
+      setWalletNotice({
+        type: 'success',
+        message: `Connected Address: ${result.address.substring(0, 6)}...${result.address.slice(-4)} • Live Balance: ${(result.ethBalance || 0).toFixed(4)} ETH (Verified via Public Node RPC)`
+      });
+    } else {
+      setWalletNotice({
+        type: 'error',
+        message: result.error || 'Invalid address.'
+      });
+      throw new Error(result.error || 'Invalid address.');
+    }
+  };
+
+  const handleLaunchSandboxWallet = () => {
     setWalletState(prev => ({
       ...prev,
       isConnected: true,
-      address: `0x71C8${Math.random().toString(16).substring(2, 6).toUpperCase()}...4B29`,
-      walletProvider: provider,
+      address: '0xTestnetEnclave8492019482901a84b29',
+      walletProvider: 'metamask',
+      network: 'arbitrum',
+      chainId: 42161,
+      walletBalances: {
+        usdo: 50000,
+        btc: 1.5,
+        eth: 10.0,
+        sol: 75.0
+      },
       isSignatureVerified: true
     }));
+    setWalletNotice({
+      type: 'info',
+      message: 'Sandbox Testnet wallet activated for trading practice.'
+    });
   };
 
   const handleDisconnectWallet = () => {
@@ -147,11 +244,25 @@ export const OmnifinRealtimeExchange: React.FC = () => {
       ...prev,
       isConnected: false,
       address: null,
-      walletProvider: null
+      walletProvider: null,
+      walletBalances: {
+        usdo: 0,
+        btc: 0,
+        eth: 0,
+        sol: 0
+      },
+      isSignatureVerified: false
     }));
+    setWalletNotice({
+      type: 'info',
+      message: 'Web3 Wallet disconnected.'
+    });
   };
 
-  const handleSwitchNetwork = (network: Web3Network) => {
+  const handleSwitchNetwork = async (network: Web3Network) => {
+    if (walletState.isConnected && walletState.walletProvider !== null) {
+      await web3WalletManager.switchNetwork(network);
+    }
     setWalletState(prev => ({
       ...prev,
       network,
@@ -276,82 +387,53 @@ export const OmnifinRealtimeExchange: React.FC = () => {
     setOrderPrice(currentInstrument.lastPrice.toString());
   }, [selectedSymbol, currentInstrument]);
 
-  // Real-time market tick generator simulation
+  // Real-time live market feed from Binance & Coinbase Global Liquidity
   useEffect(() => {
-    if (!isLiveStreaming) return;
+    let isMounted = true;
 
-    const interval = setInterval(() => {
-      // 1. Slightly fluctuate price (+- 0.05%)
-      const deltaRatio = (Math.random() - 0.49) * 0.001;
-      
-      setInstruments(prev => prev.map(inst => {
-        if (inst.symbol === selectedSymbol) {
-          const newPrice = Number((inst.lastPrice * (1 + deltaRatio)).toFixed(2));
-          const newHigh = Math.max(inst.high24h, newPrice);
-          const newLow = Math.min(inst.low24h, newPrice);
-          return {
-            ...inst,
-            lastPrice: newPrice,
-            markPrice: Number((newPrice - 0.8).toFixed(2)),
-            indexPrice: Number((newPrice - 0.4).toFixed(2)),
-            high24h: newHigh,
-            low24h: newLow
-          };
+    const pullLiveMarketData = async () => {
+      const startTime = performance.now();
+      try {
+        const tickers = await cryptoMarketService.fetchLiveTickers();
+        if (!isMounted) return;
+
+        const latency = Math.round(performance.now() - startTime);
+        setFeedLatencyMs(latency);
+        setFeedSource(cryptoMarketService.getFeedSource());
+        setLastLiveUpdate(new Date().toLocaleTimeString());
+        setLastTickTime(new Date().toLocaleTimeString());
+
+        if (tickers && tickers.length > 0) {
+          setInstruments(prev => cryptoMarketService.updateInstrumentsWithLiveTickers(prev, tickers));
         }
-        return inst;
-      }));
 
-      // 2. Micro-adjust order book top levels
-      setOrderBook(prev => {
-        const topBid = prev.bids[0]?.price || 94850;
-        const topAsk = prev.asks[0]?.price || 94851;
-        const newBidQty = Number((Math.random() * 4 + 1.2).toFixed(2));
-        const newAskQty = Number((Math.random() * 3 + 1.1).toFixed(2));
+        // Fetch live order book & live trades from real exchange depth
+        const [liveDepth, liveTrades] = await Promise.all([
+          cryptoMarketService.fetchOrderBook(selectedSymbol),
+          cryptoMarketService.fetchRecentTrades(selectedSymbol)
+        ]);
 
-        const updatedBids = prev.bids.map((b, i) => i === 0 ? { ...b, quantity: newBidQty } : b);
-        const updatedAsks = prev.asks.map((a, i) => i === 0 ? { ...a, quantity: newAskQty } : a);
-
-        return {
-          ...prev,
-          bids: updatedBids,
-          asks: updatedAsks,
-          spread: Number((topAsk - topBid).toFixed(2)),
-          lastUpdateSeq: prev.lastUpdateSeq + 1,
-          timestamp: new Date().toLocaleTimeString()
-        };
-      });
-
-      // 3. Occasionally generate a matched trade (every 2nd tick)
-      if (Math.random() > 0.5) {
-        const tradeSide = Math.random() > 0.5 ? 'BUY' : 'SELL';
-        const tradePrice = currentInstrument.lastPrice;
-        const tradeQty = Number((Math.random() * 1.8 + 0.1).toFixed(2));
-        const newTrade: MatchedTrade = {
-          tradeId: `TRD-${Math.floor(Math.random() * 9000000 + 1000000)}`,
-          buyOrderId: `ORD-${Math.floor(Math.random() * 90000 + 10000)}`,
-          sellOrderId: `ORD-${Math.floor(Math.random() * 90000 + 10000)}`,
-          instrumentSymbol: selectedSymbol,
-          price: tradePrice,
-          quantity: tradeQty,
-          amountUsd: Number((tradePrice * tradeQty).toFixed(2)),
-          buyerParty: tradeSide === 'BUY' ? 'Avellaneda Market Maker' : 'Zurich Vault Enclave',
-          sellerParty: tradeSide === 'BUY' ? 'Delta-Neutral Swarm #4' : 'Apex Prime Liquidity',
-          feeUsd: Number((tradePrice * tradeQty * 0.0001).toFixed(2)),
-          timestamp: new Date().toLocaleTimeString(),
-          matchingSequence: Math.floor(Math.random() * 100000 + 500000),
-          clearingStatus: 'SETTLED_FINAL',
-          settlementRail: 'ATOMIC_INSTANT',
-          proofHash: `0x${Math.random().toString(16).substring(2, 14)}`
-        };
-
-        setRecentTrades(prev => [newTrade, ...prev.slice(0, 19)]);
+        if (!isMounted) return;
+        if (liveDepth) {
+          setOrderBook(liveDepth);
+        }
+        if (liveTrades && liveTrades.length > 0) {
+          setRecentTrades(liveTrades);
+        }
+      } catch (err) {
+        console.warn('[RealtimeExchange] Live market tick error:', err);
       }
+    };
 
-      setLastTickTime(new Date().toLocaleTimeString());
-    }, 1200);
-
-    return () => clearInterval(interval);
-  }, [isLiveStreaming, selectedSymbol, currentInstrument]);
+    if (isLiveStreaming) {
+      pullLiveMarketData();
+      const interval = setInterval(pullLiveMarketData, 2200);
+      return () => {
+        isMounted = false;
+        clearInterval(interval);
+      };
+    }
+  }, [isLiveStreaming, selectedSymbol]);
 
   // Order Submission Pipeline Simulation
   const handleExecuteOrder = (e: React.FormEvent) => {
@@ -501,23 +583,58 @@ export const OmnifinRealtimeExchange: React.FC = () => {
       {/* 1. TOP TICKER & INSTRUMENT SELECTOR BAR */}
       <div className="bg-[#0b1322] border border-slate-800 rounded-2xl p-4 text-white shadow-xl space-y-3">
         
-        {/* Asset Class Filter Strip */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none text-[11px] font-mono border-b border-slate-800/80">
-          <span className="text-slate-400 font-bold text-[10px] uppercase tracking-wider mr-1">Market:</span>
-          {['ALL', 'SPOT', 'MARGIN', 'FUTURES', 'OPTIONS', 'PERPETUAL', 'SWAP', 'RWA'].map(cat => (
-            <button
-              key={cat}
-              onClick={() => handleFilterChange(cat)}
-              className={`px-2.5 py-1 rounded-lg font-bold transition cursor-pointer whitespace-nowrap ${
-                selectedAssetFilter === cat 
-                  ? 'bg-cyan-500 text-slate-950 font-black shadow-xs' 
-                  : 'bg-slate-900/90 text-slate-400 hover:text-slate-200 hover:bg-slate-800 border border-slate-800'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+        {/* Asset Class Filter Strip & Live Feed Provenance Badge */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-800/80">
+          <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none text-[11px] font-mono">
+            <span className="text-slate-400 font-bold text-[10px] uppercase tracking-wider mr-1">Market:</span>
+            {['ALL', 'SPOT', 'MARGIN', 'FUTURES', 'OPTIONS', 'PERPETUAL', 'SWAP', 'RWA'].map(cat => (
+              <button
+                key={cat}
+                onClick={() => handleFilterChange(cat)}
+                className={`px-2.5 py-1 rounded-lg font-bold transition cursor-pointer whitespace-nowrap ${
+                  selectedAssetFilter === cat 
+                    ? 'bg-cyan-500 text-slate-950 font-black shadow-xs' 
+                    : 'bg-slate-900/90 text-slate-400 hover:text-slate-200 hover:bg-slate-800 border border-slate-800'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          {/* Genuine Real-time Market Data Source Attribution */}
+          <div className="flex items-center gap-2 font-mono text-[10px] px-2.5 py-1 rounded-lg bg-emerald-950/40 border border-emerald-500/40 text-emerald-300 shrink-0">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="font-bold uppercase tracking-wider text-emerald-400">Live Global Feed:</span>
+            <span className="text-slate-200 font-bold">{feedSource}</span>
+            <span className="text-slate-400">({feedLatencyMs}ms • {lastLiveUpdate})</span>
+          </div>
         </div>
+
+        {/* Web3 Wallet Notification Toast */}
+        {walletNotice && (
+          <div className={`p-3 rounded-xl border text-xs font-mono flex items-center justify-between ${
+            walletNotice.type === 'success' ? 'bg-emerald-950/60 border-emerald-500/50 text-emerald-200' :
+            walletNotice.type === 'error' ? 'bg-rose-950/60 border-rose-500/50 text-rose-200' :
+            'bg-blue-950/60 border-blue-500/50 text-blue-200'
+          }`}>
+            <div className="flex items-center gap-2">
+              {walletNotice.type === 'success' ? <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" /> : <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />}
+              <span>{walletNotice.message}</span>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              {walletNotice.type === 'error' && (
+                <button
+                  onClick={handleLaunchSandboxWallet}
+                  className="px-2.5 py-1 rounded bg-blue-600 hover:bg-blue-500 text-white font-bold text-[11px] cursor-pointer"
+                >
+                  Launch Sandbox Testnet Mode
+                </button>
+              )}
+              <button onClick={() => setWalletNotice(null)} className="text-slate-400 hover:text-white text-xs px-1 cursor-pointer">✕</button>
+            </div>
+          </div>
+        )}
 
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           
@@ -587,6 +704,36 @@ export const OmnifinRealtimeExchange: React.FC = () => {
           {/* Right: Web3 Wallet Status, Deposit & Live Stream Toggle */}
           <div className="flex flex-wrap items-center gap-2 self-end lg:self-auto font-mono text-xs">
             
+            {/* 0. AI Crypto Market Intelligence & Signal Engine Quick Launcher */}
+            <button
+              onClick={() => setActiveTerminalTab('AI_INTELLIGENCE')}
+              className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold flex items-center gap-1.5 transition cursor-pointer shadow-md"
+              title="Open AI Crypto Market Intelligence & Quantitative Signal Engine"
+            >
+              <Brain className="w-3.5 h-3.5 text-cyan-300" />
+              <span>AI Intelligence &amp; Signals</span>
+            </button>
+
+            {/* 0B. VIP Alpha Store Quick Launcher */}
+            <button
+              onClick={() => setActiveTerminalTab('VIP_STORE')}
+              className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:brightness-110 text-slate-950 font-black flex items-center gap-1.5 transition cursor-pointer shadow-md"
+              title="Open VIP Alpha Store, Whale Tracker & Yield Machine"
+            >
+              <Crown className="w-3.5 h-3.5 fill-current" />
+              <span>VIP Alpha</span>
+            </button>
+
+            {/* 0C. $AURX Token Launchpad Quick Launcher */}
+            <button
+              onClick={() => setActiveTerminalTab('TOKENOMICS')}
+              className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 hover:brightness-110 text-white font-black flex items-center gap-1.5 transition cursor-pointer shadow-md"
+              title="Open $AURX Token Launchpad, Tokenomics & Staking"
+            >
+              <Coins className="w-3.5 h-3.5 fill-current text-yellow-300" />
+              <span>$AURX Token</span>
+            </button>
+
             {/* 1. Deposit / Receiving Address Button */}
             <button
               onClick={() => setShowFundingModal(true)}
@@ -716,6 +863,10 @@ export const OmnifinRealtimeExchange: React.FC = () => {
         <div className="flex items-center gap-1 overflow-x-auto scrollbar-none">
           {[
             { id: 'TRADING', label: 'Trading & Order Book', icon: BarChart3 },
+            { id: 'AI_INTELLIGENCE', label: 'AI Market Intelligence', icon: Brain, highlight: true },
+            { id: 'PRIME_DESK', label: 'Enterprise Prime Desk', icon: Building2, highlight: true },
+            { id: 'VIP_STORE', label: '🔥 VIP Alpha Store', icon: Crown, highlight: true },
+            { id: 'TOKENOMICS', label: '🪙 $AURX Token', icon: Coins, highlight: true },
             { id: 'WALLET_FUNDING', label: 'Web3 Wallet & Deposit', icon: Wallet, highlight: true },
             { id: 'ROUTING', label: 'Smart Order Routing (SOR)', icon: GitBranch },
             { id: 'MARKET_MAKING', label: 'Market Making & Skew', icon: Sliders },
@@ -1081,7 +1232,7 @@ export const OmnifinRealtimeExchange: React.FC = () => {
                 <div className="space-y-1 py-1 max-h-96 overflow-y-auto scrollbar-thin">
                   {recentTrades.map((t, idx) => (
                     <div
-                      key={t.tradeId + idx}
+                      key={t.tradeId ? `${t.tradeId}-${idx}` : (t as any).id ? `${(t as any).id}-${idx}` : `trade-${idx}`}
                       className="grid grid-cols-3 text-xs font-mono py-1 px-1 rounded hover:bg-slate-50 transition"
                     >
                       <span className="font-bold text-slate-900">${t.price.toFixed(2)}</span>
@@ -1713,15 +1864,37 @@ export const OmnifinRealtimeExchange: React.FC = () => {
         </div>
       )}
 
+      {/* 7B. AI CRYPTO MARKET INTELLIGENCE & QUANTITATIVE SIGNAL ENGINE */}
+      {activeTerminalTab === 'AI_INTELLIGENCE' && (
+        <AiCryptoIntelligenceWorkspace />
+      )}
+
+      {/* 7C. ENTERPRISE PRIME DESK (TWAP, SUB-ACCOUNTS, VAR) */}
+      {activeTerminalTab === 'PRIME_DESK' && (
+        <EnterprisePrimeDesk instruments={instruments} />
+      )}
+
+      {/* 7D. HIGH-CONVERTING COMMERCIAL ALPHA STORE & VIP PRODUCTS */}
+      {activeTerminalTab === 'VIP_STORE' && (
+        <CommercialAlphaStore />
+      )}
+
+      {/* 7E. $OMNI TOKEN LAUNCHPAD & TOKENOMICS HUB */}
+      {activeTerminalTab === 'TOKENOMICS' && (
+        <OmniTokenomicsHub />
+      )}
+
       {/* 8. WEB3 WALLET & EXCHANGE FUNDING SURFACE */}
       {activeTerminalTab === 'WALLET_FUNDING' && (
         <OmnifinWalletFunding
           walletState={walletState}
           onConnectWallet={handleConnectWallet}
+          onConnectAddress={handleConnectAddress}
           onDisconnectWallet={handleDisconnectWallet}
           onSwitchNetwork={handleSwitchNetwork}
           onDepositFunds={handleDepositFunds}
           onWithdrawFunds={handleWithdrawFunds}
+          onLaunchSandbox={handleLaunchSandboxWallet}
           availableMarginUsd={portfolioMargin.availableMarginUsd}
           totalEquityUsd={portfolioMargin.totalEquityUsd}
           onStartTradingPair={(symbol) => {
@@ -1737,10 +1910,12 @@ export const OmnifinRealtimeExchange: React.FC = () => {
           <OmnifinWalletFunding
             walletState={walletState}
             onConnectWallet={handleConnectWallet}
+            onConnectAddress={handleConnectAddress}
             onDisconnectWallet={handleDisconnectWallet}
             onSwitchNetwork={handleSwitchNetwork}
             onDepositFunds={handleDepositFunds}
             onWithdrawFunds={handleWithdrawFunds}
+            onLaunchSandbox={handleLaunchSandboxWallet}
             availableMarginUsd={portfolioMargin.availableMarginUsd}
             totalEquityUsd={portfolioMargin.totalEquityUsd}
             isModal={true}

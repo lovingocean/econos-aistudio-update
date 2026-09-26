@@ -30,10 +30,12 @@ import {
 interface OmnifinWalletFundingProps {
   walletState: Web3WalletState;
   onConnectWallet: (provider: Web3WalletProvider) => Promise<void>;
+  onConnectAddress?: (address: string) => Promise<void>;
   onDisconnectWallet: () => void;
   onSwitchNetwork: (network: Web3Network) => void;
   onDepositFunds: (asset: string, amount: number, amountUsd: number, network: string, txHash: string) => void;
   onWithdrawFunds?: (asset: string, amount: number, destinationAddress: string) => void;
+  onLaunchSandbox?: () => void;
   availableMarginUsd: number;
   totalEquityUsd: number;
   isModal?: boolean;
@@ -115,10 +117,12 @@ const InstitutionalQrCode: React.FC<{ value: string; size?: number; label?: stri
 export const OmnifinWalletFunding: React.FC<OmnifinWalletFundingProps> = ({
   walletState,
   onConnectWallet,
+  onConnectAddress,
   onDisconnectWallet,
   onSwitchNetwork,
   onDepositFunds,
   onWithdrawFunds,
+  onLaunchSandbox,
   availableMarginUsd,
   totalEquityUsd,
   isModal = false,
@@ -130,6 +134,11 @@ export const OmnifinWalletFunding: React.FC<OmnifinWalletFundingProps> = ({
   const [selectedNetworkKey, setSelectedNetworkKey] = useState<string>('arbitrum');
   const [copiedAddress, setCopiedAddress] = useState<boolean>(false);
   const [stealthIndex, setStealthIndex] = useState<number>(0);
+
+  // Manual Address Direct Connect
+  const [manualAddressInput, setManualAddressInput] = useState<string>('');
+  const [manualAddressError, setManualAddressError] = useState<string | null>(null);
+  const [isConnectingAddress, setIsConnectingAddress] = useState<boolean>(false);
 
   // Direct Web3 Deposit form
   const [web3DepositAmount, setWeb3DepositAmount] = useState<string>('10000');
@@ -762,7 +771,30 @@ export const OmnifinWalletFunding: React.FC<OmnifinWalletFundingProps> = ({
           {/* If Not Connected: Wallet Provider Chooser */}
           {!walletState.isConnected ? (
             <div className="space-y-4">
-              <div className="text-center max-w-md mx-auto py-4">
+              
+              {/* Check if in embedded preview iframe */}
+              {typeof window !== 'undefined' && window.self !== window.top && (
+                <div className="max-w-2xl mx-auto p-4 rounded-2xl bg-amber-50 border border-amber-300 text-amber-900 space-y-2">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 font-bold text-xs">
+                      <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
+                      <span>Preview Frame Detected: MetaMask May Be Restricted</span>
+                    </div>
+                    <button
+                      onClick={() => window.open(window.location.href, '_blank')}
+                      className="px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs inline-flex items-center gap-1.5 cursor-pointer self-start sm:self-auto shadow-xs"
+                    >
+                      <span>Open in New Standalone Window</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                  <p className="text-[11px] text-amber-800 leading-relaxed">
+                    Browser security policies prevent extensions like MetaMask from injecting into embedded iframes. If clicking MetaMask below doesn't pop up your wallet, click <strong>"Open in New Standalone Window"</strong> or paste your address below.
+                  </p>
+                </div>
+              )}
+
+              <div className="text-center max-w-md mx-auto py-2">
                 <div className="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 mx-auto mb-3 shadow-xs">
                   <Wallet className="w-6 h-6" />
                 </div>
@@ -792,6 +824,86 @@ export const OmnifinWalletFunding: React.FC<OmnifinWalletFundingProps> = ({
                     <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition" />
                   </button>
                 ))}
+              </div>
+
+              {/* Direct Address Connect with Live RPC Lookup */}
+              <div className="max-w-2xl mx-auto p-4 rounded-2xl bg-slate-900 text-white border border-slate-800 space-y-3 shadow-sm">
+                <div className="flex items-center justify-between">
+                  <div className="font-bold text-xs text-cyan-300 flex items-center gap-1.5">
+                    <Wallet className="w-4 h-4 text-blue-400" />
+                    <span>Or Paste Your MetaMask 0x Address (Real On-Chain RPC Sync)</span>
+                  </div>
+                  <span className="text-[10px] text-emerald-400 font-bold bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/40">
+                    Live Public RPC
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-400">
+                  Copy your active account address from MetaMask (starts with 0x) and paste it below. Omnifin will immediately connect your real address and fetch your live on-chain balance via Arbitrum & Ethereum publicnode RPC.
+                </p>
+                <form
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    setManualAddressError(null);
+                    if (!manualAddressInput.trim()) return;
+                    setIsConnectingAddress(true);
+                    try {
+                      if (onConnectAddress) {
+                        await onConnectAddress(manualAddressInput.trim());
+                      }
+                    } catch (err: any) {
+                      setManualAddressError(err.message || 'Failed to connect address');
+                    } finally {
+                      setIsConnectingAddress(false);
+                    }
+                  }}
+                  className="flex flex-col sm:flex-row gap-2"
+                >
+                  <input
+                    type="text"
+                    value={manualAddressInput}
+                    onChange={(e) => setManualAddressInput(e.target.value)}
+                    placeholder="0x71C8349281aE4aC9128490B82019482901a84b29"
+                    className="flex-1 p-2.5 rounded-xl border border-slate-700 bg-slate-950 text-white font-mono text-xs focus:outline-hidden focus:border-cyan-400"
+                  />
+                  <button
+                    type="submit"
+                    disabled={isConnectingAddress || !manualAddressInput.trim()}
+                    className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 disabled:opacity-50 text-white font-bold text-xs transition cursor-pointer whitespace-nowrap"
+                  >
+                    {isConnectingAddress ? 'Verifying Balance...' : 'Connect & Sync Balance'}
+                  </button>
+                </form>
+                {manualAddressError && (
+                  <div className="text-rose-400 text-[11px] font-bold">{manualAddressError}</div>
+                )}
+              </div>
+
+              {/* No Wallet Extension Notice & Sandbox Alternative */}
+              <div className="max-w-2xl mx-auto p-4 rounded-2xl bg-slate-50 border border-slate-200 text-slate-600 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                <div className="flex items-center gap-2">
+                  <Info className="w-4 h-4 text-blue-600 shrink-0" />
+                  <span>Don't have a Web3 wallet extension installed?</span>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <a
+                    href="https://metamask.io/download/"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-3 py-1.5 rounded-xl bg-white hover:bg-slate-100 text-blue-600 font-bold border border-slate-200 transition inline-flex items-center gap-1 cursor-pointer"
+                  >
+                    <span>Get MetaMask</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                  {onLaunchSandbox && (
+                    <button
+                      onClick={onLaunchSandbox}
+                      className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold transition shadow-xs cursor-pointer flex items-center gap-1"
+                    >
+                      <Zap className="w-3 h-3 text-amber-300" />
+                      <span>Sandbox Testnet Mode</span>
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           ) : (

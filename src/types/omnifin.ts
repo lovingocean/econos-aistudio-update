@@ -7,6 +7,9 @@
 export type OmnifinSurface = 
   | 'OVERVIEW'
   | 'MARKET'
+  | 'PRIME'
+  | 'ALPHA_STORE'
+  | 'TOKENOMICS'
   | 'WALLET'
   | 'SHIELD'
   | 'INTELLIGENCE'

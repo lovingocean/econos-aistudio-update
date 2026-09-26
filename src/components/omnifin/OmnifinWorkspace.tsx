@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Globe2, 
   ShieldCheck, 
@@ -39,7 +39,9 @@ import {
   GitBranch,
   Filter,
   Wallet,
-  QrCode
+  QrCode,
+  Building2,
+  Flame
 } from 'lucide-react';
 import { 
   OmnifinSurface, 
@@ -54,6 +56,10 @@ import {
 } from '../../types/omnifin';
 import { OmnifinRealtimeExchange } from './OmnifinRealtimeExchange';
 import { OmnifinWalletFunding } from './OmnifinWalletFunding';
+import { AiCryptoIntelligenceWorkspace } from './AiCryptoIntelligenceWorkspace';
+import { EnterprisePrimeDesk } from './EnterprisePrimeDesk';
+import { CommercialAlphaStore } from './CommercialAlphaStore';
+import { OmniTokenomicsHub } from './OmniTokenomicsHub';
 import {
   Web3WalletState,
   Web3Network,
@@ -69,6 +75,8 @@ import {
   INITIAL_COUNTERFACTUAL_SIMULATION,
   SAMPLE_NFL_SCRIPTS
 } from '../../data/omnifinData';
+import { cryptoMarketService } from '../../services/cryptoService';
+import { web3WalletManager } from '../../services/web3WalletService';
 
 const OPERATING_STEPS: Array<{ step: OmnifinOperatingStep; label: string; desc: string }> = [
   { step: 'OBSERVE', label: '1. Observe', desc: 'Continuous ingest of raw prices, mempools, books & feeds' },
@@ -117,46 +125,123 @@ export const OmnifinWorkspace: React.FC = () => {
 
   // Web3 Wallet & Exchange Deposit State
   const [workspaceMargin, setWorkspaceMargin] = useState<number>(1174150);
+  const [feedSource, setFeedSource] = useState<string>('Binance Global Liquidity Feed');
+  const [feedLatencyMs, setFeedLatencyMs] = useState<number>(85);
+  const [lastLiveUpdate, setLastLiveUpdate] = useState<string>('Connecting...');
+
   const [web3Wallet, setWeb3Wallet] = useState<Web3WalletState>({
-    isConnected: true,
-    address: '0x71C8349281aE4aC9128490B82019482901a84b29',
-    walletProvider: 'metamask',
+    isConnected: false,
+    address: null,
+    walletProvider: null,
     network: 'arbitrum',
     chainId: 42161,
     walletBalances: {
-      usdo: 38400,
-      btc: 1.45,
-      eth: 12.8,
-      sol: 85.0
+      usdo: 0,
+      btc: 0,
+      eth: 0,
+      sol: 0
     },
-    isSignatureVerified: true
+    isSignatureVerified: false
   });
 
-  const handleConnectWeb3 = async (provider: Web3WalletProvider) => {
-    try {
-      if (typeof window !== 'undefined' && (window as any).ethereum && provider === 'metamask') {
-        const accounts = await (window as any).ethereum.request({ method: 'eth_requestAccounts' });
-        if (accounts && accounts[0]) {
-          setWeb3Wallet(prev => ({
-            ...prev,
-            isConnected: true,
-            address: accounts[0],
-            walletProvider: provider
-          }));
-          return;
-        }
-      }
-    } catch (err) {
-      console.warn('Real Web3 connection fallback to simulated institutional provider', err);
-    }
+  // Real-time live market feed from Binance & Coinbase
+  useEffect(() => {
+    let isMounted = true;
+    const updateLiveAssets = async () => {
+      const startTime = performance.now();
+      try {
+        const tickers = await cryptoMarketService.fetchLiveTickers();
+        if (!isMounted) return;
+        setFeedLatencyMs(Math.round(performance.now() - startTime));
+        setFeedSource(cryptoMarketService.getFeedSource());
+        setLastLiveUpdate(new Date().toLocaleTimeString());
 
-    setWeb3Wallet(prev => ({
-      ...prev,
-      isConnected: true,
-      address: `0x71C8${Math.random().toString(16).substring(2, 6).toUpperCase()}...4B29`,
-      walletProvider: provider,
-      isSignatureVerified: true
-    }));
+        if (tickers && tickers.length > 0) {
+          setAssets(prev => cryptoMarketService.updateOmnifinAssetsWithLiveTickers(prev, tickers));
+        }
+      } catch (err) {
+        console.warn('[OmnifinWorkspace] Live asset update error:', err);
+      }
+    };
+
+    updateLiveAssets();
+    const interval = setInterval(updateLiveAssets, 3000);
+
+    // Auto-detect existing authorized Web3 wallet
+    web3WalletManager.getConnectedAccount().then(acc => {
+      if (acc && isMounted) {
+        web3WalletManager.connect('metamask').then(res => {
+          if (res.success && res.address && isMounted) {
+            setWeb3Wallet(prev => ({
+              ...prev,
+              isConnected: true,
+              address: res.address!,
+              walletProvider: 'metamask',
+              network: res.network || prev.network,
+              chainId: res.chainId || prev.chainId,
+              walletBalances: {
+                ...prev.walletBalances,
+                eth: res.ethBalance || 0
+              },
+              isSignatureVerified: true
+            }));
+          }
+        });
+      }
+    });
+
+    web3WalletManager.setStateCallback(updated => {
+      if (isMounted) {
+        setWeb3Wallet(prev => ({ ...prev, ...updated }));
+      }
+    });
+
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, []);
+
+  const handleConnectWeb3 = async (provider: Web3WalletProvider) => {
+    const result = await web3WalletManager.connect(provider);
+    if (result.success && result.address) {
+      setWeb3Wallet(prev => ({
+        ...prev,
+        isConnected: true,
+        address: result.address!,
+        walletProvider: provider,
+        network: result.network || prev.network,
+        chainId: result.chainId || prev.chainId,
+        walletBalances: {
+          ...prev.walletBalances,
+          eth: result.ethBalance || 0
+        },
+        isSignatureVerified: true
+      }));
+    } else {
+      alert(result.error || 'Failed to connect Web3 wallet. If MetaMask is not installed, please install it from metamask.io');
+    }
+  };
+
+  const handleConnectWeb3Address = async (rawAddress: string) => {
+    const result = await web3WalletManager.connectAddress(rawAddress, web3Wallet.network);
+    if (result.success && result.address) {
+      setWeb3Wallet(prev => ({
+        ...prev,
+        isConnected: true,
+        address: result.address!,
+        walletProvider: 'metamask',
+        network: result.network || prev.network,
+        chainId: result.chainId || prev.chainId,
+        walletBalances: {
+          ...prev.walletBalances,
+          eth: result.ethBalance || 0
+        },
+        isSignatureVerified: true
+      }));
+    } else {
+      throw new Error(result.error || 'Invalid address');
+    }
   };
 
   const handleDisconnectWeb3 = () => {
@@ -164,11 +249,21 @@ export const OmnifinWorkspace: React.FC = () => {
       ...prev,
       isConnected: false,
       address: null,
-      walletProvider: null
+      walletProvider: null,
+      walletBalances: {
+        usdo: 0,
+        btc: 0,
+        eth: 0,
+        sol: 0
+      },
+      isSignatureVerified: false
     }));
   };
 
-  const handleSwitchWeb3Network = (network: Web3Network) => {
+  const handleSwitchWeb3Network = async (network: Web3Network) => {
+    if (web3Wallet.isConnected && web3Wallet.walletProvider !== null) {
+      await web3WalletManager.switchNetwork(network);
+    }
     setWeb3Wallet(prev => ({
       ...prev,
       network,
@@ -262,13 +357,13 @@ STATUS: READY_FOR_SIGNATURE [TRANSACTION SIGNED & DISPATCHED]`);
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-6 border-b border-slate-800">
             <div>
               <div className="flex items-center gap-2.5 mb-2">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-slate-950 font-black shadow-lg shadow-cyan-500/30">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500 to-amber-500 flex items-center justify-center text-slate-950 font-black shadow-lg shadow-cyan-500/30">
                   <Globe2 className="w-5 h-5 text-white" />
                 </div>
                 <h1 className="text-xl sm:text-2xl font-black tracking-tight text-white flex items-center gap-2">
-                  <span>OMNIFIN</span>
-                  <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-blue-500/20 text-cyan-300 border border-blue-400/40">
-                    GLOBAL OPERATING LAYER
+                  <span>AURAX TERMINAL</span>
+                  <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-400/40">
+                    POWERED BY $AURX
                   </span>
                 </h1>
               </div>
@@ -390,6 +485,9 @@ STATUS: READY_FOR_SIGNATURE [TRANSACTION SIGNED & DISPATCHED]`);
           {[
             { id: 'OVERVIEW', label: 'Overview & Architecture', icon: Layers },
             { id: 'MARKET', label: '⚡ Real-Time Exchange', icon: TrendingUp },
+            { id: 'PRIME', label: 'Enterprise Prime Desk', icon: Building2 },
+            { id: 'ALPHA_STORE', label: '🔥 VIP Alpha Store', icon: Flame },
+            { id: 'TOKENOMICS', label: '🪙 $AURX Token Launchpad', icon: Coins },
             { id: 'WALLET', label: '⚡ Web3 Wallet & Deposit', icon: Wallet },
             { id: 'SHIELD', label: 'Smart Contract Shield', icon: Shield },
             { id: 'INTELLIGENCE', label: 'Cross-Market Intelligence', icon: Network },
@@ -489,14 +587,22 @@ STATUS: READY_FOR_SIGNATURE [TRANSACTION SIGNED & DISPATCHED]`);
 
             {/* Universal Asset Universe Table */}
             <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
-              <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+              <div className="px-6 py-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div>
                   <h3 className="text-sm font-black text-slate-900 font-mono">Universal Financial Object Model (15 Asset Classes)</h3>
                   <p className="text-xs text-slate-500">Live reconstructed liquidity, collateral haircuts, and provenance hashes</p>
                 </div>
-                <span className="text-xs font-mono px-2.5 py-1 rounded bg-blue-50 text-blue-700 font-bold border border-blue-200">
-                  {assets.length} Active Feeds
-                </span>
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5 font-mono text-[10px] px-2.5 py-1 rounded-lg bg-emerald-50 border border-emerald-300 text-emerald-800">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="font-bold">Live Market:</span>
+                    <span>{feedSource}</span>
+                    <span className="text-slate-400">({feedLatencyMs}ms)</span>
+                  </div>
+                  <span className="text-xs font-mono px-2.5 py-1 rounded bg-blue-50 text-blue-700 font-bold border border-blue-200">
+                    {assets.length} Active Feeds
+                  </span>
+                </div>
               </div>
 
               <div className="overflow-x-auto">
@@ -564,11 +670,27 @@ STATUS: READY_FOR_SIGNATURE [TRANSACTION SIGNED & DISPATCHED]`);
           <OmnifinRealtimeExchange />
         )}
 
+        {/* 2B. ENTERPRISE PRIME BROKERAGE DESK */}
+        {activeSurface === 'PRIME' && (
+          <EnterprisePrimeDesk />
+        )}
+
+        {/* 2C. HIGH-CONVERTING COMMERCIAL ALPHA STORE & VIP PRODUCTS */}
+        {activeSurface === 'ALPHA_STORE' && (
+          <CommercialAlphaStore />
+        )}
+
+        {/* 2D. OMNIFIN $OMNI NATIVE TOKENOMICS & LAUNCHPAD HUB */}
+        {activeSurface === 'TOKENOMICS' && (
+          <OmniTokenomicsHub />
+        )}
+
         {/* 2B. WEB3 WALLET, RECEIVING ADDRESS & EXCHANGE FUNDING */}
         {activeSurface === 'WALLET' && (
           <OmnifinWalletFunding
             walletState={web3Wallet}
             onConnectWallet={handleConnectWeb3}
+            onConnectAddress={handleConnectWeb3Address}
             onDisconnectWallet={handleDisconnectWeb3}
             onSwitchNetwork={handleSwitchWeb3Network}
             onDepositFunds={handleWeb3Deposit}
@@ -618,49 +740,9 @@ STATUS: READY_FOR_SIGNATURE [TRANSACTION SIGNED & DISPATCHED]`);
           </div>
         )}
 
-        {/* 4. CROSS-MARKET INTELLIGENCE & CAUSAL GRAPH */}
+        {/* 4. AI CRYPTO MARKET INTELLIGENCE & QUANTITATIVE SIGNAL ENGINE */}
         {activeSurface === 'INTELLIGENCE' && (
-          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-base font-black text-slate-900 font-mono">Cross-Market Causal Event Graph</h3>
-                <p className="text-xs text-slate-500">Rate Shock → Bond Yield → FX Basis → Equity Pullback → Crypto Liquidity → Collateral Firewall</p>
-              </div>
-              <span className="text-xs font-mono px-2.5 py-1 rounded bg-blue-50 text-blue-700 border border-blue-200 font-bold">
-                DAG Depth: 5 Nodes
-              </span>
-            </div>
-
-            <div className="space-y-4">
-              {INITIAL_CAUSAL_GRAPH.map((node, i) => (
-                <div key={node.eventId} className="relative pl-6 pb-4 border-l-2 border-blue-300 last:border-0 last:pb-0">
-                  <div className="absolute -left-2 top-0 w-4 h-4 rounded-full bg-blue-600 border-2 border-white shadow-xs" />
-                  
-                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-mono font-black text-slate-900">Step {i + 1}: {node.title}</span>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-bold">
-                          {node.category}
-                        </span>
-                      </div>
-                      <span className="text-[10px] font-mono text-slate-400">Timestamp: {node.timestamp}</span>
-                    </div>
-
-                    <p className="text-xs text-slate-600 leading-relaxed">{node.description}</p>
-
-                    <div className="pt-2 flex flex-wrap items-center justify-between gap-2 text-xs font-mono border-t border-slate-200/60">
-                      <div className="text-blue-700 font-semibold flex items-center gap-1">
-                        <ArrowRight className="w-3.5 h-3.5" />
-                        <span>Causal Effect: {node.causalImpact}</span>
-                      </div>
-                      <div className="text-[10px] text-slate-500">Proof Hash: {node.proofSignature}</div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          <AiCryptoIntelligenceWorkspace />
         )}
 
         {/* 5. MARKET INTEGRITY & WASH TRADING */}

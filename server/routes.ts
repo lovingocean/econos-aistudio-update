@@ -2509,3 +2509,312 @@ apiRouter.post('/leads/reset', (req, res) => {
   res.json({ message: 'Leads reset to default Google Maps seed set.' });
 });
 
+// =========================================================================
+// AURA-X SOVEREIGN LAYER-1 BLOCKCHAIN NODE & CROSS-CHAIN BRIDGE APIS
+// =========================================================================
+import { globalAuraXNode } from './blockchainNode';
+
+// 1. Web3 JSON-RPC 2.0 Endpoint (For MetaMask / EIP-1193 clients)
+apiRouter.all(['/rpc', '/node/rpc'], (req: Request, res: Response) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', '*');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  if (req.method === 'GET') {
+    return res.json({
+      jsonrpc: '2.0',
+      status: 'AuraX Sovereign Layer-1 JSON-RPC 2.0 is ACTIVE',
+      chainId: globalAuraXNode.chainId,
+      chainHex: '0x' + globalAuraXNode.chainId.toString(16),
+      latestBlock: globalAuraXNode.chain.length - 1,
+      validator: globalAuraXNode.validatorAddress,
+      endpoints: ['POST /api/rpc', 'POST /rpc']
+    });
+  }
+
+  let body = req.body;
+  if (typeof body === 'string') {
+    try {
+      body = JSON.parse(body);
+    } catch (_) {}
+  }
+
+  try {
+    const rpcResponse = globalAuraXNode.handleJsonRpc(body);
+    res.json(rpcResponse);
+  } catch (err: any) {
+    res.status(500).json({ jsonrpc: '2.0', id: body?.id || null, error: { code: -32603, message: err.message } });
+  }
+});
+
+// 2. Node Status & Diagnostic Metrics
+apiRouter.get(['/node/status', '/aurax/status'], (_req: Request, res: Response) => {
+  res.json(globalAuraXNode.getNodeStatus());
+});
+
+// 3. Real Blocks Ledger Stream
+apiRouter.get(['/node/blocks', '/aurax/blocks'], (req: Request, res: Response) => {
+  const limit = parseInt(req.query.limit as string) || 12;
+  const blocks = globalAuraXNode.chain.slice(-limit).reverse();
+  res.json({
+    totalBlocks: globalAuraXNode.chain.length,
+    blocks
+  });
+});
+
+// 4. Ledger Account Balance Lookup
+apiRouter.get(['/node/balance/:address', '/aurax/balance/:address'], (req: Request, res: Response) => {
+  const address = req.params.address.toLowerCase();
+  const balance = globalAuraXNode.accountBalances.get(address) || 0;
+  res.json({ address: req.params.address, balance, token: 'AURX', chainId: globalAuraXNode.chainId });
+});
+
+// 5. Submit Transaction to Blockchain Invariant Core
+apiRouter.post(['/node/transaction/submit', '/aurax/tx/submit'], (req: Request, res: Response) => {
+  const { sender, recipient, amount, txType, challengeWindowSeconds } = req.body;
+  if (!sender || !recipient || !amount) {
+    return res.status(400).json({ error: 'Missing sender, recipient, or amount' });
+  }
+
+  const result = globalAuraXNode.submitTransaction({
+    sender,
+    recipient,
+    amount: parseFloat(amount),
+    txType: txType || 'INSTANT',
+    challengeWindowSeconds: challengeWindowSeconds ? parseInt(challengeWindowSeconds) : 120
+  });
+
+  if (!result.success) {
+    return res.status(400).json({ error: result.error });
+  }
+  res.json(result);
+});
+
+// 6. Base Mainnet -> AuraX L1 Cross-Chain Bridge Lock/Mint
+apiRouter.post(['/node/bridge/deposit', '/aurax/bridge/deposit'], (req: Request, res: Response) => {
+  const { baseTxHash, depositorAddress, amount } = req.body;
+  if (!baseTxHash || !depositorAddress || !amount) {
+    return res.status(400).json({ error: 'Missing baseTxHash, depositorAddress, or amount' });
+  }
+
+  const result = globalAuraXNode.bridgeDepositFromBase({
+    baseTxHash,
+    depositorAddress,
+    amount: parseFloat(amount)
+  });
+
+  if (!result.success) {
+    return res.status(400).json({ error: result.error });
+  }
+  res.json(result);
+});
+
+// 7. Guardian Reversal Execution
+apiRouter.post(['/node/transaction/revert', '/aurax/tx/revert'], (req: Request, res: Response) => {
+  const { txHash, requesterAddress } = req.body;
+  if (!txHash || !requesterAddress) {
+    return res.status(400).json({ error: 'Missing txHash or requesterAddress' });
+  }
+
+  const result = globalAuraXNode.revertVaultTransaction(txHash, requesterAddress);
+  if (!result.success) {
+    return res.status(400).json({ error: result.error });
+  }
+  res.json(result);
+});
+
+// 8. Faucet Claim: Dispenses 1,000 Free $AURX with Strict Anti-Sybil Validation
+apiRouter.post(['/node/faucet/claim', '/aurax/faucet/claim'], (req: Request, res: Response) => {
+  const { recipientAddress, deviceFingerprint } = req.body;
+  if (!recipientAddress) {
+    return res.status(400).json({ error: 'recipientAddress is required.' });
+  }
+
+  const clientIp = (
+    (req.headers['x-forwarded-for'] as string)?.split(',')[0] ||
+    req.socket.remoteAddress ||
+    '127.0.0.1'
+  );
+
+  const result = globalAuraXNode.claimFaucet(
+    recipientAddress,
+    clientIp,
+    deviceFingerprint || req.headers['user-agent'] || ''
+  );
+
+  if (!result.success) {
+    return res.status(400).json({ error: result.error });
+  }
+  res.json(result);
+});
+
+// 9. Cross-Chain Bridge Withdraw: Burn on AuraX L1 to Unlock on Base Mainnet
+apiRouter.post(['/node/bridge/withdraw', '/aurax/bridge/withdraw'], (req: Request, res: Response) => {
+  const { senderAddress, targetBaseRecipient, amount } = req.body;
+  if (!senderAddress || !targetBaseRecipient || !amount) {
+    return res.status(400).json({ error: 'Missing senderAddress, targetBaseRecipient, or amount.' });
+  }
+
+  const result = globalAuraXNode.bridgeBurnToUnlockBase({
+    senderAddress,
+    targetBaseRecipient,
+    amount: parseFloat(amount)
+  });
+
+  if (!result.success) {
+    return res.status(400).json({ error: result.error });
+  }
+  res.json(result);
+});
+
+// 10. Universal Blockchain Explorer Search (Tx Hash, Block Number, or Address)
+apiRouter.get(['/node/explorer/search', '/aurax/explorer/search'], (req: Request, res: Response) => {
+  const query = (req.query.q as string || '').trim().toLowerCase();
+  if (!query) {
+    return res.status(400).json({ error: 'Query parameter q is required.' });
+  }
+
+  // 1. Is it a block number?
+  if (/^\d+$/.test(query)) {
+    const blockNum = parseInt(query, 10);
+    const block = globalAuraXNode.chain.find(b => b.blockNumber === blockNum);
+    if (block) {
+      return res.json({ type: 'BLOCK', data: block });
+    }
+  }
+
+  // 2. Is it a transaction hash?
+  for (const block of globalAuraXNode.chain) {
+    const tx = block.transactions.find(t => t.hash.toLowerCase() === query);
+    if (tx) {
+      return res.json({ type: 'TRANSACTION', data: tx, blockNumber: block.blockNumber, timestamp: block.timestamp });
+    }
+  }
+
+  // Check pending mempool
+  const pendingTx = globalAuraXNode.pendingTransactions.find(t => t.hash.toLowerCase() === query);
+  if (pendingTx) {
+    return res.json({ type: 'TRANSACTION', data: pendingTx, blockNumber: 'PENDING_MEMPOOL', timestamp: pendingTx.timestamp });
+  }
+
+  // 3. Is it an address?
+  if (query.startsWith('0x') && query.length >= 20) {
+    const balance = globalAuraXNode.accountBalances.get(query) || 0;
+    const history = globalAuraXNode.chain
+      .flatMap(b => b.transactions.map(t => ({ ...t, blockNumber: b.blockNumber })))
+      .filter(t => t.sender.toLowerCase() === query || t.recipient.toLowerCase() === query)
+      .slice(-20)
+      .reverse();
+
+    return res.json({
+      type: 'ADDRESS',
+      data: {
+        address: query,
+        balance,
+        token: 'AURX',
+        transactionsCount: history.length,
+        history
+      }
+    });
+  }
+
+  return res.status(404).json({ error: 'No matching Block, Transaction Hash, or Address found in AuraX Ledger.' });
+});
+
+// 11. Staking Status & Actions
+apiRouter.get(['/node/staking/:address', '/aurax/staking/:address'], (req: Request, res: Response) => {
+  const status = globalAuraXNode.getStakingStatus(req.params.address);
+  res.json(status);
+});
+
+apiRouter.post(['/node/staking/stake', '/aurax/staking/stake'], (req: Request, res: Response) => {
+  const { address, amount } = req.body;
+  if (!address || !amount) return res.status(400).json({ error: 'Missing address or amount' });
+  const result = globalAuraXNode.stakeTokens(address, parseFloat(amount));
+  if (!result.success) return res.status(400).json({ error: result.error });
+  res.json(result);
+});
+
+apiRouter.post(['/node/staking/unstake', '/aurax/staking/unstake'], (req: Request, res: Response) => {
+  const { address, amount } = req.body;
+  if (!address || !amount) return res.status(400).json({ error: 'Missing address or amount' });
+  const result = globalAuraXNode.unstakeTokens(address, parseFloat(amount));
+  if (!result.success) return res.status(400).json({ error: result.error });
+  res.json(result);
+});
+
+// 12. DEX Swap Execution
+apiRouter.post(['/node/dex/swap', '/aurax/dex/swap'], (req: Request, res: Response) => {
+  const { userAddress, fromToken, toToken, amountIn } = req.body;
+  if (!userAddress || !fromToken || !toToken || !amountIn) {
+    return res.status(400).json({ error: 'Missing swap parameters' });
+  }
+
+  const result = globalAuraXNode.executeDexSwap({
+    userAddress,
+    fromToken,
+    toToken,
+    amountIn: parseFloat(amountIn)
+  });
+
+  if (!result.success) return res.status(400).json({ error: result.error });
+  res.json(result);
+});
+
+// 13. Smart Contract & Token Launchpad
+apiRouter.get(['/node/contracts', '/aurax/contracts'], (_req: Request, res: Response) => {
+  res.json({ contracts: globalAuraXNode.deployedContracts });
+});
+
+apiRouter.post(['/node/contracts/deploy', '/aurax/contracts/deploy'], (req: Request, res: Response) => {
+  const { name, symbol, totalSupply, creatorAddress } = req.body;
+  if (!name || !symbol || !totalSupply || !creatorAddress) {
+    return res.status(400).json({ error: 'Missing name, symbol, totalSupply, or creatorAddress' });
+  }
+
+  const result = globalAuraXNode.deployCustomToken({
+    name,
+    symbol,
+    totalSupply: parseFloat(totalSupply),
+    creatorAddress
+  });
+
+  if (!result.success) return res.status(400).json({ error: result.error });
+  res.json(result);
+});
+
+// 14. Anti-Drainer Threat Simulator
+apiRouter.post(['/node/simulator/drain-attack', '/aurax/simulator/drain-attack'], (req: Request, res: Response) => {
+  const { targetAddress, drainerAddress, drainPct } = req.body;
+  const result = globalAuraXNode.simulateDrainAttack(
+    targetAddress || '0x9fF60030aC1e02E1302D3aFa6CaDf347E3fbb97A',
+    drainerAddress || '0xBAD00000000000000000000000000000000DRAIN',
+    drainPct ? parseFloat(drainPct) : 95
+  );
+  res.json(result);
+});
+
+// 15. Incentivized Testnet Points & Airdrop Leaderboard
+apiRouter.get(['/node/airdrop/leaderboard', '/aurax/airdrop/leaderboard'], (_req: Request, res: Response) => {
+  const leaderboard = globalAuraXNode.getAirdropLeaderboard();
+  res.json({
+    totalParticipants: leaderboard.length,
+    totalPointsAllocated: leaderboard.reduce((acc, curr) => acc + curr.points, 0),
+    totalAirdropPool: 5000000,
+    leaderboard
+  });
+});
+
+apiRouter.post(['/node/airdrop/action', '/aurax/airdrop/action'], (req: Request, res: Response) => {
+  const { address, task, points } = req.body;
+  if (!address || !task) return res.status(400).json({ error: 'Missing address or task' });
+  const updated = globalAuraXNode.recordAirdropActivity(address, task, points || 100);
+  res.json({ success: true, user: updated });
+});
+
+

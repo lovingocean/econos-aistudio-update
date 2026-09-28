@@ -23,8 +23,10 @@ import {
   DollarSign,
   AlertCircle,
   Clock,
-  Award
+  Award,
+  BookOpen
 } from 'lucide-react';
+import { AuraXWhitepaper } from './AuraXWhitepaper';
 
 interface BurnEvent {
   id: string;
@@ -71,7 +73,7 @@ const INITIAL_BURN_LOG: BurnEvent[] = [
 ];
 
 export const OmniTokenomicsHub: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'METRICS' | 'PRESALE' | 'STAKING' | 'BUYBACK_BURN' | 'SMART_CONTRACT'>('METRICS');
+  const [activeTab, setActiveTab] = useState<'METRICS' | 'PRESALE' | 'STAKING' | 'BUYBACK_BURN' | 'SMART_CONTRACT' | 'WHITEPAPER'>('METRICS');
   const [copiedContract, setCopiedContract] = useState<boolean>(false);
   const [copiedTx, setCopiedTx] = useState<string | null>(null);
 
@@ -178,6 +180,13 @@ export const OmniTokenomicsHub: React.FC = () => {
                 <ShieldCheck className="w-3 h-3 text-emerald-400" />
                 <span>CertiK Audited • Base (Coinbase L2) &amp; Solana</span>
               </span>
+              <button
+                onClick={() => setActiveTab('WHITEPAPER')}
+                className="px-2.5 py-1 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-[10px] font-bold flex items-center gap-1 transition cursor-pointer"
+              >
+                <BookOpen className="w-3 h-3 text-amber-400" />
+                <span>Read Whitepaper v1.0</span>
+              </button>
             </div>
 
             <h2 className="text-xl sm:text-2xl font-black text-white font-sans tracking-tight">
@@ -349,7 +358,8 @@ export const OmniTokenomicsHub: React.FC = () => {
           { id: 'PRESALE', label: '2. Whitelist & Pre-Sale', icon: Zap, highlight: true },
           { id: 'STAKING', label: '3. Staking Vault (23.6% APY)', icon: Lock },
           { id: 'BUYBACK_BURN', label: '4. Autonomous Buyback & Burn', icon: Flame, highlight: true },
-          { id: 'SMART_CONTRACT', label: '5. AuraXToken.sol Contract', icon: FileCode }
+          { id: 'SMART_CONTRACT', label: '5. AuraXToken.sol Contract', icon: FileCode },
+          { id: 'WHITEPAPER', label: '6. Official Whitepaper v1.0', icon: BookOpen, highlight: true }
         ].map(tab => {
           const Icon = tab.icon;
           const isSelected = activeTab === tab.id;
@@ -895,6 +905,11 @@ contract AuraXToken is ERC20, ERC20Burnable, ERC20Permit, AccessControl {
             </div>
           </div>
         </div>
+      )}
+
+      {/* 9. TAB 6: OFFICIAL TECHNICAL WHITEPAPER v1.0 */}
+      {activeTab === 'WHITEPAPER' && (
+        <AuraXWhitepaper />
       )}
 
     </div>

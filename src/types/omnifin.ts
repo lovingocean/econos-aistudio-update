@@ -6,10 +6,12 @@
 
 export type OmnifinSurface = 
   | 'OVERVIEW'
+  | 'BLOCKCHAIN_L1'
   | 'MARKET'
   | 'PRIME'
   | 'ALPHA_STORE'
   | 'TOKENOMICS'
+  | 'WHITEPAPER'
   | 'WALLET'
   | 'SHIELD'
   | 'INTELLIGENCE'

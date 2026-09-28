@@ -127,6 +127,10 @@ export const CommercialAlphaStore: React.FC = () => {
   const [paymentMethod, setPaymentMethod] = useState<'CARD' | 'CRYPTO_USDC' | 'SOLANA_PAY'>('CRYPTO_USDC');
   const [isProcessingPayment, setIsProcessingPayment] = useState<boolean>(false);
   const [isPaymentSuccess, setIsPaymentSuccess] = useState<boolean>(false);
+  const [copiedTreasury, setCopiedTreasury] = useState<boolean>(false);
+
+  // Official Protocol Treasury Receiving Wallet for VIP subscriptions & licenses
+  const OFFICIAL_TREASURY_ADDRESS = '0x095871Cfed26b28f03e409AE612c0A5F1e1726cD';
 
   // Play notification beep sound when sound is enabled
   const playAlertSound = () => {
@@ -968,14 +972,48 @@ export const CommercialAlphaStore: React.FC = () => {
                 </div>
 
                 {paymentMethod === 'CRYPTO_USDC' && (
-                  <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-1 text-[11px]">
-                    <div className="text-slate-400">Send exactly <strong className="text-white">${checkoutProduct.price} USDC</strong> to:</div>
-                    <div className="font-mono text-cyan-300 text-[10px] break-all p-2 rounded bg-slate-900 border border-slate-800">
-                      0x4f88921a9420b9e8432bc178829ef10c741e21b0
+                  <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-2 text-[11px]">
+                    <div className="text-slate-400">Send exactly <strong className="text-white">${checkoutProduct.price} USDC</strong> to Protocol Treasury:</div>
+                    <div className="flex items-center justify-between p-2 rounded-lg bg-slate-900 border border-slate-800 gap-2">
+                      <code className="font-mono text-cyan-300 text-[10px] sm:text-xs break-all select-all font-bold">
+                        {OFFICIAL_TREASURY_ADDRESS}
+                      </code>
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(OFFICIAL_TREASURY_ADDRESS);
+                          setCopiedTreasury(true);
+                          setTimeout(() => setCopiedTreasury(false), 2500);
+                        }}
+                        className="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition flex items-center gap-1 shrink-0 cursor-pointer text-[10px]"
+                        title="Copy Treasury Address"
+                      >
+                        {copiedTreasury ? (
+                          <>
+                            <Check className="w-3 h-3 text-emerald-400" />
+                            <span className="text-emerald-400 font-bold">Copied</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3 text-cyan-400" />
+                            <span>Copy</span>
+                          </>
+                        )}
+                      </button>
                     </div>
-                    <div className="text-[10px] text-emerald-400 flex items-center gap-1 pt-1">
-                      <CheckCircle2 className="w-3 h-3" />
-                      <span>Zero Gas fees on Base &amp; Arbitrum network</span>
+                    <div className="flex items-center justify-between text-[10px] pt-1">
+                      <span className="text-emerald-400 flex items-center gap-1">
+                        <CheckCircle2 className="w-3 h-3" />
+                        <span>Accepted on Base &amp; Ethereum (USDC / USDT)</span>
+                      </span>
+                      <a
+                        href={`https://basescan.org/address/${OFFICIAL_TREASURY_ADDRESS}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-cyan-400 hover:underline flex items-center gap-0.5"
+                      >
+                        <span>BaseScan</span>
+                        <ExternalLink className="w-2.5 h-2.5" />
+                      </a>
                     </div>
                   </div>
                 )}

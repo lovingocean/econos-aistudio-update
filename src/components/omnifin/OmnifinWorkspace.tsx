@@ -41,7 +41,8 @@ import {
   Wallet,
   QrCode,
   Building2,
-  Flame
+  Flame,
+  BookOpen
 } from 'lucide-react';
 import { 
   OmnifinSurface, 
@@ -60,6 +61,8 @@ import { AiCryptoIntelligenceWorkspace } from './AiCryptoIntelligenceWorkspace';
 import { EnterprisePrimeDesk } from './EnterprisePrimeDesk';
 import { CommercialAlphaStore } from './CommercialAlphaStore';
 import { OmniTokenomicsHub } from './OmniTokenomicsHub';
+import { AuraXWhitepaper } from './AuraXWhitepaper';
+import { AuraXBlockchainConsole } from './AuraXBlockchainConsole';
 import {
   Web3WalletState,
   Web3Network,
@@ -484,10 +487,12 @@ STATUS: READY_FOR_SIGNATURE [TRANSACTION SIGNED & DISPATCHED]`);
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
           {[
             { id: 'OVERVIEW', label: 'Overview & Architecture', icon: Layers },
+            { id: 'BLOCKCHAIN_L1', label: '🛡️ AuraX L1 Blockchain', icon: Cpu },
             { id: 'MARKET', label: '⚡ Real-Time Exchange', icon: TrendingUp },
             { id: 'PRIME', label: 'Enterprise Prime Desk', icon: Building2 },
             { id: 'ALPHA_STORE', label: '🔥 VIP Alpha Store', icon: Flame },
             { id: 'TOKENOMICS', label: '🪙 $AURX Token Launchpad', icon: Coins },
+            { id: 'WHITEPAPER', label: '📄 Official Whitepaper', icon: BookOpen },
             { id: 'WALLET', label: '⚡ Web3 Wallet & Deposit', icon: Wallet },
             { id: 'SHIELD', label: 'Smart Contract Shield', icon: Shield },
             { id: 'INTELLIGENCE', label: 'Cross-Market Intelligence', icon: Network },
@@ -665,6 +670,11 @@ STATUS: READY_FOR_SIGNATURE [TRANSACTION SIGNED & DISPATCHED]`);
           </div>
         )}
 
+        {/* 1B. AURA-X SOVEREIGN ZERO-FRAUD LAYER-1 BLOCKCHAIN ENGINE */}
+        {activeSurface === 'BLOCKCHAIN_L1' && (
+          <AuraXBlockchainConsole />
+        )}
+
         {/* 2. REAL-TIME FINANCIAL EXCHANGE & AUTONOMOUS TRADING CORE */}
         {activeSurface === 'MARKET' && (
           <OmnifinRealtimeExchange />
@@ -680,9 +690,14 @@ STATUS: READY_FOR_SIGNATURE [TRANSACTION SIGNED & DISPATCHED]`);
           <CommercialAlphaStore />
         )}
 
-        {/* 2D. OMNIFIN $OMNI NATIVE TOKENOMICS & LAUNCHPAD HUB */}
+        {/* 2D. OMNIFIN $AURX NATIVE TOKENOMICS & LAUNCHPAD HUB */}
         {activeSurface === 'TOKENOMICS' && (
           <OmniTokenomicsHub />
+        )}
+
+        {/* 2E. AURAX PROTOCOL OFFICIAL TECHNICAL WHITEPAPER */}
+        {activeSurface === 'WHITEPAPER' && (
+          <AuraXWhitepaper />
         )}
 
         {/* 2B. WEB3 WALLET, RECEIVING ADDRESS & EXCHANGE FUNDING */}

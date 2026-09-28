@@ -44,7 +44,8 @@ import {
   CreditCard,
   Coins,
   Brain,
-  Crown
+  Crown,
+  BookOpen
 } from 'lucide-react';
 import {
   MarketInstrument,
@@ -70,6 +71,8 @@ import { AiCryptoIntelligenceWorkspace } from './AiCryptoIntelligenceWorkspace';
 import { EnterprisePrimeDesk } from './EnterprisePrimeDesk';
 import { CommercialAlphaStore } from './CommercialAlphaStore';
 import { OmniTokenomicsHub } from './OmniTokenomicsHub';
+import { AuraXWhitepaper } from './AuraXWhitepaper';
+import { AuraXBlockchainConsole } from './AuraXBlockchainConsole';
 import {
   INITIAL_EXCHANGE_INSTRUMENTS,
   INITIAL_ORDER_BOOK,
@@ -153,7 +156,7 @@ export const OmnifinRealtimeExchange: React.FC = () => {
 
   // Active Terminal View / Tab
   const [activeTerminalTab, setActiveTerminalTab] = useState<
-    'TRADING' | 'AI_INTELLIGENCE' | 'PRIME_DESK' | 'VIP_STORE' | 'TOKENOMICS' | 'WALLET_FUNDING' | 'ROUTING' | 'MARKET_MAKING' | 'SURVEILLANCE' | 'STRATEGIES' | 'CROSS_CHAIN_BANKING' | 'SOLVENCY' | 'REPLAY'
+    'TRADING' | 'BLOCKCHAIN_L1' | 'AI_INTELLIGENCE' | 'PRIME_DESK' | 'VIP_STORE' | 'TOKENOMICS' | 'WHITEPAPER' | 'WALLET_FUNDING' | 'ROUTING' | 'MARKET_MAKING' | 'SURVEILLANCE' | 'STRATEGIES' | 'CROSS_CHAIN_BANKING' | 'SOLVENCY' | 'REPLAY'
   >('TRADING');
   const [selectedAssetFilter, setSelectedAssetFilter] = useState<string>('ALL');
 
@@ -714,6 +717,16 @@ export const OmnifinRealtimeExchange: React.FC = () => {
               <span>AI Intelligence &amp; Signals</span>
             </button>
 
+            {/* 0A. L1 Blockchain Quick Launcher */}
+            <button
+              onClick={() => setActiveTerminalTab('BLOCKCHAIN_L1')}
+              className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-cyan-600 to-indigo-600 hover:brightness-110 text-white font-black flex items-center gap-1.5 transition cursor-pointer shadow-md"
+              title="Open AuraX Sovereign Layer-1 Zero-Fraud Blockchain Console"
+            >
+              <Cpu className="w-3.5 h-3.5 text-cyan-300" />
+              <span>AuraX L1</span>
+            </button>
+
             {/* 0B. VIP Alpha Store Quick Launcher */}
             <button
               onClick={() => setActiveTerminalTab('VIP_STORE')}
@@ -732,6 +745,16 @@ export const OmnifinRealtimeExchange: React.FC = () => {
             >
               <Coins className="w-3.5 h-3.5 fill-current text-yellow-300" />
               <span>$AURX Token</span>
+            </button>
+
+            {/* 0D. Whitepaper Quick Launcher */}
+            <button
+              onClick={() => setActiveTerminalTab('WHITEPAPER')}
+              className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/40 font-bold flex items-center gap-1.5 transition cursor-pointer shadow-md"
+              title="Read AuraX Protocol Technical Whitepaper"
+            >
+              <BookOpen className="w-3.5 h-3.5 text-amber-400" />
+              <span>Whitepaper</span>
             </button>
 
             {/* 1. Deposit / Receiving Address Button */}
@@ -863,10 +886,12 @@ export const OmnifinRealtimeExchange: React.FC = () => {
         <div className="flex items-center gap-1 overflow-x-auto scrollbar-none">
           {[
             { id: 'TRADING', label: 'Trading & Order Book', icon: BarChart3 },
+            { id: 'BLOCKCHAIN_L1', label: '🛡️ AuraX L1 Blockchain', icon: Cpu, highlight: true },
             { id: 'AI_INTELLIGENCE', label: 'AI Market Intelligence', icon: Brain, highlight: true },
             { id: 'PRIME_DESK', label: 'Enterprise Prime Desk', icon: Building2, highlight: true },
             { id: 'VIP_STORE', label: '🔥 VIP Alpha Store', icon: Crown, highlight: true },
             { id: 'TOKENOMICS', label: '🪙 $AURX Token', icon: Coins, highlight: true },
+            { id: 'WHITEPAPER', label: '📄 Whitepaper', icon: BookOpen, highlight: true },
             { id: 'WALLET_FUNDING', label: 'Web3 Wallet & Deposit', icon: Wallet, highlight: true },
             { id: 'ROUTING', label: 'Smart Order Routing (SOR)', icon: GitBranch },
             { id: 'MARKET_MAKING', label: 'Market Making & Skew', icon: Sliders },
@@ -1864,6 +1889,11 @@ export const OmnifinRealtimeExchange: React.FC = () => {
         </div>
       )}
 
+      {/* 7A. AURA-X SOVEREIGN ZERO-FRAUD L1 BLOCKCHAIN CONSOLE */}
+      {activeTerminalTab === 'BLOCKCHAIN_L1' && (
+        <AuraXBlockchainConsole />
+      )}
+
       {/* 7B. AI CRYPTO MARKET INTELLIGENCE & QUANTITATIVE SIGNAL ENGINE */}
       {activeTerminalTab === 'AI_INTELLIGENCE' && (
         <AiCryptoIntelligenceWorkspace />
@@ -1879,9 +1909,14 @@ export const OmnifinRealtimeExchange: React.FC = () => {
         <CommercialAlphaStore />
       )}
 
-      {/* 7E. $OMNI TOKEN LAUNCHPAD & TOKENOMICS HUB */}
+      {/* 7E. $AURX TOKEN LAUNCHPAD & TOKENOMICS HUB */}
       {activeTerminalTab === 'TOKENOMICS' && (
         <OmniTokenomicsHub />
+      )}
+
+      {/* 7F. OFFICIAL AURAX PROTOCOL TECHNICAL WHITEPAPER */}
+      {activeTerminalTab === 'WHITEPAPER' && (
+        <AuraXWhitepaper />
       )}
 
       {/* 8. WEB3 WALLET & EXCHANGE FUNDING SURFACE */}

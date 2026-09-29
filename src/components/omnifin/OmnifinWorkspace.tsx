@@ -98,8 +98,17 @@ const OPERATING_STEPS: Array<{ step: OmnifinOperatingStep; label: string; desc: 
 ];
 
 export const OmnifinWorkspace: React.FC = () => {
-  // Navigation & View state
-  const [activeSurface, setActiveSurface] = useState<OmnifinSurface>('OVERVIEW');
+  // Navigation & View state - Default to BLOCKCHAIN_L1 so users immediately see their sovereign L1 blockchain
+  const [activeSurface, setActiveSurface] = useState<OmnifinSurface>(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const urlSurface = params.get('surface');
+      if (urlSurface && ['BLOCKCHAIN_L1', 'OVERVIEW', 'MARKET', 'TOKENOMICS'].includes(urlSurface)) {
+        return urlSurface as OmnifinSurface;
+      }
+    }
+    return 'BLOCKCHAIN_L1';
+  });
   const [activeOperatingStep, setActiveOperatingStep] = useState<OmnifinOperatingStep>('OBSERVE');
   const [emergencyMode, setEmergencyMode] = useState<EmergencyMarketMode>('NORMAL');
   

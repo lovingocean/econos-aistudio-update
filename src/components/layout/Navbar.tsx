@@ -21,7 +21,10 @@ import {
   Globe2,
   Layers,
   Command,
-  Headphones
+  Headphones,
+  Wallet,
+  Trophy,
+  Home
 } from 'lucide-react';
 import { UserRole, AppLayer } from '../../types/econos';
 import { GlobalLayerSearch } from './GlobalLayerSearch';
@@ -78,6 +81,43 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [showToolsMenu, setShowToolsMenu] = useState(false);
   const [showGlobalSearch, setShowGlobalSearch] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
+  const [connectedWallet, setConnectedWallet] = useState<string | null>(null);
+  const [isConnectingWallet, setIsConnectingWallet] = useState(false);
+
+  // Auto-detect connected Web3 wallet (MetaMask)
+  useEffect(() => {
+    if (typeof window !== 'undefined' && (window as any).ethereum) {
+      (window as any).ethereum.request({ method: 'eth_accounts' })
+        .then((accounts: string[]) => {
+          if (accounts && accounts[0]) {
+            setConnectedWallet(accounts[0]);
+          }
+        })
+        .catch(() => {});
+    }
+  }, []);
+
+  const handleConnectWalletNavbar = async () => {
+    if (typeof window === 'undefined' || !(window as any).ethereum) {
+      alert('No Web3 wallet detected. Please install MetaMask browser extension.');
+      return;
+    }
+    setIsConnectingWallet(true);
+    try {
+      const accounts = await (window as any).ethereum.request({ method: 'eth_requestAccounts' });
+      if (accounts && accounts[0]) {
+        setConnectedWallet(accounts[0]);
+        // Also auto-switch to OMNIFIN AuraX blockchain layer if not already there
+        if (onSelectLayer && currentLayer !== 'OMNIFIN') {
+          onSelectLayer('OMNIFIN');
+        }
+      }
+    } catch (err: any) {
+      console.error('Wallet connection failed', err);
+    } finally {
+      setIsConnectingWallet(false);
+    }
+  };
 
   // Global Keyboard Shortcut: Cmd+K / Ctrl+K to toggle global layer search
   useEffect(() => {
@@ -330,6 +370,38 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
           )}
 
+          {/* Landing Page Overview Button */}
+          {onSelectLayer && (
+            <button
+              onClick={() => onSelectLayer('LANDING')}
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-mono font-bold transition shadow-xs cursor-pointer ${
+                currentLayer === 'LANDING'
+                  ? 'bg-purple-600 text-white border-purple-400 shadow-md ring-2 ring-purple-400/40'
+                  : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-200 shadow-sm'
+              }`}
+              title="View World-Class Billion Dollar Landing Page"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+              <span className="hidden lg:inline">Landing</span>
+            </button>
+          )}
+
+          {/* Daily Social Airdrop & NFTs Button */}
+          {onSelectLayer && (
+            <button
+              onClick={() => onSelectLayer('DAILY_AIRDROP')}
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-mono font-bold transition shadow-xs cursor-pointer ${
+                currentLayer === 'DAILY_AIRDROP'
+                  ? 'bg-amber-500 text-slate-950 border-amber-400 shadow-md ring-2 ring-amber-400/40'
+                  : 'bg-amber-50 hover:bg-amber-100 text-amber-900 border-amber-200 shadow-sm'
+              }`}
+              title="Daily Social Airdrop Quests & Proof-of-Action NFTs"
+            >
+              <Trophy className="w-3.5 h-3.5 text-amber-600" />
+              <span className="hidden md:inline">Daily Airdrop & NFTs</span>
+            </button>
+          )}
+
           {/* OMNIFIN Global Autonomous Financial Operating Layer */}
           {onSelectLayer && (
             <button
@@ -349,6 +421,32 @@ export const Navbar: React.FC<NavbarProps> = ({
               </span>
             </button>
           )}
+
+          {/* Web3 Wallet Quick Connect & AuraX L1 Network Switcher */}
+          <button
+            onClick={handleConnectWalletNavbar}
+            disabled={isConnectingWallet}
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-mono font-bold transition shadow-xs cursor-pointer ${
+              connectedWallet
+                ? 'bg-emerald-500/10 hover:bg-emerald-500/20 border-emerald-500/40 text-emerald-800'
+                : 'bg-gradient-to-r from-amber-500/10 to-orange-500/10 hover:from-amber-500/20 hover:to-orange-500/20 border-amber-500/40 text-amber-900'
+            }`}
+            title={connectedWallet ? `Connected: ${connectedWallet}` : 'Connect MetaMask to AuraX L1 (Chain ID: 9924)'}
+          >
+            <Wallet className={`w-3.5 h-3.5 ${connectedWallet ? 'text-emerald-600' : 'text-amber-600'}`} />
+            <span className="hidden sm:inline">
+              {connectedWallet
+                ? `${connectedWallet.substring(0, 6)}...${connectedWallet.substring(connectedWallet.length - 4)}`
+                : isConnectingWallet
+                ? 'Connecting...'
+                : 'Connect Wallet'}
+            </span>
+            <span className={`px-1 py-0.2 rounded text-[9px] font-black ${
+              connectedWallet ? 'bg-emerald-200 text-emerald-950' : 'bg-amber-200 text-amber-950'
+            }`}>
+              9924
+            </span>
+          </button>
 
           {/* AI Podcast Studio Button */}
           {onOpenPodcast && (

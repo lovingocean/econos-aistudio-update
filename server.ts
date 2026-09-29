@@ -2,7 +2,7 @@ import express from 'express';
 import path from 'path';
 import dotenv from 'dotenv';
 import { createServer as createViteServer } from 'vite';
-import { apiRouter } from './server/routes';
+import { apiRouter, shortUrlRegistry } from './server/routes';
 import { globalAuraXNode } from './server/blockchainNode';
 
 dotenv.config();
@@ -43,6 +43,44 @@ async function startServer() {
 
   // Mount API router
   app.use('/api', apiRouter);
+
+  // Short URL redirects for clean, high-trust social media links & referral invitations
+  app.get('/r/:refCode', (req, res) => {
+    const refCode = req.params.refCode;
+    const target = shortUrlRegistry[refCode.toLowerCase()];
+    if (target) {
+      return res.redirect(302, target);
+    }
+    res.redirect(302, `/?ref=${encodeURIComponent(refCode)}`);
+  });
+
+  app.get('/s/:slug', (req, res) => {
+    const slug = req.params.slug;
+    const target = shortUrlRegistry[slug.toLowerCase()];
+    if (target) {
+      return res.redirect(302, target);
+    }
+    res.redirect(302, `/?ref=${encodeURIComponent(slug)}`);
+  });
+
+  app.get('/join/:refCode', (req, res) => {
+    const refCode = req.params.refCode;
+    const target = shortUrlRegistry[refCode.toLowerCase()];
+    if (target) {
+      return res.redirect(302, target);
+    }
+    res.redirect(302, `/?ref=${encodeURIComponent(refCode)}`);
+  });
+
+  app.get('/testnet', (req, res) => {
+    const ref = req.query.ref ? `?ref=${encodeURIComponent(String(req.query.ref))}` : '?ref=TESTNET';
+    res.redirect(302, `/${ref}`);
+  });
+
+  app.get('/airdrop', (req, res) => {
+    const ref = req.query.ref ? `?ref=${encodeURIComponent(String(req.query.ref))}` : '?ref=AIRDROP';
+    res.redirect(302, `/${ref}`);
+  });
 
   // Direct root JSON-RPC 2.0 endpoint for Web3 wallets expecting root /rpc
   app.all('/rpc', (req, res) => {

@@ -57,6 +57,7 @@ apiRouter.use((req: Request, res: Response, next) => {
                         req.path.startsWith('/leads') ||
                         req.path.startsWith('/crypto') ||
                         req.path.startsWith('/api/crypto') ||
+                        req.path.startsWith('/shorten') ||
                         req.path === '/organizations';
 
   if (!isPublicRoute && targetOrgId) {
@@ -85,6 +86,62 @@ apiRouter.all(['/health', '/api/health'], (req, res) => {
     version: '1.0.0',
     timestamp: new Date().toISOString()
   });
+});
+
+// ================= REAL-TIME IN-MEMORY URL SHORTENER REGISTRY =================
+export const shortUrlRegistry: Record<string, string> = {
+  'vip': 'https://econos-aistudio-update.vercel.app/?ref=VIP',
+  'genesis': 'https://econos-aistudio-update.vercel.app/?ref=GENESIS',
+  'testnet': 'https://econos-aistudio-update.vercel.app/?ref=TESTNET',
+  'airdrop': 'https://econos-aistudio-update.vercel.app/?ref=AIRDROP'
+};
+
+apiRouter.post(['/shorten', '/api/shorten'], async (req, res) => {
+  try {
+    const { url, customSlug } = req.body || {};
+    const canonicalTarget = (url && typeof url === 'string' && url.trim().length > 0)
+      ? url.trim()
+      : 'https://econos-aistudio-update.vercel.app/';
+
+    const cleanSlug = customSlug 
+      ? String(customSlug).trim().toLowerCase().replace(/[^a-z0-9_-]/g, '')
+      : Math.random().toString(36).substring(2, 8);
+
+    shortUrlRegistry[cleanSlug] = canonicalTarget;
+
+    // Generate real shortened link via TinyURL API
+    let externalShortUrl = '';
+    try {
+      const tinyRes = await fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(canonicalTarget)}`, {
+        signal: AbortSignal.timeout(3000)
+      });
+      if (tinyRes.ok) {
+        externalShortUrl = (await tinyRes.text()).trim();
+      }
+    } catch (_) {}
+
+    const directShortUrl = `https://econos-aistudio-update.vercel.app/r/${cleanSlug}`;
+
+    return res.json({
+      success: true,
+      originalUrl: canonicalTarget,
+      slug: cleanSlug,
+      directShortUrl,
+      externalShortUrl: externalShortUrl || directShortUrl,
+      canonicalUrl: 'https://econos-aistudio-update.vercel.app/'
+    });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message || 'Failed to shorten URL' });
+  }
+});
+
+apiRouter.get(['/shorten/lookup/:slug', '/api/shorten/lookup/:slug'], (req, res) => {
+  const { slug } = req.params;
+  const target = shortUrlRegistry[slug.toLowerCase()];
+  if (target) {
+    return res.json({ found: true, slug, targetUrl: target });
+  }
+  return res.json({ found: false, slug, fallbackUrl: 'https://econos-aistudio-update.vercel.app/' });
 });
 
 // ================= REAL-TIME LIVE CRYPTOCURRENCY MARKET DATA =================
@@ -2628,6 +2685,50 @@ apiRouter.post(['/node/transaction/revert', '/aurax/tx/revert'], (req: Request, 
   res.json(result);
 });
 
+// 7b. Anti-Sybil Device & Location Wallet Binding & Verification
+apiRouter.post(['/node/device/bind', '/aurax/device/bind'], (req: Request, res: Response) => {
+  const { walletAddress, deviceFingerprint } = req.body;
+  if (!walletAddress) {
+    return res.status(400).json({ error: 'walletAddress is required.' });
+  }
+
+  const clientIp = (
+    (req.headers['x-forwarded-for'] as string)?.split(',')[0] ||
+    req.socket.remoteAddress ||
+    '127.0.0.1'
+  );
+
+  const result = globalAuraXNode.bindDeviceAndLocation(
+    walletAddress,
+    clientIp,
+    deviceFingerprint || (req.headers['user-agent'] as string) || ''
+  );
+
+  if (!result.allowed) {
+    return res.status(403).json(result);
+  }
+  res.json(result);
+});
+
+apiRouter.get(['/node/device/status', '/aurax/device/status'], (req: Request, res: Response) => {
+  const walletAddress = req.query.address as string;
+  const deviceFingerprint = req.query.deviceFingerprint as string;
+
+  const clientIp = (
+    (req.headers['x-forwarded-for'] as string)?.split(',')[0] ||
+    req.socket.remoteAddress ||
+    '127.0.0.1'
+  );
+
+  const status = globalAuraXNode.getDeviceSecurityStatus(
+    walletAddress,
+    clientIp,
+    deviceFingerprint || (req.headers['user-agent'] as string) || ''
+  );
+
+  res.json(status);
+});
+
 // 8. Faucet Claim: Dispenses 1,000 Free $AURX with Strict Anti-Sybil Validation
 apiRouter.post(['/node/faucet/claim', '/aurax/faucet/claim'], (req: Request, res: Response) => {
   const { recipientAddress, deviceFingerprint } = req.body;
@@ -2815,6 +2916,98 @@ apiRouter.post(['/node/airdrop/action', '/aurax/airdrop/action'], (req: Request,
   if (!address || !task) return res.status(400).json({ error: 'Missing address or task' });
   const updated = globalAuraXNode.recordAirdropActivity(address, task, points || 100);
   res.json({ success: true, user: updated });
+});
+
+// 16. Custom Token Portfolio & Token Balances
+apiRouter.get(['/node/tokens/user/:address', '/aurax/tokens/user/:address'], (req: Request, res: Response) => {
+  const address = req.params.address;
+  if (!address) return res.status(400).json({ error: 'Address required' });
+  const tokens = globalAuraXNode.getUserTokens(address);
+  res.json({ address, tokens, totalTokens: tokens.length });
+});
+
+apiRouter.post(['/node/tokens/transfer', '/aurax/tokens/transfer'], (req: Request, res: Response) => {
+  const { contractAddress, fromAddress, toAddress, amount } = req.body;
+  if (!contractAddress || !fromAddress || !toAddress || !amount) {
+    return res.status(400).json({ error: 'Missing contractAddress, fromAddress, toAddress, or amount' });
+  }
+  const result = globalAuraXNode.transferCustomToken({
+    contractAddress,
+    fromAddress,
+    toAddress,
+    amount: parseFloat(amount)
+  });
+  if (!result.success) return res.status(400).json({ error: result.error });
+  res.json(result);
+});
+
+// 17. AMM Liquidity Bootstrapping & Pool Hub
+apiRouter.get(['/node/liquidity/pools', '/aurax/liquidity/pools'], (_req: Request, res: Response) => {
+  const pools = globalAuraXNode.getLiquidityPools();
+  res.json({ pools, count: pools.length });
+});
+
+apiRouter.post(['/node/liquidity/create-pool', '/aurax/liquidity/create-pool'], (req: Request, res: Response) => {
+  const { tokenAAddress, tokenBAddress, amountA, amountB, creatorAddress, lockLp, lockDurationDays } = req.body;
+  if (!tokenAAddress || !tokenBAddress || !amountA || !amountB || !creatorAddress) {
+    return res.status(400).json({ error: 'Missing required pool seeding parameters' });
+  }
+
+  const result = globalAuraXNode.createLiquidityPool({
+    tokenAAddress,
+    tokenBAddress,
+    amountA: parseFloat(amountA),
+    amountB: parseFloat(amountB),
+    creatorAddress,
+    lockLp: lockLp !== false,
+    lockDurationDays: lockDurationDays ? parseInt(lockDurationDays) : 180
+  });
+
+  if (!result.success) return res.status(400).json({ error: result.error });
+  res.json(result);
+});
+
+apiRouter.post(['/node/liquidity/add', '/aurax/liquidity/add'], (req: Request, res: Response) => {
+  const { poolId, amountA, amountB, userAddress } = req.body;
+  if (!poolId || !amountA || !amountB || !userAddress) {
+    return res.status(400).json({ error: 'Missing poolId, amountA, amountB, or userAddress' });
+  }
+
+  const result = globalAuraXNode.addLiquidity({
+    poolId,
+    amountA: parseFloat(amountA),
+    amountB: parseFloat(amountB),
+    userAddress
+  });
+
+  if (!result.success) return res.status(400).json({ error: result.error });
+  res.json(result);
+});
+
+// 18. Viral Referral & Quests Protocol (Anti-Sybil Protected)
+apiRouter.get(['/node/referral/stats/:address', '/aurax/referral/stats/:address'], (req: Request, res: Response) => {
+  const address = req.params.address;
+  if (!address) return res.status(400).json({ error: 'Address required' });
+  const stats = globalAuraXNode.getReferralStats(address);
+  res.json(stats);
+});
+
+apiRouter.post(['/node/referral/apply', '/aurax/referral/apply'], (req: Request, res: Response) => {
+  const { refereeAddress, referrerCode, deviceFingerprint } = req.body;
+  if (!refereeAddress || !referrerCode) {
+    return res.status(400).json({ error: 'Missing refereeAddress or referrerCode' });
+  }
+
+  const clientIp = (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() || req.ip || '127.0.0.1';
+  const result = globalAuraXNode.applyReferralCode({
+    refereeAddress,
+    referrerCodeOrAddress: referrerCode,
+    clientIp,
+    deviceFingerprint: deviceFingerprint || 'unknown_fp'
+  });
+
+  if (!result.success) return res.status(400).json({ error: result.error });
+  res.json(result);
 });
 
 

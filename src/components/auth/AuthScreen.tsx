@@ -15,7 +15,8 @@ import {
   EyeOff,
   Briefcase,
   Layers,
-  ChevronRight
+  ChevronRight,
+  Wallet
 } from 'lucide-react';
 import { Organization } from '../../types/econos';
 
@@ -126,6 +127,26 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ initialTab = 'login' }) 
     }
   };
 
+  const handleWeb3WalletLogin = async () => {
+    setError(null);
+    if (typeof window === 'undefined' || !(window as any).ethereum) {
+      setError('No Web3 wallet found. Please install MetaMask browser extension.');
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const accounts = await (window as any).ethereum.request({ method: 'eth_requestAccounts' });
+      if (accounts && accounts[0]) {
+        // Authenticate as connected Web3 user
+        await login(`${accounts[0].toLowerCase()}@aurax.l1`, 'Web3WalletAuthenticatedKey');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Web3 Wallet authentication was rejected.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#f8f9f6] text-slate-900 bg-architect-grid flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 selection:bg-amber-500/20 selection:text-amber-900">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -220,8 +241,19 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ initialTab = 'login' }) 
                 </button>
               </div>
 
-              {/* Firebase Cloud Google Sign In */}
-              <div>
+              {/* Firebase Cloud Google Sign In & Web3 Wallet Auth */}
+              <div className="space-y-2.5">
+                <button
+                  type="button"
+                  id="web3-wallet-signin-btn"
+                  onClick={handleWeb3WalletLogin}
+                  disabled={submitting || isLoading}
+                  className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:brightness-110 text-white text-xs font-bold font-mono flex items-center justify-center gap-2.5 transition shadow-sm disabled:opacity-50 cursor-pointer"
+                >
+                  <Wallet className="w-4 h-4 text-white shrink-0" />
+                  <span>Sign In with Web3 Wallet (MetaMask / AuraX L1)</span>
+                </button>
+
                 <button
                   type="button"
                   id="google-signin-btn"

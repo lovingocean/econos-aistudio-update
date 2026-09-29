@@ -139,6 +139,8 @@ export interface OutcomeVerification {
 
 // Application Navigation Layers
 export type AppLayer = 
+  | 'LANDING'
+  | 'DAILY_AIRDROP'
   | 'OMNIFIN'
   | 'SOVEREIGN_COMMAND'
   | 'BUSINESS' 

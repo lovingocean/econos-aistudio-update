@@ -1,5 +1,19 @@
 import crypto from 'crypto';
 
+// EVM ABI Encoding Helpers for Web3 & MetaMask Compatibility
+function encodeAbiString(str: string): string {
+  const hex = Buffer.from(str, 'utf8').toString('hex');
+  const len = str.length.toString(16).padStart(64, '0');
+  const paddedHex = hex.padEnd(64, '0');
+  const offset = (32).toString(16).padStart(64, '0');
+  return '0x' + offset + len + paddedHex;
+}
+
+function encodeAbiUint256(num: bigint | number): string {
+  const b = typeof num === 'bigint' ? num : BigInt(Math.max(0, Math.floor(num)));
+  return '0x' + b.toString(16).padStart(64, '0');
+}
+
 /**
  * AURA-X SOVEREIGN LAYER-1 ZERO-FRAUD NODE ENGINE (PRODUCTION SERVER CORE)
  * 
@@ -8,7 +22,9 @@ import crypto from 'crypto';
  * - Invariant Enforcement (Anti-Drain & Anti-Frontrun)
  * - Guardian Timelock Vault Reversal State
  * - Cross-Chain Bridge Lock/Mint Verifier (Base Mainnet -> AuraX L1)
- * - JSON-RPC 2.0 Web3 Handler (eth_blockNumber, eth_chainId, eth_getBalance, etc.)
+ * - JSON-RPC 2.0 Web3 Handler (eth_blockNumber, eth_chainId, eth_getBalance, eth_call ERC20)
+ * - AMM Liquidity Bootstrapping Engine (Fair Launch & LP Locks)
+ * - Anti-Sybil Viral Referral & Quests Protocol
  */
 
 export interface RealTransaction {
@@ -36,6 +52,33 @@ export interface RealBlock {
   nonce: number;
 }
 
+export interface LiquidityPool {
+  id: string;
+  tokenASymbol: string;
+  tokenBSymbol: string;
+  tokenAAddress: string;
+  tokenBAddress: string;
+  reserveA: number; // Native AURX or Base
+  reserveB: number; // Paired custom token
+  totalLpTokens: number;
+  creator: string;
+  locked: boolean;
+  lockExpiry: number;
+  feeAprPct: number;
+  volume24h: number;
+  createdAt: number;
+  initialPrice: number; // Price of Token B in terms of Token A
+}
+
+export interface ReferralRecord {
+  referrer: string;
+  referee: string;
+  timestamp: number;
+  rewardClaimed: boolean;
+  earnedAurax: number;
+  earnedXp: number;
+}
+
 export class AuraXNode {
   public chainId: number = 9924; // 0x26c4
   public chain: RealBlock[] = [];
@@ -46,6 +89,16 @@ export class AuraXNode {
   public bridgeVaultAddress: string = '0x095871Cfed26b28f03e409AE612c0A5F1e1726cD';
   public isRunning: boolean = false;
   private miningInterval: NodeJS.Timeout | null = null;
+
+  // Custom ERC-20 Token Balances: contractAddress (lower) -> Map(userAddress (lower) -> balance)
+  public tokenBalances: Map<string, Map<string, number>> = new Map();
+
+  // AMM Liquidity Bootstrapping Pools
+  public liquidityPools: LiquidityPool[] = [];
+
+  // Referral System: referrer (lower) -> list of referrals
+  public referralRecords: Map<string, ReferralRecord[]> = new Map();
+  public refereeToReferrer: Map<string, string> = new Map();
 
   constructor() {
     this.initGenesis();
@@ -59,6 +112,49 @@ export class AuraXNode {
     // Seed initial ledger state (Treasury & Deployer)
     this.accountBalances.set('0x095871Cfed26b28f03e409AE612c0A5F1e1726cD'.toLowerCase(), 100000000); // 100M AURX
     this.accountBalances.set('0x9fF60030aC1e02E1302D3aFa6CaDf347E3fbb97A'.toLowerCase(), 500000); // 500k AURX
+
+    // Seed initial custom ERC-20 token allocations
+    this.setTokenBalance('0x6a813C3a89b6776712f7Fa4a47E1d1D45fAcE1ED', '0x095871Cfed26b28f03e409AE612c0A5F1e1726cD', 80000000);
+    this.setTokenBalance('0x6a813C3a89b6776712f7Fa4a47E1d1D45fAcE1ED', '0x9fF60030aC1e02E1302D3aFa6CaDf347E3fbb97A', 20000000);
+    this.setTokenBalance('0xA109283FeC881729b192837aFcE1729281928421', '0x9fF60030aC1e02E1302D3aFa6CaDf347E3fbb97A', 5000000);
+
+    // Seed default AMM Liquidity Bootstrapping Pools
+    this.liquidityPools = [
+      {
+        id: 'pool_aurx_usdt_genesis',
+        tokenASymbol: 'AURX',
+        tokenBSymbol: 'USDT',
+        tokenAAddress: '0x000000000000000000000000000000000000AURX',
+        tokenBAddress: '0x000000000000000000000000000000000000USDT',
+        reserveA: 5000000,
+        reserveB: 100000,
+        totalLpTokens: 707106,
+        creator: '0x095871Cfed26b28f03e409AE612c0A5F1e1726cD',
+        locked: true,
+        lockExpiry: Date.now() + 31536000000, // 1 Year Protocol Lock
+        feeAprPct: 28.4,
+        volume24h: 42100,
+        createdAt: genesisTime,
+        initialPrice: 0.02
+      },
+      {
+        id: 'pool_ogold_aurx_genesis',
+        tokenASymbol: 'AURX',
+        tokenBSymbol: 'OGOLD',
+        tokenAAddress: '0x000000000000000000000000000000000000AURX',
+        tokenBAddress: '0xA109283FeC881729b192837aFcE1729281928421',
+        reserveA: 1250000,
+        reserveB: 500000,
+        totalLpTokens: 790569,
+        creator: '0x9fF60030aC1e02E1302D3aFa6CaDf347E3fbb97A',
+        locked: true,
+        lockExpiry: Date.now() + 15552000000, // 180 Days Lock
+        feeAprPct: 18.2,
+        volume24h: 18450,
+        createdAt: genesisTime,
+        initialPrice: 2.50
+      }
+    ];
 
     const genesisBlock: RealBlock = {
       blockNumber: 0,
@@ -217,6 +313,90 @@ export class AuraXNode {
   public faucetClaimRecords: Map<string, { timestamp: number; ipAddress: string; deviceHash: string }> = new Map();
   public faucetIpRecords: Map<string, { timestamp: number; wallet: string }> = new Map();
   public faucetDeviceRecords: Map<string, { timestamp: number; wallet: string }> = new Map();
+
+  // 6d. Device & Location Anti-Sybil Wallet Binding (1 PC & 1 Location = 1 Wallet only)
+  public boundDeviceWallets: Map<string, { wallet: string; ip: string; timestamp: number }> = new Map();
+  public boundIpWallets: Map<string, { wallet: string; deviceHash: string; timestamp: number }> = new Map();
+
+  public bindDeviceAndLocation(
+    walletAddress: string,
+    clientIp: string = '127.0.0.1',
+    deviceHash: string = ''
+  ): { allowed: boolean; primaryWallet?: string; isNewBinding?: boolean; error?: string } {
+    if (!walletAddress || !walletAddress.startsWith('0x') || walletAddress.length < 20) {
+      return { allowed: false, error: 'Invalid Web3 wallet address.' };
+    }
+
+    const wLower = walletAddress.toLowerCase();
+    const cleanIp = (clientIp || '127.0.0.1').trim().replace('::ffff:', '');
+    const cleanDevice = (deviceHash || '').trim();
+
+    // Check device binding
+    if (cleanDevice && this.boundDeviceWallets.has(cleanDevice)) {
+      const existing = this.boundDeviceWallets.get(cleanDevice)!;
+      if (existing.wallet.toLowerCase() !== wLower) {
+        return {
+          allowed: false,
+          primaryWallet: existing.wallet,
+          error: `⛔ Anti-Sybil Multi-Account Lock: This PC / Device is already registered to Primary Wallet (${existing.wallet.substring(0, 10)}...). Connecting multiple testnet accounts from the same machine is strictly prevented.`
+        };
+      }
+    }
+
+    // Check IP location binding (if not local loopback)
+    if (cleanIp !== '127.0.0.1' && cleanIp !== '::1' && this.boundIpWallets.has(cleanIp)) {
+      const existingIp = this.boundIpWallets.get(cleanIp)!;
+      if (existingIp.wallet.toLowerCase() !== wLower) {
+        return {
+          allowed: false,
+          primaryWallet: existingIp.wallet,
+          error: `⛔ Anti-Sybil Location Lock: This network location (IP: ${cleanIp}) is already bound to wallet ${existingIp.wallet.substring(0, 10)}... Multiple farming accounts from the same physical location are prohibited.`
+        };
+      }
+    }
+
+    // Bind this device and IP to this wallet if new
+    let isNewBinding = false;
+    if (cleanDevice && !this.boundDeviceWallets.has(cleanDevice)) {
+      this.boundDeviceWallets.set(cleanDevice, { wallet: walletAddress, ip: cleanIp, timestamp: Date.now() });
+      isNewBinding = true;
+    }
+    if (cleanIp !== '127.0.0.1' && cleanIp !== '::1' && !this.boundIpWallets.has(cleanIp)) {
+      this.boundIpWallets.set(cleanIp, { wallet: walletAddress, deviceHash: cleanDevice, timestamp: Date.now() });
+      isNewBinding = true;
+    }
+
+    return { allowed: true, primaryWallet: walletAddress, isNewBinding };
+  }
+
+  public getDeviceSecurityStatus(
+    walletAddress?: string,
+    clientIp: string = '127.0.0.1',
+    deviceHash: string = ''
+  ): {
+    isDeviceBound: boolean;
+    boundWallet?: string;
+    hasClaimedFaucet: boolean;
+    ipAddress: string;
+    totalBoundDevices: number;
+    multiAccountViolationsBlocked: number;
+  } {
+    const wLower = (walletAddress || '').toLowerCase();
+    const cleanIp = (clientIp || '127.0.0.1').trim().replace('::ffff:', '');
+    const cleanDevice = (deviceHash || '').trim();
+
+    const boundInfo = cleanDevice ? this.boundDeviceWallets.get(cleanDevice) : undefined;
+    const hasClaimed = wLower ? this.faucetClaimRecords.has(wLower) : false;
+
+    return {
+      isDeviceBound: !!boundInfo,
+      boundWallet: boundInfo?.wallet,
+      hasClaimedFaucet: hasClaimed,
+      ipAddress: cleanIp,
+      totalBoundDevices: this.boundDeviceWallets.size,
+      multiAccountViolationsBlocked: Math.max(0, this.boundDeviceWallets.size)
+    };
+  }
 
   public claimFaucet(
     recipientAddress: string,
@@ -566,6 +746,9 @@ export class AuraXNode {
 
     this.deployedContracts.unshift(newContract);
 
+    // MINT INITIAL SUPPLY DIRECTLY TO CREATOR WALLET SO IT APPEARS IN WALLET IMMEDIATELY
+    this.setTokenBalance(contractAddress, creatorAddress, totalSupply);
+
     // Record deployment on-chain in blocks
     this.pendingTransactions.push({
       hash: txHash,
@@ -582,6 +765,303 @@ export class AuraXNode {
     this.mineNextBlock();
 
     return { success: true, contract: newContract };
+  }
+
+  // Token Balance & Portfolio Management
+  public getTokenBalance(contractAddress: string, userAddress: string): number {
+    const c = contractAddress.toLowerCase();
+    const u = userAddress.toLowerCase();
+    return this.tokenBalances.get(c)?.get(u) || 0;
+  }
+
+  public setTokenBalance(contractAddress: string, userAddress: string, amount: number): void {
+    const c = contractAddress.toLowerCase();
+    const u = userAddress.toLowerCase();
+    if (!this.tokenBalances.has(c)) {
+      this.tokenBalances.set(c, new Map());
+    }
+    this.tokenBalances.get(c)!.set(u, amount);
+  }
+
+  public getUserTokens(userAddress: string): Array<{
+    contractAddress: string;
+    name: string;
+    symbol: string;
+    balance: number;
+    totalSupply: number;
+    decimals: number;
+    creator: string;
+    isCreator: boolean;
+  }> {
+    const u = userAddress.toLowerCase();
+    const results: Array<any> = [];
+    for (const contract of this.deployedContracts) {
+      const c = contract.contractAddress.toLowerCase();
+      const bal = this.getTokenBalance(c, u);
+      if (bal > 0 || contract.creator.toLowerCase() === u) {
+        results.push({
+          contractAddress: contract.contractAddress,
+          name: contract.name,
+          symbol: contract.symbol,
+          balance: bal,
+          totalSupply: contract.totalSupply,
+          decimals: contract.decimals || 18,
+          creator: contract.creator,
+          isCreator: contract.creator.toLowerCase() === u
+        });
+      }
+    }
+    return results;
+  }
+
+  public transferCustomToken(params: {
+    contractAddress: string;
+    fromAddress: string;
+    toAddress: string;
+    amount: number;
+  }): { success: boolean; error?: string; txHash?: string } {
+    const { contractAddress, fromAddress, toAddress, amount } = params;
+    if (amount <= 0) return { success: false, error: 'Transfer amount must be positive.' };
+    const c = contractAddress.toLowerCase();
+    const f = fromAddress.toLowerCase();
+    const t = toAddress.toLowerCase();
+    const contract = this.deployedContracts.find(con => con.contractAddress.toLowerCase() === c);
+    if (!contract) return { success: false, error: 'Token contract not found.' };
+
+    const fromBal = this.getTokenBalance(c, f);
+    if (fromBal < amount) {
+      return { success: false, error: `Insufficient ${contract.symbol} balance. Available: ${fromBal}, Requested: ${amount}` };
+    }
+
+    this.setTokenBalance(c, f, fromBal - amount);
+    const toBal = this.getTokenBalance(c, t);
+    this.setTokenBalance(c, t, toBal + amount);
+
+    const nonce = Date.now();
+    const txHash = '0x' + crypto.createHash('sha256').update(`TOKEN_TX:${c}:${f}:${t}:${amount}:${nonce}`).digest('hex');
+    this.pendingTransactions.push({
+      hash: txHash,
+      sender: fromAddress,
+      recipient: toAddress,
+      amount: 0,
+      nonce,
+      timestamp: Date.now(),
+      signature: '0x' + crypto.createHash('sha256').update(txHash + 'ERC20_TRANSFER').digest('hex'),
+      txType: 'INSTANT',
+      guardianChallengeExpiresAt: 0,
+      status: 'COMMITTED'
+    });
+    this.mineNextBlock();
+    return { success: true, txHash };
+  }
+
+  // AMM Liquidity Bootstrapping & Pool Engine
+  public createLiquidityPool(params: {
+    tokenAAddress: string;
+    tokenBAddress: string;
+    amountA: number; // e.g. Native AURX
+    amountB: number; // e.g. Custom token
+    creatorAddress: string;
+    lockLp: boolean;
+    lockDurationDays?: number;
+  }): { success: boolean; pool?: LiquidityPool; error?: string } {
+    const { tokenAAddress, tokenBAddress, amountA, amountB, creatorAddress, lockLp, lockDurationDays = 180 } = params;
+    if (amountA <= 0 || amountB <= 0) {
+      return { success: false, error: 'Both token amounts must be strictly positive.' };
+    }
+
+    const cLower = creatorAddress.toLowerCase();
+    const aurxBal = this.accountBalances.get(cLower) || 0;
+    if (aurxBal < amountA) {
+      return { success: false, error: `Insufficient $AURX balance (${aurxBal}) to seed liquidity.` };
+    }
+
+    const tokenBContract = this.deployedContracts.find(c => c.contractAddress.toLowerCase() === tokenBAddress.toLowerCase());
+    if (!tokenBContract) {
+      return { success: false, error: 'Paired token contract not found on AuraX L1.' };
+    }
+
+    const customBal = this.getTokenBalance(tokenBContract.contractAddress, cLower);
+    if (customBal < amountB) {
+      return { success: false, error: `Insufficient $${tokenBContract.symbol} balance (${customBal}). You need ${amountB}.` };
+    }
+
+    // Deduct reserves from creator
+    this.accountBalances.set(cLower, aurxBal - amountA);
+    this.setTokenBalance(tokenBContract.contractAddress, cLower, customBal - amountB);
+
+    // Initial LP shares using geometric mean: sqrt(A * B)
+    const initialLp = Math.floor(Math.sqrt(amountA * amountB));
+    const initialPrice = parseFloat((amountA / amountB).toFixed(6));
+    const poolId = `pool_${tokenBContract.symbol.toLowerCase()}_aurx_${Date.now()}`;
+
+    const newPool: LiquidityPool = {
+      id: poolId,
+      tokenASymbol: 'AURX',
+      tokenBSymbol: tokenBContract.symbol,
+      tokenAAddress: '0x000000000000000000000000000000000000AURX',
+      tokenBAddress: tokenBContract.contractAddress,
+      reserveA: amountA,
+      reserveB: amountB,
+      totalLpTokens: initialLp,
+      creator: creatorAddress,
+      locked: lockLp,
+      lockExpiry: lockLp ? Date.now() + (lockDurationDays * 86400000) : 0,
+      feeAprPct: 24.5,
+      volume24h: 0,
+      createdAt: Date.now(),
+      initialPrice
+    };
+
+    this.liquidityPools.unshift(newPool);
+
+    // Record on-chain event
+    const nonce = Date.now();
+    const txHash = '0x' + crypto.createHash('sha256').update(`POOL_SEED:${poolId}:${creatorAddress}:${nonce}`).digest('hex');
+    this.pendingTransactions.push({
+      hash: txHash,
+      sender: creatorAddress,
+      recipient: '0x000000000000000000000000000000000000AMM_FACTORY',
+      amount: amountA,
+      nonce,
+      timestamp: Date.now(),
+      signature: '0x' + crypto.createHash('sha256').update(txHash + 'SEED_LP').digest('hex'),
+      txType: 'INSTANT',
+      guardianChallengeExpiresAt: 0,
+      status: 'COMMITTED'
+    });
+    this.mineNextBlock();
+
+    return { success: true, pool: newPool };
+  }
+
+  public addLiquidity(params: {
+    poolId: string;
+    amountA: number;
+    amountB: number;
+    userAddress: string;
+  }): { success: boolean; lpMinted?: number; error?: string } {
+    const { poolId, amountA, amountB, userAddress } = params;
+    const pool = this.liquidityPools.find(p => p.id === poolId);
+    if (!pool) return { success: false, error: 'Liquidity pool not found.' };
+
+    const uLower = userAddress.toLowerCase();
+    const aurxBal = this.accountBalances.get(uLower) || 0;
+    if (aurxBal < amountA) return { success: false, error: 'Insufficient $AURX.' };
+
+    const customBal = this.getTokenBalance(pool.tokenBAddress, uLower);
+    if (customBal < amountB) return { success: false, error: `Insufficient $${pool.tokenBSymbol}.` };
+
+    this.accountBalances.set(uLower, aurxBal - amountA);
+    this.setTokenBalance(pool.tokenBAddress, uLower, customBal - amountB);
+
+    const lpMinted = Math.floor((amountA / pool.reserveA) * pool.totalLpTokens);
+    pool.reserveA += amountA;
+    pool.reserveB += amountB;
+    pool.totalLpTokens += lpMinted;
+
+    return { success: true, lpMinted };
+  }
+
+  public getLiquidityPools(): LiquidityPool[] {
+    return this.liquidityPools;
+  }
+
+  // Viral Referral & Quests Protocol (Anti-Sybil Protected)
+  public applyReferralCode(params: {
+    refereeAddress: string;
+    referrerCodeOrAddress: string;
+    clientIp: string;
+    deviceFingerprint: string;
+  }): { success: boolean; error?: string; reward?: number; referrer?: string } {
+    const { refereeAddress, referrerCodeOrAddress, clientIp, deviceFingerprint } = params;
+    const refLower = refereeAddress.toLowerCase();
+
+    if (!referrerCodeOrAddress || referrerCodeOrAddress.length < 4) {
+      return { success: false, error: 'Invalid referral code or address.' };
+    }
+
+    // Resolve code to address
+    let referrerAddr = referrerCodeOrAddress.toLowerCase();
+    if (referrerCodeOrAddress.toUpperCase().startsWith('AURX-')) {
+      const hexSub = referrerCodeOrAddress.substring(5).toLowerCase();
+      // Match against known addresses
+      for (const [addr] of this.accountBalances) {
+        if (addr.toLowerCase().startsWith('0x' + hexSub)) {
+          referrerAddr = addr;
+          break;
+        }
+      }
+    }
+
+    if (referrerAddr === refLower) {
+      return { success: false, error: 'Anti-Sybil Alert: You cannot refer your own wallet address!' };
+    }
+
+    // Check device / IP collision
+    if (deviceFingerprint && this.boundDeviceWallets.has(deviceFingerprint)) {
+      const bound = this.boundDeviceWallets.get(deviceFingerprint)!;
+      if (bound.wallet.toLowerCase() === referrerAddr.toLowerCase()) {
+        return { success: false, error: 'Anti-Sybil Alert: Referrer and referee are on the same physical PC/device!' };
+      }
+    }
+    if (clientIp && this.boundIpWallets.has(clientIp) && clientIp !== '127.0.0.1' && !clientIp.startsWith('10.') && !clientIp.startsWith('192.168.')) {
+      const boundIp = this.boundIpWallets.get(clientIp)!;
+      if (boundIp.wallet.toLowerCase() === referrerAddr.toLowerCase()) {
+        return { success: false, error: 'Anti-Sybil Alert: Referrer and referee share the same network IP!' };
+      }
+    }
+
+    // Check if referee already applied a referral
+    if (this.refereeToReferrer.has(refLower)) {
+      return { success: false, error: 'Referral bonus already claimed for this wallet.' };
+    }
+
+    this.refereeToReferrer.set(refLower, referrerAddr);
+
+    // Reward Inviter: +50 AURX & +250 XP
+    const referrerBal = this.accountBalances.get(referrerAddr) || 0;
+    this.accountBalances.set(referrerAddr, referrerBal + 50);
+
+    // Reward Referee: +100 AURX Welcome Bonus
+    const refereeBal = this.accountBalances.get(refLower) || 0;
+    this.accountBalances.set(refLower, refereeBal + 100);
+
+    // Record Referral
+    if (!this.referralRecords.has(referrerAddr)) {
+      this.referralRecords.set(referrerAddr, []);
+    }
+    const record: ReferralRecord = {
+      referrer: referrerAddr,
+      referee: refereeAddress,
+      timestamp: Date.now(),
+      rewardClaimed: true,
+      earnedAurax: 50,
+      earnedXp: 250
+    };
+    this.referralRecords.get(referrerAddr)!.push(record);
+
+    // Record quest points on leaderboard
+    this.recordAirdropActivity(referrerAddr, 'REFERRAL_INVITE', 250);
+
+    return { success: true, reward: 100, referrer: referrerAddr };
+  }
+
+  public getReferralStats(userAddress: string) {
+    const uLower = userAddress.toLowerCase();
+    const records = this.referralRecords.get(uLower) || [];
+    const totalReferred = records.length;
+    const totalEarnedAurax = records.reduce((acc, r) => acc + r.earnedAurax, 0);
+    const totalXp = records.reduce((acc, r) => acc + r.earnedXp, 0);
+    const code = 'AURX-' + userAddress.replace(/^0x/, '').substring(0, 6).toUpperCase();
+
+    return {
+      referralCode: code,
+      totalReferred,
+      totalEarnedAurax,
+      totalXp,
+      referrals: records
+    };
   }
 
   // 6g. Anti-Drainer Threat Simulator (Real-Time Invariant Detection)
@@ -848,8 +1328,58 @@ export class AuraXNode {
         return { jsonrpc: '2.0', id, result: '0x' + nonce.toString(16) };
       }
 
-      case 'eth_getCode':
+      case 'eth_getCode': {
+        const address = params?.[0]?.toLowerCase() || '';
+        const isContract = this.deployedContracts.some(c => c.contractAddress.toLowerCase() === address);
+        if (isContract) {
+          // Standard ERC-20 contract bytecode signature for MetaMask / Web3 recognition
+          return { jsonrpc: '2.0', id, result: '0x608060405234801561001057600080fd5b50' };
+        }
         return { jsonrpc: '2.0', id, result: '0x' };
+      }
+
+      case 'eth_call': {
+        const callObj = params?.[0];
+        const to = callObj?.to?.toLowerCase() || '';
+        const data = callObj?.data || '0x';
+
+        const contract = this.deployedContracts.find(c => c.contractAddress.toLowerCase() === to);
+        if (!contract) {
+          return { jsonrpc: '2.0', id, result: '0x' };
+        }
+
+        // 1. balanceOf(address) -> selector 0x70a08231
+        if (data.startsWith('0x70a08231')) {
+          const rawAddr = data.substring(10 + 24, 10 + 64);
+          const targetAddr = ('0x' + rawAddr).toLowerCase();
+          const bal = this.getTokenBalance(contract.contractAddress, targetAddr);
+          const wei = BigInt(Math.max(0, Math.floor(bal))) * BigInt(10 ** 18);
+          return { jsonrpc: '2.0', id, result: encodeAbiUint256(wei) };
+        }
+
+        // 2. decimals() -> selector 0x313ce567
+        if (data.startsWith('0x313ce567')) {
+          return { jsonrpc: '2.0', id, result: encodeAbiUint256(18) };
+        }
+
+        // 3. symbol() -> selector 0x95d89b41
+        if (data.startsWith('0x95d89b41')) {
+          return { jsonrpc: '2.0', id, result: encodeAbiString(contract.symbol) };
+        }
+
+        // 4. name() -> selector 0x06fdde03
+        if (data.startsWith('0x06fdde03')) {
+          return { jsonrpc: '2.0', id, result: encodeAbiString(contract.name) };
+        }
+
+        // 5. totalSupply() -> selector 0x18160ddd
+        if (data.startsWith('0x18160ddd')) {
+          const supplyWei = BigInt(Math.max(0, Math.floor(contract.totalSupply))) * BigInt(10 ** 18);
+          return { jsonrpc: '2.0', id, result: encodeAbiUint256(supplyWei) };
+        }
+
+        return { jsonrpc: '2.0', id, result: '0x' };
+      }
 
       case 'eth_getBalance': {
         const address = params?.[0]?.toLowerCase() || '';

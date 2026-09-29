@@ -50,6 +50,8 @@ import { LayerActivityHeatmap } from './components/layout/LayerActivityHeatmap';
 import { SystemTelemetryFeed } from './components/telemetry/SystemTelemetryFeed';
 import { EconosIlluminatePodcast } from './components/podcast/EconosIlluminatePodcast';
 import { OmnifinWorkspace } from './components/omnifin/OmnifinWorkspace';
+import { BillionDollarLandingPage } from './components/landing/BillionDollarLandingPage';
+import { AuraXDailySocialAirdropNFT } from './components/omnifin/AuraXDailySocialAirdropNFT';
 import { AppLayer } from './types/econos';
 import { 
   Building2, 
@@ -68,7 +70,16 @@ import { ErrorBoundary } from './components/layout/ErrorBoundary';
 
 const AppContent: React.FC = () => {
   const { user, isLoading, isAuthenticated, openOnboarding, setOpenOnboarding } = useAuth();
-  const [currentLayer, setCurrentLayer] = useState<AppLayer>('BUSINESS');
+  // Default to LANDING (World-Class Billion-Dollar Landing Page) unless layer or referral code is specified
+  const [currentLayer, setCurrentLayer] = useState<AppLayer>(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const urlLayer = params.get('layer');
+      if (urlLayer) return urlLayer as AppLayer;
+      if (params.get('ref')) return 'OMNIFIN';
+    }
+    return 'LANDING';
+  });
   const [isTestModalOpen, setIsTestModalOpen] = useState(false);
   const [isOnboardingModalOpen, setIsOnboardingModalOpen] = useState(false);
   const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
@@ -111,6 +122,16 @@ const AppContent: React.FC = () => {
     );
   }
 
+  if (currentLayer === 'LANDING') {
+    return (
+      <BillionDollarLandingPage
+        onEnterTestnet={() => setCurrentLayer('OMNIFIN')}
+        onEnterAirdrop={() => setCurrentLayer('DAILY_AIRDROP')}
+        onSelectLayer={(l) => setCurrentLayer(l)}
+      />
+    );
+  }
+
   if (!isAuthenticated || !user) {
     return <AuthScreen />;
   }
@@ -149,6 +170,12 @@ const AppContent: React.FC = () => {
         {/* Dynamic Layer Content */}
         <div className="transition-all duration-200">
           <ErrorBoundary key={currentLayer} fallbackTitle={`Layer Shield (${currentLayer})`} onReset={() => setCurrentLayer('BUSINESS')}>
+          {currentLayer === 'DAILY_AIRDROP' && (
+            <div className="space-y-6">
+              <AuraXDailySocialAirdropNFT />
+            </div>
+          )}
+
           {currentLayer === 'OMNIFIN' && (
             <OmnifinWorkspace />
           )}

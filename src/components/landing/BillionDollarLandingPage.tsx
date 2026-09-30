@@ -21,7 +21,8 @@ import {
   Activity,
   CheckCircle2,
   Database,
-  Coins
+  Coins,
+  Target
 } from 'lucide-react';
 import { AppLayer } from '../../types/econos';
 import {
@@ -93,6 +94,16 @@ export const BillionDollarLandingPage: React.FC<BillionDollarLandingPageProps> =
           <div className="flex items-center gap-3">
             <button
               type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('open-buyer-funnel'))}
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs font-mono font-bold transition cursor-pointer"
+            >
+              <Target className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
+              <span className="hidden md:inline">Client ROI &amp; Checkout</span>
+              <span className="md:hidden">ROI Audit</span>
+            </button>
+
+            <button
+              type="button"
               onClick={onEnterAirdrop}
               className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 text-xs font-mono font-bold transition cursor-pointer"
             >
@@ -130,24 +141,33 @@ export const BillionDollarLandingPage: React.FC<BillionDollarLandingPageProps> =
           </p>
 
           {/* Hero CTAs */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 font-mono text-xs font-black">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4 font-mono text-xs font-black">
             <button
               type="button"
               onClick={onEnterTestnet}
-              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-600 hover:from-cyan-300 hover:to-purple-500 text-slate-950 flex items-center justify-center gap-2.5 shadow-xl shadow-cyan-500/25 transition cursor-pointer text-sm"
+              className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-600 hover:from-cyan-300 hover:to-purple-500 text-slate-950 flex items-center justify-center gap-2 shadow-xl shadow-cyan-500/25 transition cursor-pointer text-xs"
             >
               <Cpu className="w-4 h-4 text-slate-950" />
-              <span>Launch Genesis Node & Testnet</span>
+              <span>Launch Genesis Node &amp; Testnet</span>
               <ArrowRight className="w-4 h-4 text-slate-950" />
             </button>
 
             <button
               type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('open-buyer-funnel'))}
+              className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 flex items-center justify-center gap-2 shadow-xl shadow-emerald-500/20 transition cursor-pointer text-xs font-black"
+            >
+              <Target className="w-4 h-4 text-slate-950" />
+              <span>Free 3-Min Financial ROI &amp; Prop Audit</span>
+            </button>
+
+            <button
+              type="button"
               onClick={onEnterAirdrop}
-              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-slate-900/90 hover:bg-slate-800 text-white border border-slate-700 flex items-center justify-center gap-2.5 transition cursor-pointer text-sm shadow-md"
+              className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-slate-900/90 hover:bg-slate-800 text-white border border-slate-700 flex items-center justify-center gap-2 transition cursor-pointer text-xs shadow-md"
             >
               <Trophy className="w-4 h-4 text-amber-400" />
-              <span>Join Daily Social Airdrop & Mint NFTs</span>
+              <span>Airdrop &amp; NFTs</span>
             </button>
           </div>
 
@@ -196,6 +216,63 @@ export const BillionDollarLandingPage: React.FC<BillionDollarLandingPageProps> =
                 <div className="text-[10px] text-slate-400 uppercase">Real-World Layers</div>
                 <div className="text-base font-black text-amber-400">100 Production Layers</div>
               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Live Autonomous Revenue & Burn Ticker Strip */}
+        <div className="mt-8 max-w-5xl mx-auto rounded-3xl bg-gradient-to-r from-amber-950/40 via-slate-950 to-indigo-950/40 border border-amber-500/30 p-5 font-mono shadow-xl">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                <span className="text-xs font-bold text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
+                  <Flame className="w-3.5 h-3.5 text-amber-400" />
+                  <span>30% Automated Gross Revenue Buyback &amp; Burn Ledger</span>
+                </span>
+              </div>
+              <p className="text-xs text-slate-300 font-sans">
+                Every exchange trade, prop desk fee, and SaaS subscription automatically market-buys $AURX and destroys it permanently on Base.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2 flex-wrap shrink-0">
+              <button
+                type="button"
+                onClick={() => window.dispatchEvent(new CustomEvent('open-buyer-funnel'))}
+                className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition cursor-pointer shadow-md flex items-center gap-1.5"
+              >
+                <Target className="w-3.5 h-3.5" />
+                <span>Calculate Your Client ROI</span>
+              </button>
+              <a
+                href="https://basescan.org/token/0x6a813C3a89b6776712f7Fa4a47E1d1D45fAcE1ED"
+                target="_blank"
+                rel="noreferrer"
+                className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-bold transition flex items-center gap-1.5 border border-slate-800"
+              >
+                <ExternalLink className="w-3.5 h-3.5 text-cyan-400" />
+                <span>BaseScan Verification</span>
+              </a>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 pt-4 border-t border-slate-800/80 text-center">
+            <div className="p-3 rounded-2xl bg-slate-950/80 border border-slate-800/80">
+              <div className="text-[10px] text-slate-400 uppercase">Gross Platform Revenue</div>
+              <div className="text-base font-black text-white mt-0.5">$1,425,890</div>
+            </div>
+            <div className="p-3 rounded-2xl bg-slate-950/80 border border-slate-800/80">
+              <div className="text-[10px] text-slate-400 uppercase">30% Hardcoded Burn Sink</div>
+              <div className="text-base font-black text-amber-400 mt-0.5">$427,767</div>
+            </div>
+            <div className="p-3 rounded-2xl bg-slate-950/80 border border-slate-800/80">
+              <div className="text-[10px] text-slate-400 uppercase">Tokens Burned To Date</div>
+              <div className="text-base font-black text-rose-400 mt-0.5">427,767 $AURX</div>
+            </div>
+            <div className="p-3 rounded-2xl bg-slate-950/80 border border-slate-800/80">
+              <div className="text-[10px] text-slate-400 uppercase">Circulating Supply on Base</div>
+              <div className="text-base font-black text-emerald-400 mt-0.5">99,572,233 (Falling)</div>
             </div>
           </div>
         </div>

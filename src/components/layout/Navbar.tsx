@@ -24,7 +24,8 @@ import {
   Headphones,
   Wallet,
   Trophy,
-  Home
+  Home,
+  Target
 } from 'lucide-react';
 import { UserRole, AppLayer } from '../../types/econos';
 import { GlobalLayerSearch } from './GlobalLayerSearch';
@@ -39,6 +40,7 @@ interface NavbarProps {
   onOpenSolutions?: () => void;
   onOpenPodcast?: () => void;
   onOpenOnboarding?: () => void;
+  onOpenBuyerFunnel?: () => void;
   currentLayer?: AppLayer;
   onSelectLayer?: (layer: AppLayer) => void;
 }
@@ -53,6 +55,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenSolutions,
   onOpenPodcast,
   onOpenOnboarding,
+  onOpenBuyerFunnel,
   currentLayer,
   onSelectLayer
 }) => {
@@ -252,6 +255,19 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Right: Security, Commercial & Role Testing Controls */}
         <div className="flex items-center gap-2">
           
+          {/* Billion-Dollar Buyer Funnel & Sales Machine Button */}
+          {onOpenBuyerFunnel && (
+            <button
+              onClick={onOpenBuyerFunnel}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 hover:brightness-110 text-white text-xs font-mono font-bold transition shadow-sm cursor-pointer"
+              title="Launch Autonomous Buyer Acquisition Funnel & Client Revenue Machine"
+            >
+              <Target className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
+              <span className="hidden sm:inline">Buyer Funnel</span>
+              <span className="text-[10px] px-1.5 py-0.2 rounded bg-black/25 text-amber-200 font-mono font-bold">$$$</span>
+            </button>
+          )}
+
           {/* Active Plan & Pricing Button */}
           <button
             onClick={onOpenPricing}
@@ -283,8 +299,22 @@ export const Navbar: React.FC<NavbarProps> = ({
             {showCommercialMenu && (
               <div className="absolute right-0 mt-1 w-56 rounded-xl bg-white border border-slate-200 shadow-xl py-1 z-50 text-xs font-mono">
                 <div className="px-3 py-1.5 text-[10px] text-slate-400 uppercase border-b border-slate-100 font-bold">
-                  Commercial & Pricing OS
+                  Commercial &amp; Pricing OS
                 </div>
+
+                {onOpenBuyerFunnel && (
+                  <button
+                    onClick={() => {
+                      onOpenBuyerFunnel();
+                      setShowCommercialMenu(false);
+                    }}
+                    className="w-full text-left px-3 py-2 hover:bg-emerald-50 transition flex items-center gap-2 text-emerald-800 font-bold bg-emerald-50/50"
+                  >
+                    <Target className="w-3.5 h-3.5 text-emerald-600 animate-pulse" />
+                    <span>🎯 Buyer Funnel ($ Machine)</span>
+                  </button>
+                )}
+
                 <button
                   onClick={() => {
                     onOpenPricing();
@@ -293,7 +323,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   className="w-full text-left px-3 py-2 hover:bg-slate-50 transition flex items-center gap-2 text-slate-700"
                 >
                   <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                  <span>Pricing & Tiers</span>
+                  <span>Pricing &amp; Tiers</span>
                 </button>
 
                 <button

@@ -109,29 +109,17 @@ apiRouter.post(['/shorten', '/api/shorten'], async (req, res) => {
 
     shortUrlRegistry[cleanSlug] = canonicalTarget;
 
-    // Generate real shortened link via TinyURL API
-    let externalShortUrl = '';
-    try {
-      const tinyRes = await fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(canonicalTarget)}`, {
-        signal: AbortSignal.timeout(3000)
-      });
-      if (tinyRes.ok) {
-        externalShortUrl = (await tinyRes.text()).trim();
-      }
-    } catch (_) {}
-
-    const directShortUrl = `https://econos-aistudio-update.vercel.app/r/${cleanSlug}`;
+    const directUrl = `https://econos-aistudio-update.vercel.app/?ref=${cleanSlug}`;
 
     return res.json({
       success: true,
       originalUrl: canonicalTarget,
       slug: cleanSlug,
-      directShortUrl,
-      externalShortUrl: externalShortUrl || directShortUrl,
+      directUrl,
       canonicalUrl: 'https://econos-aistudio-update.vercel.app/'
     });
   } catch (err: any) {
-    return res.status(500).json({ error: err.message || 'Failed to shorten URL' });
+    return res.status(500).json({ error: err.message || 'Failed to process URL' });
   }
 });
 

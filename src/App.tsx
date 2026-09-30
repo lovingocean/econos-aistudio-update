@@ -52,6 +52,7 @@ import { EconosIlluminatePodcast } from './components/podcast/EconosIlluminatePo
 import { OmnifinWorkspace } from './components/omnifin/OmnifinWorkspace';
 import { BillionDollarLandingPage } from './components/landing/BillionDollarLandingPage';
 import { AuraXDailySocialAirdropNFT } from './components/omnifin/AuraXDailySocialAirdropNFT';
+import { BillionDollarBuyerFunnelModal } from './components/commercial/BillionDollarBuyerFunnelModal';
 import { AppLayer } from './types/econos';
 import { 
   Building2, 
@@ -89,6 +90,7 @@ const AppContent: React.FC = () => {
   const [isRoadmapOpen, setIsRoadmapOpen] = useState(false);
   const [isSolutionsOpen, setIsSolutionsOpen] = useState(false);
   const [isPodcastModalOpen, setIsPodcastModalOpen] = useState(false);
+  const [isBuyerFunnelOpen, setIsBuyerFunnelOpen] = useState(false);
 
   // Sync AuthContext openOnboarding state with local onboarding modal state
   React.useEffect(() => {
@@ -106,8 +108,13 @@ const AppContent: React.FC = () => {
     const handler = (e: any) => {
       if (e.detail) setCurrentLayer(e.detail);
     };
+    const buyerFunnelHandler = () => setIsBuyerFunnelOpen(true);
     window.addEventListener('navigate-layer', handler);
-    return () => window.removeEventListener('navigate-layer', handler);
+    window.addEventListener('open-buyer-funnel', buyerFunnelHandler);
+    return () => {
+      window.removeEventListener('navigate-layer', handler);
+      window.removeEventListener('open-buyer-funnel', buyerFunnelHandler);
+    };
   }, []);
 
   if (isLoading && !user) {
@@ -155,6 +162,7 @@ const AppContent: React.FC = () => {
         onOpenSolutions={() => setIsSolutionsOpen(true)}
         onOpenPodcast={() => setIsPodcastModalOpen(true)}
         onOpenOnboarding={() => setIsOnboardingModalOpen(true)}
+        onOpenBuyerFunnel={() => setIsBuyerFunnelOpen(true)}
         currentLayer={currentLayer}
         onSelectLayer={setCurrentLayer}
       />
@@ -460,6 +468,16 @@ const AppContent: React.FC = () => {
       <EconosIlluminatePodcast
         isOpen={isPodcastModalOpen}
         onClose={() => setIsPodcastModalOpen(false)}
+      />
+
+      {/* Billion-Dollar Buyer Funnel & Client Acquisition Engine */}
+      <BillionDollarBuyerFunnelModal
+        isOpen={isBuyerFunnelOpen}
+        onClose={() => setIsBuyerFunnelOpen(false)}
+        onOpenPricing={() => {
+          setIsBuyerFunnelOpen(false);
+          setIsPricingModalOpen(true);
+        }}
       />
     </div>
   );

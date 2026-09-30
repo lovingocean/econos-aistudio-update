@@ -399,10 +399,10 @@ export const OmniTokenomicsHub: React.FC = () => {
             <div className="space-y-3">
               {[
                 { name: 'Community Staking & Protocol Liquidity', percent: 30, tokens: '30,000,000', unlock: '4-year linear decay', color: 'bg-emerald-400' },
-                { name: 'AuraX Foundation & Strategic Treasury', percent: 25, tokens: '25,000,000', unlock: '12-month cliff, 36m vesting', color: 'bg-amber-400' },
+                { name: 'Founding Team & Core Engineers', percent: 25, tokens: '25,000,000', unlock: '10% at TGE, 24m linear (No 1-year cliff)', color: 'bg-purple-400' },
                 { name: 'Public Sale & Launchpad IDO', percent: 20, tokens: '20,000,000', unlock: '25% at TGE, 75% over 6 months', color: 'bg-cyan-400' },
-                { name: 'Founding Team & Core Engineers', percent: 15, tokens: '15,000,000', unlock: '12-month cliff, 36m vesting', color: 'bg-purple-400' },
-                { name: 'Ecosystem Grants & Market Makers', percent: 10, tokens: '10,000,000', unlock: '100% unlocked at TGE for CEX', color: 'bg-blue-400' }
+                { name: 'AuraX Foundation & Strategic Treasury', percent: 15, tokens: '15,000,000', unlock: 'Multi-sig governance timelock', color: 'bg-amber-400' },
+                { name: 'Ecosystem Grants & Market Makers', percent: 10, tokens: '10,000,000', unlock: '100% unlocked at TGE for CEX/DEX depth', color: 'bg-blue-400' }
               ].map((item, idx) => (
                 <div key={idx} className="p-3.5 rounded-2xl bg-slate-950 border border-slate-800 space-y-2">
                   <div className="flex justify-between items-center text-xs">

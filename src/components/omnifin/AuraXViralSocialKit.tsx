@@ -36,10 +36,7 @@ import {
   RefreshCw,
   Eye,
   Terminal,
-  Search,
-  Link2,
-  Scissors,
-  QrCode
+  Search
 } from 'lucide-react';
 import {
   OPERATING_LOOP_STEPS,
@@ -62,42 +59,18 @@ export const AuraXViralSocialKit: React.FC<AuraXViralSocialKitProps> = ({
   className = ''
 }) => {
   // Navigation tabs within the Social Suite
-  const [activeMainTab, setActiveMainTab] = useState<'100_LAYERS_SOLUTION' | 'URL_SHORTENER' | 'BRAND_PAGES' | 'EXCLUSIVE_FEATURES' | 'VIRAL_POSTS' | 'MEDIA_ASSETS'>('URL_SHORTENER');
+  const [activeMainTab, setActiveMainTab] = useState<'100_LAYERS_SOLUTION' | 'BRAND_PAGES' | 'EXCLUSIVE_FEATURES' | 'VIRAL_POSTS' | 'MEDIA_ASSETS'>('100_LAYERS_SOLUTION');
   const [selected100LayerTab, setSelected100LayerTab] = useState<'12_STEP_LOOP' | 'BUSINESS_25' | 'WEALTH_20' | 'TRUST_28' | 'OMNIFIN_GLOBAL' | 'MANIFESTO_POSTS'>('12_STEP_LOOP');
   const [moduleSearch, setModuleSearch] = useState<string>('');
   const [selectedPlatform, setSelectedPlatform] = useState<'TWITTER' | 'LINKEDIN' | 'FACEBOOK'>('TWITTER');
   const [selectedTemplate, setSelectedTemplate] = useState<'VIRAL_AIRDROP' | 'TECH_L1' | 'TWITTER_PUNCHY'>('VIRAL_AIRDROP');
-  const [linkFormat, setLinkFormat] = useState<'SHORT_SERVER' | 'BRANDED_DOMAIN' | 'VANITY'>('SHORT_SERVER');
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
 
   const cleanCode = referralCode || (walletAddress ? 'AURX-' + walletAddress.substring(2, 8).toUpperCase() : 'AURX-GENESIS');
 
-  // Compute clean short links using the real Vercel production domain
-  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://econos-aistudio-update.vercel.app';
+  // Direct, instant canonical URL — zero redirects, zero third-party delay, opens our site immediately
   const vercelDomain = 'https://econos-aistudio-update.vercel.app';
-  const shortServerUrl = `${origin}/r/${cleanCode}`;
-  const brandedDomainUrl = `${vercelDomain}/r/${cleanCode}`;
-  const vanityUrl = `${vercelDomain}/r/vip`;
-
-  // Live URL Shortener state
-  const [shortenerTarget, setShortenerTarget] = useState<string>(`${vercelDomain}/?ref=${cleanCode}`);
-  const [customAlias, setCustomAlias] = useState<string>('vip');
-  const [createdShortLink, setCreatedShortLink] = useState<string>(`${vercelDomain}/r/vip`);
-  const [tinyShortLink, setTinyShortLink] = useState<string>('');
-  const [isGeneratingShort, setIsGeneratingShort] = useState<boolean>(false);
-  const [recentShortLinks, setRecentShortLinks] = useState<Array<{ alias: string; short: string; original: string; date: string }>>([
-    { alias: 'vip', short: `${vercelDomain}/r/vip`, original: `${vercelDomain}/?ref=VIP`, date: 'Official High-Roller' },
-    { alias: 'genesis', short: `${vercelDomain}/r/genesis`, original: `${vercelDomain}/?ref=GENESIS`, date: 'Genesis Node' },
-    { alias: 'testnet', short: `${vercelDomain}/testnet`, original: `${vercelDomain}/?ref=TESTNET`, date: 'Direct Incentivized Testnet' },
-    { alias: 'airdrop', short: `${vercelDomain}/airdrop`, original: `${vercelDomain}/?ref=AIRDROP`, date: 'Genesis Airdrop Portal' },
-    { alias: cleanCode.toLowerCase(), short: `${vercelDomain}/r/${cleanCode.toLowerCase()}`, original: `${vercelDomain}/?ref=${cleanCode}`, date: 'Your Verified Personal Ref' }
-  ]);
-
-  const activeLink = linkFormat === 'SHORT_SERVER'
-    ? shortServerUrl
-    : linkFormat === 'BRANDED_DOMAIN'
-      ? brandedDomainUrl
-      : createdShortLink;
+  const activeLink = `${vercelDomain}/?ref=${cleanCode}`;
 
   const englishHashtags = '#AuraX #Layer1 #Blockchain #CryptoAirdrop #Testnet #Web3 #Crypto #AirdropAlert #FreeCrypto #DeFi #Ethereum #Solana #Bitcoin #Giveaway #EarnCrypto';
 
@@ -105,39 +78,6 @@ export const AuraXViralSocialKit: React.FC<AuraXViralSocialKitProps> = ({
     navigator.clipboard.writeText(text);
     setCopiedKey(key);
     setTimeout(() => setCopiedKey(null), 2500);
-  };
-
-  const handleGenerateShortLink = async () => {
-    setIsGeneratingShort(true);
-    const slug = (customAlias.trim() || cleanCode).toLowerCase().replace(/[^a-z0-9_-]/g, '');
-    const nativeShort = `${vercelDomain}/r/${slug}`;
-    setCreatedShortLink(nativeShort);
-
-    try {
-      const res = await fetch('/api/shorten', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: shortenerTarget, customSlug: slug })
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (data.directShortUrl) {
-          setCreatedShortLink(data.directShortUrl);
-        }
-        if (data.externalShortUrl && data.externalShortUrl !== data.directShortUrl) {
-          setTinyShortLink(data.externalShortUrl);
-        }
-      }
-    } catch (_) {}
-
-    // Add to recent list if not already present
-    setRecentShortLinks(prev => [
-      { alias: slug, short: nativeShort, original: shortenerTarget, date: 'Just now' },
-      ...prev.filter(p => p.alias !== slug).slice(0, 7)
-    ]);
-
-    setIsGeneratingShort(false);
-    handleCopy(nativeShort, 'shortener_created');
   };
 
   const handleDownloadAsset = (url: string, filename: string) => {
@@ -229,7 +169,7 @@ Why settle for blockchains where 1 phishing link drains your life savings, or wh
 Claim 1,000 Free $AURX from Genesis Faucet, run validator nodes in your browser & earn verified airdrop rewards.
 
 👇 Start Building & Earning:
-🔗 ${brandedDomainUrl}
+🔗 ${activeLink}
 
 #AuraX #Layer1 #Blockchain #Web3 #Crypto #CryptoAirdrop #DeFi`,
       firstThread: [
@@ -237,7 +177,7 @@ Claim 1,000 Free $AURX from Genesis Faucet, run validator nodes in your browser 
         "2/5 🛡️ 1. ZERO-FRAUD PROTOCOL: In Bitcoin & Ethereum, once you sign a malicious tx, your funds are gone forever. On AuraX, the consensus engine runs automated mathematical velocity invariants. Wallet-draining anomalies are intercepted and vetoed at the protocol layer with zero state loss.",
         "3/5 💻 2. SILICON HARDWARE CONSENSUS (PCT): PoW wastes gigawatts of coal; PoS centralizes control to billionaire staking cartels. AuraX binds validator integrity to physical hardware entropy. 1-PC = 1-Validator, eliminating Sybil cloud bot armies.",
         "4/5 ⚡ 3. NON-INFLATIONARY PROOF-OF-YIELD (PoY): Other chains pay staking yields by printing new coins (causing token dilution). AuraX generates 12.5% APY mathematically routed from real cross-chain AMM liquidity velocity & settlement fees.",
-        "5/5 🚀 Experience the future today. Connect your wallet to our live Genesis Node, claim 1,000 $AURX from the faucet, and earn testnet airdrop XP: " + brandedDomainUrl
+        "5/5 🚀 Experience the future today. Connect your wallet to our live Genesis Node, claim 1,000 $AURX from the faucet, and earn testnet airdrop XP: " + activeLink
       ]
     },
     LINKEDIN: {
@@ -416,7 +356,6 @@ Ready to get started?
       {/* Main Mode Navigation Bar */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1 font-mono text-xs font-bold">
         {[
-          { id: 'URL_SHORTENER', label: '✂️ URL Shortener & Custom Links', icon: Scissors },
           { id: '100_LAYERS_SOLUTION', label: '🌐 100 Real-World Financial Layers (The Solution)', icon: Layers },
           { id: 'BRAND_PAGES', label: '🏢 Social Media Pages Setup (𝕏, LinkedIn, Facebook)', icon: Building },
           { id: 'EXCLUSIVE_FEATURES', label: '⚡ Features No Other Chain Has', icon: Zap },
@@ -442,318 +381,6 @@ Ready to get started?
           );
         })}
       </div>
-
-      {/* ========================================================================= */}
-      {/* MODE: OFFICIAL REAL-TIME URL SHORTENER & VANITY SLUG HUB */}
-      {/* ========================================================================= */}
-      {activeMainTab === 'URL_SHORTENER' && (
-        <div className="space-y-6 animate-in fade-in duration-200 font-mono">
-          {/* Header Banner */}
-          <div className="rounded-3xl bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 p-6 border border-cyan-500/30 shadow-2xl relative overflow-hidden">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div className="space-y-2">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-bold">
-                  <Scissors className="w-3.5 h-3.5 text-cyan-400" />
-                  <span>OFFICIAL INSTANT URL SHORTENER & VANITY REDIRECT ENGINE</span>
-                </div>
-                <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">
-                  Instant Short Links for {vercelDomain}
-                </h2>
-                <p className="text-xs text-slate-300 max-w-2xl leading-relaxed">
-                  Convert lengthy parameters into clean, institutional, high-conversion short links. Every short URL is cryptographically verified and redirects seamlessly via our high-speed edge proxy.
-                </p>
-              </div>
-
-              {/* Current Domain Badge */}
-              <div className="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 shrink-0 text-right">
-                <div className="text-[10px] text-slate-400 uppercase tracking-wider">Active Canonical Domain</div>
-                <div className="text-xs font-black text-cyan-400 flex items-center gap-1.5 justify-end mt-1">
-                  <Globe className="w-4 h-4 text-cyan-400" />
-                  <span>econos-aistudio-update.vercel.app</span>
-                </div>
-                <div className="text-[10px] text-emerald-400 flex items-center gap-1 justify-end mt-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                  <span>Short Redirect Router Online</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Interactive URL Shortener Creator Card */}
-          <div className="rounded-3xl bg-slate-950 border border-slate-800 p-6 shadow-xl space-y-6">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-              <div>
-                <h3 className="text-sm font-black text-white flex items-center gap-2">
-                  <Link2 className="w-4 h-4 text-cyan-400" />
-                  <span>Create Custom Vanity Short URL</span>
-                </h3>
-                <p className="text-xs text-slate-400 mt-0.5">
-                  Type your custom alias or choose from instant presets.
-                </p>
-              </div>
-              <span className="text-[11px] px-2.5 py-1 rounded-lg bg-cyan-500/10 text-cyan-300 font-bold border border-cyan-500/20">
-                0ms Edge Redirect
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Left Column: Input Form */}
-              <div className="space-y-4">
-                <div>
-                  <label className="text-xs font-bold text-slate-300 uppercase block mb-1.5">
-                    Target Long URL:
-                  </label>
-                  <input
-                    type="text"
-                    value={shortenerTarget}
-                    onChange={(e) => setShortenerTarget(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-800 focus:border-cyan-500 rounded-xl px-3.5 py-2.5 text-xs text-white outline-none font-mono transition"
-                    placeholder="https://econos-aistudio-update.vercel.app/..."
-                  />
-                  {/* Preset Targets */}
-                  <div className="flex items-center gap-1.5 mt-2 flex-wrap">
-                    <span className="text-[10px] text-slate-500 mr-1">Presets:</span>
-                    <button
-                      type="button"
-                      onClick={() => setShortenerTarget(`${vercelDomain}/?ref=${cleanCode}`)}
-                      className="text-[10px] px-2 py-0.5 rounded-md bg-slate-900 hover:bg-slate-800 text-cyan-300 border border-slate-800 transition cursor-pointer"
-                    >
-                      Personal Ref
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setShortenerTarget(`${vercelDomain}/?ref=GENESIS`)}
-                      className="text-[10px] px-2 py-0.5 rounded-md bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 transition cursor-pointer"
-                    >
-                      Genesis Node
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setShortenerTarget(`${vercelDomain}/?ref=AIRDROP`)}
-                      className="text-[10px] px-2 py-0.5 rounded-md bg-slate-900 hover:bg-slate-800 text-purple-300 border border-slate-800 transition cursor-pointer"
-                    >
-                      Airdrop Portal
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setShortenerTarget(`${vercelDomain}/`)}
-                      className="text-[10px] px-2 py-0.5 rounded-md bg-slate-900 hover:bg-slate-800 text-emerald-300 border border-slate-800 transition cursor-pointer"
-                    >
-                      App Root
-                    </button>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="text-xs font-bold text-slate-300 uppercase block mb-1.5">
-                    Custom Slug / Vanity Alias:
-                  </label>
-                  <div className="flex items-center rounded-xl bg-slate-900 border border-slate-800 focus-within:border-cyan-500 overflow-hidden transition">
-                    <span className="px-3 py-2.5 bg-slate-950 text-slate-400 text-xs font-mono border-r border-slate-800 shrink-0">
-                      ...vercel.app/r/
-                    </span>
-                    <input
-                      type="text"
-                      value={customAlias}
-                      onChange={(e) => setCustomAlias(e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, ''))}
-                      className="flex-1 bg-transparent px-3 py-2.5 text-xs text-cyan-300 outline-none font-bold"
-                      placeholder="e.g. vip, alpha, genesis"
-                    />
-                  </div>
-                  {/* Alias suggestions */}
-                  <div className="flex items-center gap-1.5 mt-2 flex-wrap">
-                    <span className="text-[10px] text-slate-500 mr-1">Suggested:</span>
-                    {['vip', 'genesis', 'alpha', 'testnet', 'join', 'free'].map(alias => (
-                      <button
-                        key={alias}
-                        type="button"
-                        onClick={() => setCustomAlias(alias)}
-                        className={`text-[10px] px-2 py-0.5 rounded-md transition cursor-pointer ${
-                          customAlias === alias
-                            ? 'bg-cyan-500 text-slate-950 font-bold'
-                            : 'bg-slate-900 hover:bg-slate-800 text-slate-400 border border-slate-800'
-                        }`}
-                      >
-                        {alias}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Generate Button */}
-                <button
-                  type="button"
-                  onClick={handleGenerateShortLink}
-                  disabled={isGeneratingShort}
-                  className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-cyan-500 via-indigo-500 to-purple-600 hover:from-cyan-400 hover:to-purple-500 text-slate-950 font-black text-xs flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20 transition cursor-pointer disabled:opacity-50"
-                >
-                  {isGeneratingShort ? (
-                    <>
-                      <RefreshCw className="w-4 h-4 animate-spin text-slate-950" />
-                      <span>Generating Verified Short URL...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Scissors className="w-4 h-4 text-slate-950" />
-                      <span>Generate & Copy Short URL</span>
-                    </>
-                  )}
-                </button>
-              </div>
-
-              {/* Right Column: Generated Output & Quick Actions */}
-              <div className="space-y-4">
-                <div className="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-3">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-slate-400 font-bold uppercase text-[10px]">Your Generated Short URL:</span>
-                    <span className="text-emerald-400 text-[10px] font-bold flex items-center gap-1">
-                      <CheckCircle2 className="w-3 h-3" />
-                      Active & Ready
-                    </span>
-                  </div>
-
-                  {/* Primary Short Link Box */}
-                  <div className="p-3.5 rounded-xl bg-slate-950 border border-cyan-500/40 text-cyan-300 text-xs font-mono break-all flex items-center justify-between gap-3">
-                    <span className="font-bold select-all">{createdShortLink}</span>
-                    <button
-                      type="button"
-                      onClick={() => handleCopy(createdShortLink, 'output_short_link')}
-                      className="px-3 py-1.5 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shrink-0 border border-cyan-500/30"
-                    >
-                      {copiedKey === 'output_short_link' ? (
-                        <>
-                          <Check className="w-3.5 h-3.5 text-emerald-400" />
-                          <span className="text-emerald-400">Copied!</span>
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="w-3.5 h-3.5" />
-                          <span>Copy</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-
-                  {/* Action Buttons: Test Link & Share */}
-                  <div className="grid grid-cols-2 gap-2 pt-2">
-                    <a
-                      href={createdShortLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold flex items-center justify-center gap-1.5 transition text-center"
-                    >
-                      <ExternalLink className="w-3.5 h-3.5 text-cyan-400" />
-                      <span>Test Redirect</span>
-                    </a>
-                    <button
-                      type="button"
-                      onClick={() => handleCopy(`🔥 Join the AuraX Incentivized Testnet: ${createdShortLink}`, 'share_copy')}
-                      className="py-2 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition cursor-pointer"
-                    >
-                      <Share2 className="w-3.5 h-3.5" />
-                      <span>{copiedKey === 'share_copy' ? 'Copied Share!' : 'Copy with Text'}</span>
-                    </button>
-                  </div>
-
-                  {/* TinyURL Alternative if generated */}
-                  {tinyShortLink && (
-                    <div className="pt-2 border-t border-slate-800 text-[11px]">
-                      <div className="text-slate-400 text-[10px] uppercase">Universal External Short Link (TinyURL):</div>
-                      <div className="flex items-center justify-between gap-2 mt-1">
-                        <span className="text-slate-300 font-mono truncate">{tinyShortLink}</span>
-                        <button
-                          type="button"
-                          onClick={() => handleCopy(tinyShortLink, 'tiny_copy')}
-                          className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] cursor-pointer"
-                        >
-                          {copiedKey === 'tiny_copy' ? 'Copied' : 'Copy'}
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Instant QR Code Info */}
-                <div className="p-3.5 rounded-2xl bg-slate-900/60 border border-slate-800 text-xs text-slate-400 flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0">
-                    <QrCode className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <span className="font-bold text-slate-200 block text-xs">High-Speed Edge Routing</span>
-                    <span className="text-[11px] text-slate-400">Visitors using your short links receive instant 302 redirection with referral parameters intact.</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Official Pre-Built Short Links Directory */}
-          <div className="rounded-3xl bg-slate-950 border border-slate-800 p-6 shadow-xl space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-sm font-black text-white flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-amber-400" />
-                  <span>Official Pre-Configured Short Links Directory</span>
-                </h3>
-                <p className="text-xs text-slate-400 mt-0.5">
-                  Instant, permanent short routes ready for campaigns, partner bios, and Telegram channels.
-                </p>
-              </div>
-              <span className="text-xs text-slate-400">{recentShortLinks.length} Links Available</span>
-            </div>
-
-            <div className="divide-y divide-slate-800/80">
-              {recentShortLinks.map((item, idx) => (
-                <div key={idx} className="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-900/40 px-2 rounded-xl transition">
-                  <div className="space-y-0.5 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 text-[10px] font-bold border border-cyan-500/30">
-                        /r/{item.alias}
-                      </span>
-                      <span className="text-xs font-bold text-white truncate">{item.short}</span>
-                    </div>
-                    <div className="text-[10px] text-slate-400 flex items-center gap-2">
-                      <span className="text-slate-500">{item.date}</span>
-                      <span>&rarr;</span>
-                      <span className="text-slate-400 truncate max-w-xs">{item.original}</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-2 shrink-0">
-                    <a
-                      href={item.short}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-bold flex items-center gap-1 border border-slate-800 transition"
-                      title="Open redirect"
-                    >
-                      <ExternalLink className="w-3.5 h-3.5 text-cyan-400" />
-                      <span>Test</span>
-                    </a>
-                    <button
-                      type="button"
-                      onClick={() => handleCopy(item.short, `recent_${item.alias}`)}
-                      className="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-300 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
-                    >
-                      {copiedKey === `recent_${item.alias}` ? (
-                        <>
-                          <Check className="w-3.5 h-3.5 text-emerald-400" />
-                          <span className="text-emerald-400">Copied</span>
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="w-3.5 h-3.5" />
-                          <span>Copy</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* ========================================================================= */}
       {/* MODE 0: THE 100-LAYER AUTONOMOUS FINANCIAL SOLUTION (ECONOS + OMNIFIN + AuraX) */}
@@ -1842,53 +1469,16 @@ Ready to get started?
               </div>
             </div>
 
-            {/* Clean Short Link Card */}
+            {/* Direct Official Link Card */}
             <div className="rounded-2xl border border-slate-700 bg-slate-950 p-4 space-y-3 font-mono">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-slate-400 font-bold flex items-center gap-1.5">
-                  <Zap className="w-4 h-4 text-amber-400" />
-                  <span>Short & Clean Referral Link</span>
+                <span className="text-slate-300 font-bold flex items-center gap-1.5">
+                  <Globe className="w-4 h-4 text-cyan-400" />
+                  <span>Official Direct Invite Link (Zero Redirect)</span>
                 </span>
-                <span className="text-[10px] text-purple-300 bg-purple-500/10 px-2 py-0.5 rounded-md border border-purple-500/20">
-                  302 Direct
+                <span className="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20">
+                  Instant Load
                 </span>
-              </div>
-
-              {/* Format Selector */}
-              <div className="grid grid-cols-3 gap-1 p-1 rounded-xl bg-slate-900 border border-slate-800 text-[10px] font-bold">
-                <button
-                  type="button"
-                  onClick={() => setLinkFormat('SHORT_SERVER')}
-                  className={`py-1 px-2 rounded-lg transition cursor-pointer text-center ${
-                    linkFormat === 'SHORT_SERVER'
-                      ? 'bg-cyan-500 text-slate-950 font-black'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  Direct /r/
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setLinkFormat('BRANDED_DOMAIN')}
-                  className={`py-1 px-2 rounded-lg transition cursor-pointer text-center ${
-                    linkFormat === 'BRANDED_DOMAIN'
-                      ? 'bg-cyan-500 text-slate-950 font-black'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  vercel.app/r/
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setLinkFormat('VANITY')}
-                  className={`py-1 px-2 rounded-lg transition cursor-pointer text-center ${
-                    linkFormat === 'VANITY'
-                      ? 'bg-cyan-500 text-slate-950 font-black'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  Short /r/vip
-                </button>
               </div>
 
               {/* Link Display with 1-Click Copy */}
@@ -1900,7 +1490,7 @@ Ready to get started?
                   type="button"
                   onClick={() => handleCopy(activeLink, 'short_link')}
                   className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-400 cursor-pointer transition shrink-0"
-                  title="Copy Clean Short Link"
+                  title="Copy Direct Official Link"
                 >
                   {copiedKey === 'short_link' ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
                 </button>

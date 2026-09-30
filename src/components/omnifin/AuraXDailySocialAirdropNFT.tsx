@@ -73,7 +73,7 @@ export const AuraXDailySocialAirdropNFT: React.FC<AuraXDailySocialAirdropNFTProp
   className = ''
 }) => {
   const canonicalDomain = 'https://econos-aistudio-update.vercel.app';
-  const cleanShortLink = `${canonicalDomain}/r/${referralCode.toLowerCase()}`;
+  const cleanShortLink = `${canonicalDomain}/?ref=${referralCode}`;
 
   // Daily Streak & Countdown State
   const [streakDays, setStreakDays] = useState<number>(3);

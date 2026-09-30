@@ -48,8 +48,7 @@ import {
   Globe,
   Eye,
   HelpCircle,
-  CheckCheck,
-  Scissors
+  CheckCheck
 } from 'lucide-react';
 
 interface RealBlock {
@@ -1037,15 +1036,6 @@ export const AuraXRealNodeLive: React.FC = () => {
           <button
             type="button"
             onClick={() => setShowSocialKitModal(true)}
-            className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-800 border border-cyan-300 shadow-xs transition cursor-pointer"
-          >
-            <Scissors className="w-4 h-4 text-cyan-600" />
-            <span>✂️ URL Shortener</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setShowSocialKitModal(true)}
             className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-600 hover:from-purple-500 hover:to-cyan-500 text-white shadow-md transition cursor-pointer"
           >
             <Flame className="w-4 h-4 text-amber-300 animate-pulse" />
@@ -1362,15 +1352,15 @@ export const AuraXRealNodeLive: React.FC = () => {
                   </div>
 
                   <div className="space-y-1">
-                    <span className="text-slate-400 text-[10px]">Your Short Clean Referral Link (302 Redirect):</span>
+                    <span className="text-slate-400 text-[10px]">Your Direct Referral Link (Zero Redirect, Instant Load):</span>
                     <div className="flex items-center gap-2 p-2 rounded-xl bg-slate-950 text-cyan-300 text-[10px] break-all border border-slate-800">
                       <span className="flex-1 select-all font-bold">
-                        {typeof window !== 'undefined' ? `${window.location.origin}/r/${referralStats?.referralCode || ('AURX-' + senderAddress.substring(2, 8).toUpperCase())}` : `https://econos-aistudio-update.vercel.app/r/${referralStats?.referralCode || 'AURX-GENESIS'}`}
+                        https://econos-aistudio-update.vercel.app/?ref={referralStats?.referralCode || ('AURX-' + senderAddress.substring(2, 8).toUpperCase())}
                       </span>
                       <button
                         type="button"
                         onClick={() => {
-                          const link = `${typeof window !== 'undefined' ? window.location.origin : ''}/r/${referralStats?.referralCode || ('AURX-' + senderAddress.substring(2, 8).toUpperCase())}`;
+                          const link = `https://econos-aistudio-update.vercel.app/?ref=${referralStats?.referralCode || ('AURX-' + senderAddress.substring(2, 8).toUpperCase())}`;
                           navigator.clipboard.writeText(link);
                           setCopiedText('ref_link');
                           setTimeout(() => setCopiedText(null), 2000);
@@ -1388,8 +1378,8 @@ export const AuraXRealNodeLive: React.FC = () => {
                       type="button"
                       onClick={() => {
                         const code = referralStats?.referralCode || ('AURX-' + senderAddress.substring(2, 8).toUpperCase());
-                        const shortUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/r/${code}`;
-                        const text = `Join the AuraX Sovereign L1 Zero-Fraud Blockchain testnet! ⚡🛡️ Claim 1,000 $AURX Faucet + 100 free $AURX using my invite code ${code}: ${shortUrl} #AuraX #Layer1 #CryptoAirdrop`;
+                        const directUrl = `https://econos-aistudio-update.vercel.app/?ref=${code}`;
+                        const text = `Join the AuraX Sovereign L1 Zero-Fraud Blockchain testnet! ⚡🛡️ Claim 1,000 $AURX Faucet + 100 free $AURX using my invite code ${code}: ${directUrl} #AuraX #Layer1 #CryptoAirdrop`;
                         window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
                       }}
                       className="px-3 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-[10px] flex items-center gap-1.5 transition cursor-pointer"

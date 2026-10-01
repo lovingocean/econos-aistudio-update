@@ -109,7 +109,7 @@ export const BillionDollarBuyerFunnelModal: React.FC<BillionDollarBuyerFunnelMod
   const [nodeBlocksValidated, setNodeBlocksValidated] = useState<number>(142);
   const [nodeRewardsEarned, setNodeRewardsEarned] = useState<number>(18.42);
   const [nodeTpsRate, setNodeTpsRate] = useState<number>(1240);
-  const [rewardWalletAddress, setRewardWalletAddress] = useState<string>('0x9fF60030aC1e02E1302D3aFa6CaDf347E3fbb97A');
+  const [rewardWalletAddress, setRewardWalletAddress] = useState<string>((user as any)?.walletAddress || '0x095871Cfed26b28f03e409AE612c0A5F1e1726cD');
 
   // Live in-browser attestation ticker
   React.useEffect(() => {
@@ -1267,8 +1267,8 @@ AuraX & ECONOS Enterprise Team`;
 
                   <div className="p-3.5 rounded-2xl bg-emerald-950/30 border border-emerald-500/30 text-xs space-y-1">
                     <div className="flex justify-between text-white font-bold">
-                      <span>Net Cash Profit on $2,499 License:</span>
-                      <span className="text-emerald-400">+$861 / year (34.4% Net ROI)</span>
+                      <span>Net Cash Profit on $3,499 License:</span>
+                      <span className="text-emerald-400">+$1,541 / year (44.0% Net ROI)</span>
                     </div>
                     <p className="text-[11px] text-slate-300 font-sans">
                       Plus, node operators receive 5x allocation weighting in the upcoming $AURX CEX token launch and can re-sell their transferable NFT license on the secondary market.
@@ -1408,16 +1408,22 @@ AuraX & ECONOS Enterprise Team`;
                     </p>
 
                     <div className="p-4 rounded-2xl bg-slate-900 text-xs border border-slate-800 space-y-2 select-all">
-                      <div className="text-[10px] text-slate-500 uppercase"># 1-Line Universal Setup Command:</div>
+                      <div className="text-[10px] text-slate-500 uppercase flex items-center justify-between">
+                        <span># 1-Line Universal Setup Command:</span>
+                        <span className="text-emerald-400 font-bold">Live Protocol Script</span>
+                      </div>
                       <code className="text-cyan-300 font-mono block break-all">
-                        curl -sSL https://auraxprotocol.com/scripts/install-node.sh | bash -s -- --license {generatedLicenseKey} --wallet {rewardWalletAddress}
+                        curl -sSL {typeof window !== 'undefined' ? window.location.origin : ''}/api/node/install.sh | bash -s -- --license {generatedLicenseKey} --wallet {rewardWalletAddress}
                       </code>
                     </div>
 
                     <div className="p-4 rounded-2xl bg-slate-900 text-xs border border-slate-800 space-y-2 select-all">
-                      <div className="text-[10px] text-slate-500 uppercase"># Or via Docker:</div>
+                      <div className="text-[10px] text-slate-500 uppercase flex items-center justify-between">
+                        <span># Or via Docker:</span>
+                        <span className="text-cyan-400 font-bold">Port 9924 Daemon</span>
+                      </div>
                       <code className="text-emerald-300 font-mono block break-all">
-                        docker run -d -p 9924:9924 --name aurax-validator -e CHAIN_ID=9924 -e LICENSE_KEY={generatedLicenseKey} -e PAYOUT_WALLET={rewardWalletAddress} aurax/sovereign-node:latest
+                        docker run -d -p 9924:9924 --name aurax-validator -e CHAIN_ID=9924 -e LICENSE_KEY={generatedLicenseKey} -e PAYOUT_WALLET={rewardWalletAddress} -e RPC_NODE={typeof window !== 'undefined' ? window.location.origin : ''} aurax/sovereign-node:latest
                       </code>
                     </div>
 

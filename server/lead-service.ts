@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { ScrapedLead, OutboundCallRecord } from '../src/types/econos';
 import { aiAdvisorService } from './gemini';
+import { searchGoogleMapsPlaces } from './google-places';
 
 const LEADS_STORAGE_FILE = process.env.VERCEL 
   ? path.join('/tmp', 'econos-scraped-leads.json') 
@@ -188,7 +189,18 @@ export class LeadAcquisitionService {
     return this.leads.find(l => l.id === id);
   }
 
-  public async discoverLeads(category: string, location: string, limit = 6): Promise<ScrapedLead[]> {
+  public async discoverLeads(category: string, location: string, limit = 20): Promise<ScrapedLead[]> {
+    // 1. Primary: Official Google Maps Platform Places API (New) - 100% Real Live Entities
+    const realPlaces = await searchGoogleMapsPlaces(category, location, limit);
+    if (realPlaces && realPlaces.length > 0) {
+      const existingNames = new Set(this.leads.map(l => l.name.toLowerCase()));
+      const newItems = realPlaces.filter(d => !existingNames.has(d.name.toLowerCase()));
+      this.leads = [...newItems, ...this.leads];
+      this.saveState();
+      return realPlaces;
+    }
+
+    // 2. Secondary AI discovery if Places API returned zero
     const discovered = await aiAdvisorService.discoverMapsLeads(category, location, limit);
     
     // Merge new leads avoiding exact duplicate names

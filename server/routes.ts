@@ -2439,15 +2439,16 @@ apiRouter.get('/leads/:id', (req, res) => {
 });
 
 apiRouter.post('/leads/discover', async (req, res) => {
-  const { category, location, limit } = req.body;
-  if (!category || !location) {
+  const { category, location, limit, query } = req.body;
+  const resolvedCategory = category || query;
+  if (!resolvedCategory || !location) {
     return res.status(400).json({ error: 'category and location are required' });
   }
   try {
-    const discovered = await leadAcquisitionService.discoverLeads(category, location, limit ? Number(limit) : 6);
+    const discovered = await leadAcquisitionService.discoverLeads(resolvedCategory, location, limit ? Number(limit) : 20);
     res.json({
       success: true,
-      category,
+      category: resolvedCategory,
       location,
       count: discovered.length,
       leads: discovered

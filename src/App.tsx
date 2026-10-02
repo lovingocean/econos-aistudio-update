@@ -53,6 +53,7 @@ import { OmnifinWorkspace } from './components/omnifin/OmnifinWorkspace';
 import { BillionDollarLandingPage } from './components/landing/BillionDollarLandingPage';
 import { AuraXDailySocialAirdropNFT } from './components/omnifin/AuraXDailySocialAirdropNFT';
 import { BillionDollarBuyerFunnelModal } from './components/commercial/BillionDollarBuyerFunnelModal';
+import { BillionDollarDashboardDesignModal } from './components/design/BillionDollarDashboardDesignModal';
 import { AppLayer } from './types/econos';
 import { 
   Building2, 
@@ -79,7 +80,7 @@ const AppContent: React.FC = () => {
       if (urlLayer) return urlLayer as AppLayer;
       if (params.get('ref')) return 'OMNIFIN';
     }
-    return 'LANDING';
+    return 'BUSINESS';
   });
   const [isTestModalOpen, setIsTestModalOpen] = useState(false);
   const [isOnboardingModalOpen, setIsOnboardingModalOpen] = useState(false);
@@ -91,6 +92,7 @@ const AppContent: React.FC = () => {
   const [isSolutionsOpen, setIsSolutionsOpen] = useState(false);
   const [isPodcastModalOpen, setIsPodcastModalOpen] = useState(false);
   const [isBuyerFunnelOpen, setIsBuyerFunnelOpen] = useState(false);
+  const [isDesignModalOpen, setIsDesignModalOpen] = useState(false);
 
   // Sync AuthContext openOnboarding state with local onboarding modal state
   React.useEffect(() => {
@@ -109,11 +111,14 @@ const AppContent: React.FC = () => {
       if (e.detail) setCurrentLayer(e.detail);
     };
     const buyerFunnelHandler = () => setIsBuyerFunnelOpen(true);
+    const designModalHandler = () => setIsDesignModalOpen(true);
     window.addEventListener('navigate-layer', handler);
     window.addEventListener('open-buyer-funnel', buyerFunnelHandler);
+    window.addEventListener('open-design-modal', designModalHandler);
     return () => {
       window.removeEventListener('navigate-layer', handler);
       window.removeEventListener('open-buyer-funnel', buyerFunnelHandler);
+      window.removeEventListener('open-design-modal', designModalHandler);
     };
   }, []);
 
@@ -144,7 +149,7 @@ const AppContent: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f9f6] text-slate-900 bg-architect-grid flex flex-col selection:bg-amber-500/20 selection:text-amber-900">
+    <div className="min-h-screen bg-[#f0f3f6] text-slate-900 bg-architect-grid flex flex-col selection:bg-amber-500/20 selection:text-amber-900">
       {/* Global 100 System Layers Progress Bar */}
       <GlobalLayersProgressBar
         currentLayer={currentLayer}
@@ -163,6 +168,7 @@ const AppContent: React.FC = () => {
         onOpenPodcast={() => setIsPodcastModalOpen(true)}
         onOpenOnboarding={() => setIsOnboardingModalOpen(true)}
         onOpenBuyerFunnel={() => setIsBuyerFunnelOpen(true)}
+        onOpenDesignModal={() => setIsDesignModalOpen(true)}
         currentLayer={currentLayer}
         onSelectLayer={setCurrentLayer}
       />
@@ -478,6 +484,12 @@ const AppContent: React.FC = () => {
           setIsBuyerFunnelOpen(false);
           setIsPricingModalOpen(true);
         }}
+      />
+
+      {/* Billion-Dollar Clean Dashboard Design Modal */}
+      <BillionDollarDashboardDesignModal
+        isOpen={isDesignModalOpen}
+        onClose={() => setIsDesignModalOpen(false)}
       />
     </div>
   );

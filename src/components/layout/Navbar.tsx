@@ -42,6 +42,7 @@ interface NavbarProps {
   onOpenPodcast?: () => void;
   onOpenOnboarding?: () => void;
   onOpenBuyerFunnel?: () => void;
+  onOpenDesignModal?: () => void;
   currentLayer?: AppLayer;
   onSelectLayer?: (layer: AppLayer) => void;
 }
@@ -57,6 +58,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenPodcast,
   onOpenOnboarding,
   onOpenBuyerFunnel,
+  onOpenDesignModal,
   currentLayer,
   onSelectLayer
 }) => {
@@ -254,175 +256,14 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
 
         {/* Right: Security, Commercial & Role Testing Controls */}
-        <div className="flex items-center gap-2">
-          
-          {/* Billion-Dollar Buyer Funnel & Sales Machine Button */}
-          {onOpenBuyerFunnel && (
-            <button
-              onClick={onOpenBuyerFunnel}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 hover:brightness-110 text-white text-xs font-mono font-bold transition shadow-sm cursor-pointer"
-              title="Launch Autonomous Buyer Acquisition Funnel & Client Revenue Machine"
-            >
-              <Target className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
-              <span className="hidden sm:inline">Buyer Funnel</span>
-              <span className="text-[10px] px-1.5 py-0.2 rounded bg-black/25 text-amber-200 font-mono font-bold">$$$</span>
-            </button>
-          )}
-
-          {/* Active Plan & Pricing Button */}
-          <button
-            onClick={onOpenPricing}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-xs font-mono transition shadow-xs"
-            title="Manage subscription and view pricing tiers"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-            <span className="font-bold uppercase text-slate-800">
-              {activePlan?.name || subscription?.planId || 'FREE'}
-            </span>
-            {subscription?.status === 'TRIALING' && (
-              <span className="text-[9px] px-1 py-0.2 rounded bg-amber-50 text-amber-700 font-bold border border-amber-200">
-                TRIAL
-              </span>
-            )}
-          </button>
-
-          {/* Commercial & Telemetry Dropdown */}
-          <div className="relative">
-            <button
-              onClick={() => setShowCommercialMenu(!showCommercialMenu)}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-xs font-mono text-slate-700 transition shadow-xs"
-            >
-              <DollarSign className="w-3.5 h-3.5 text-emerald-600" />
-              <span className="hidden sm:inline font-medium">Commercial</span>
-              <ChevronDown className="w-3 h-3 text-slate-400" />
-            </button>
-
-            {showCommercialMenu && (
-              <div className="absolute right-0 mt-1 w-56 rounded-xl bg-white border border-slate-200 shadow-xl py-1 z-50 text-xs font-mono">
-                <div className="px-3 py-1.5 text-[10px] text-slate-400 uppercase border-b border-slate-100 font-bold">
-                  Commercial &amp; Pricing OS
-                </div>
-
-                {onOpenBuyerFunnel && (
-                  <button
-                    onClick={() => {
-                      onOpenBuyerFunnel();
-                      setShowCommercialMenu(false);
-                    }}
-                    className="w-full text-left px-3 py-2 hover:bg-emerald-50 transition flex items-center gap-2 text-emerald-800 font-bold bg-emerald-50/50"
-                  >
-                    <Target className="w-3.5 h-3.5 text-emerald-600 animate-pulse" />
-                    <span>🎯 Buyer Funnel ($ Machine)</span>
-                  </button>
-                )}
-
-                <button
-                  onClick={() => {
-                    onOpenPricing();
-                    setShowCommercialMenu(false);
-                  }}
-                  className="w-full text-left px-3 py-2 hover:bg-slate-50 transition flex items-center gap-2 text-slate-700"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                  <span>Pricing &amp; Tiers</span>
-                </button>
-
-                <button
-                  onClick={() => {
-                    onOpenCommercialAnalytics();
-                    setShowCommercialMenu(false);
-                  }}
-                  className="w-full text-left px-3 py-2 hover:bg-slate-50 transition flex items-center gap-2 text-slate-700"
-                >
-                  <Activity className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>Commercial Telemetry</span>
-                </button>
-
-                <button
-                  onClick={() => {
-                    onOpenCommercialSuite();
-                    setShowCommercialMenu(false);
-                  }}
-                  className="w-full text-left px-3 py-2 hover:bg-slate-50 transition flex items-center gap-2 text-emerald-700 font-medium"
-                >
-                  <FlaskConical className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>32-Point Audit Suite</span>
-                </button>
-
-                {(user?.role === 'OWNER' || user?.role === 'ADMIN') && (
-                  <button
-                    onClick={() => {
-                      onOpenAdminPricing();
-                      setShowCommercialMenu(false);
-                    }}
-                    className="w-full text-left px-3 py-2 hover:bg-slate-50 transition flex items-center gap-2 text-slate-700 border-t border-slate-100"
-                  >
-                    <Sliders className="w-3.5 h-3.5 text-indigo-600" />
-                    <span>Admin Pricing Config</span>
-                  </button>
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* 10 Business Solutions & Problem Solver Button */}
-          {onOpenSolutions && (
-            <button
-              id="enterprise-solutions-btn"
-              onClick={onOpenSolutions}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/10 to-emerald-500/10 hover:from-amber-500/20 hover:to-emerald-500/20 border border-amber-400/40 text-slate-800 text-xs font-mono font-bold transition shadow-xs cursor-pointer"
-              title="ECONOS 10 Enterprise Problem Solver & Solution Execution Engine"
-            >
-              <Zap className="w-3.5 h-3.5 text-amber-600" />
-              <span className="hidden sm:inline">10 Solutions</span>
-              <span className="px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black">
-                10/10
-              </span>
-            </button>
-          )}
-
-          {/* Sovereign Command Center (Concept C 4-Quadrant Institutional OS) */}
-          {onSelectLayer && (
-            <button
-              id="navbar-sovereign-command-btn"
-              onClick={() => onSelectLayer('SOVEREIGN_COMMAND')}
-              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-mono font-bold transition shadow-xs cursor-pointer ${
-                currentLayer === 'SOVEREIGN_COMMAND'
-                  ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-slate-950 border-amber-400 shadow-md ring-2 ring-amber-400/30'
-                  : 'bg-[#080d1a] hover:bg-[#0f172a] text-amber-300 border-amber-500/50 shadow-sm'
-              }`}
-              title="Open Concept C 4-Quadrant Institutional Sovereign Command Center"
-            >
-              <span className="text-amber-400 font-black">Ω</span>
-              <span className="hidden md:inline">Sovereign Command</span>
-              <span className="px-1.5 py-0.2 rounded text-[9px] bg-amber-950 text-amber-300 border border-amber-500/40 font-black">
-                4Q
-              </span>
-            </button>
-          )}
-
-          {/* Landing Page Overview Button */}
-          {onSelectLayer && (
-            <button
-              onClick={() => onSelectLayer('LANDING')}
-              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-mono font-bold transition shadow-xs cursor-pointer ${
-                currentLayer === 'LANDING'
-                  ? 'bg-purple-600 text-white border-purple-400 shadow-md ring-2 ring-purple-400/40'
-                  : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-200 shadow-sm'
-              }`}
-              title="View World-Class Billion Dollar Landing Page"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-              <span className="hidden lg:inline">Landing</span>
-            </button>
-          )}
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 ml-auto">
 
           {/* Autonomous Voice Closer & Google Maps Scraper */}
           {onSelectLayer && (
             <button
               id="navbar-voice-closer-btn"
               onClick={() => onSelectLayer('CLIENT_ACQUISITION')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-mono font-bold transition shadow-xs cursor-pointer ${
+              className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl border text-xs font-mono font-bold transition shadow-xs cursor-pointer shrink-0 ${
                 currentLayer === 'CLIENT_ACQUISITION'
                   ? 'bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 border-emerald-400 shadow-md ring-2 ring-emerald-400/40'
                   : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border-emerald-300 shadow-sm'
@@ -442,7 +283,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               id="navbar-omnifin-btn"
               onClick={() => onSelectLayer('OMNIFIN')}
-              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-mono font-bold transition shadow-xs cursor-pointer ${
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-mono font-bold transition shadow-xs cursor-pointer shrink-0 ${
                 currentLayer === 'OMNIFIN'
                   ? 'bg-gradient-to-r from-blue-600 to-cyan-500 text-white border-cyan-300 shadow-md ring-2 ring-cyan-400/40'
                   : 'bg-[#071326] hover:bg-[#0c1f3d] text-cyan-300 border-cyan-500/40 shadow-sm'
@@ -450,21 +291,243 @@ export const Navbar: React.FC<NavbarProps> = ({
               title="Open OMNIFIN — Global Autonomous Financial Operating Layer"
             >
               <Globe2 className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
-              <span className="font-extrabold tracking-tight">OMNIFIN</span>
+              <span className="font-extrabold tracking-tight hidden sm:inline">OMNIFIN</span>
               <span className="px-1 py-0.2 rounded text-[9px] bg-cyan-950 text-cyan-300 border border-cyan-500/40 font-black">
                 OS
               </span>
             </button>
           )}
 
-          {/* Web3 Wallet Quick Connect & AuraX L1 Network Switcher */}
+          {/* Unified Tools & Enclaves Dropdown (Consolidates all tools, solutions, enclaves, and pricing to prevent any overflow) */}
+          <div className="relative shrink-0">
+            <button
+              id="navbar-tools-menu-btn"
+              onClick={() => setShowToolsMenu(!showToolsMenu)}
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-mono font-bold transition shadow-xs cursor-pointer ${
+                showToolsMenu
+                  ? 'bg-slate-900 text-white border-slate-900 shadow-sm'
+                  : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-700'
+              }`}
+              title="All Enterprise Enclaves, Tools & Pricing"
+            >
+              <Sliders className="w-3.5 h-3.5 text-indigo-600" />
+              <span className="hidden sm:inline">Tools &amp; Enclaves</span>
+              <span className="sm:hidden">Tools</span>
+              <ChevronDown className="w-3 h-3 text-slate-400" />
+            </button>
+
+            {showToolsMenu && (
+              <div className="absolute right-0 mt-1 w-64 rounded-2xl bg-white border border-slate-200 shadow-2xl py-2 z-50 text-xs font-mono divide-y divide-slate-100 max-h-[85vh] overflow-y-auto">
+                
+                {/* Strategic Enclaves & Design */}
+                <div className="px-3 py-1 text-[10px] text-slate-400 uppercase font-bold tracking-wider">
+                  Enclaves &amp; Design
+                </div>
+                <div className="py-1">
+                  {onOpenDesignModal && (
+                    <button
+                      onClick={() => {
+                        setShowToolsMenu(false);
+                        onOpenDesignModal();
+                      }}
+                      className="w-full text-left px-3 py-2 hover:bg-cyan-50 transition flex items-center gap-2.5 text-cyan-950 font-bold"
+                    >
+                      <Sparkles className="w-4 h-4 text-cyan-600" />
+                      <div>
+                        <div>🎨 Dashboard Design Showcase</div>
+                        <div className="text-[10px] text-cyan-700/80 font-normal">YC Minimalist &amp; Dimmed Specs</div>
+                      </div>
+                    </button>
+                  )}
+
+                  {onOpenSolutions && (
+                    <button
+                      onClick={() => {
+                        setShowToolsMenu(false);
+                        onOpenSolutions();
+                      }}
+                      className="w-full text-left px-3 py-2 hover:bg-amber-50 transition flex items-center gap-2.5 text-slate-800"
+                    >
+                      <Zap className="w-4 h-4 text-amber-600" />
+                      <div>
+                        <div className="font-bold">⚡ 10 Enterprise Solutions</div>
+                        <div className="text-[10px] text-slate-400 font-normal">Core B2B Problem Solvers</div>
+                      </div>
+                    </button>
+                  )}
+
+                  {onSelectLayer && (
+                    <button
+                      onClick={() => {
+                        setShowToolsMenu(false);
+                        onSelectLayer('SOVEREIGN_COMMAND');
+                      }}
+                      className="w-full text-left px-3 py-2 hover:bg-slate-50 transition flex items-center gap-2.5 text-slate-800"
+                    >
+                      <span className="text-amber-500 font-black text-sm">Ω</span>
+                      <div>
+                        <div className="font-bold">Sovereign Command (4Q)</div>
+                        <div className="text-[10px] text-slate-400 font-normal">Institutional Mission Architecture</div>
+                      </div>
+                    </button>
+                  )}
+
+                  {onOpenPodcast && (
+                    <button
+                      onClick={() => {
+                        setShowToolsMenu(false);
+                        onOpenPodcast();
+                      }}
+                      className="w-full text-left px-3 py-2 hover:bg-indigo-50 transition flex items-center gap-2.5 text-slate-800"
+                    >
+                      <Headphones className="w-4 h-4 text-indigo-600" />
+                      <div>
+                        <div className="font-bold">🎙️ AI Podcast Studio</div>
+                        <div className="text-[10px] text-slate-400 font-normal">Two-Way Voice Syndicate</div>
+                      </div>
+                    </button>
+                  )}
+
+                  {onSelectLayer && (
+                    <button
+                      onClick={() => {
+                        setShowToolsMenu(false);
+                        onSelectLayer('LANDING');
+                      }}
+                      className="w-full text-left px-3 py-2 hover:bg-purple-50 transition flex items-center gap-2.5 text-slate-800"
+                    >
+                      <Sparkles className="w-4 h-4 text-purple-600" />
+                      <div>
+                        <div className="font-bold">🚀 Landing Page</div>
+                        <div className="text-[10px] text-slate-400 font-normal">Public Showcase &amp; Hero Overview</div>
+                      </div>
+                    </button>
+                  )}
+                </div>
+
+                {/* Commercial & Pricing OS */}
+                <div className="px-3 py-1.5 text-[10px] text-slate-400 uppercase font-bold tracking-wider pt-2">
+                  Commercial &amp; Audit
+                </div>
+                <div className="py-1">
+                  {onOpenBuyerFunnel && (
+                    <button
+                      onClick={() => {
+                        setShowToolsMenu(false);
+                        onOpenBuyerFunnel();
+                      }}
+                      className="w-full text-left px-3 py-2 hover:bg-emerald-50 transition flex items-center gap-2.5 text-emerald-800 font-bold"
+                    >
+                      <Target className="w-4 h-4 text-emerald-600" />
+                      <div>
+                        <div>🎯 Commercial Buyer Funnel</div>
+                        <div className="text-[10px] text-emerald-600 font-normal">Revenue Acceleration Audit</div>
+                      </div>
+                    </button>
+                  )}
+
+                  <button
+                    onClick={() => {
+                      setShowToolsMenu(false);
+                      onOpenPricing();
+                    }}
+                    className="w-full text-left px-3 py-2 hover:bg-slate-50 transition flex items-center gap-2.5 text-slate-800"
+                  >
+                    <DollarSign className="w-4 h-4 text-emerald-600" />
+                    <div>
+                      <div className="font-bold">Pricing &amp; Commercial Tiers</div>
+                      <div className="text-[10px] text-slate-400 font-normal">Contractor &amp; Enterprise Licences</div>
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setShowToolsMenu(false);
+                      onOpenCommercialAnalytics();
+                    }}
+                    className="w-full text-left px-3 py-2 hover:bg-slate-50 transition flex items-center gap-2.5 text-slate-800"
+                  >
+                    <Activity className="w-4 h-4 text-indigo-600" />
+                    <div>
+                      <div className="font-bold">Commercial Telemetry</div>
+                      <div className="text-[10px] text-slate-400 font-normal">LTV, Churn &amp; Conversion Analytics</div>
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setShowToolsMenu(false);
+                      onOpenTestSuite();
+                    }}
+                    className="w-full text-left px-3 py-2 hover:bg-slate-50 transition flex items-center gap-2.5 text-slate-800"
+                  >
+                    <FlaskConical className="w-4 h-4 text-emerald-600" />
+                    <div>
+                      <div className="font-bold">20-Point System Verification</div>
+                      <div className="text-[10px] text-slate-400 font-normal">Comprehensive Test Suite</div>
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setShowToolsMenu(false);
+                      onOpenRoadmap();
+                    }}
+                    className="w-full text-left px-3 py-2 hover:bg-slate-50 transition flex items-center gap-2.5 text-slate-800"
+                  >
+                    <Milestone className="w-4 h-4 text-amber-600" />
+                    <div>
+                      <div className="font-bold">5-Phase Implementation Roadmap</div>
+                      <div className="text-[10px] text-slate-400 font-normal">2026 Sovereign Architecture</div>
+                    </div>
+                  </button>
+
+                  {isUserAdmin && (
+                    <button
+                      onClick={() => {
+                        setShowToolsMenu(false);
+                        onOpenAdminPricing();
+                      }}
+                      className="w-full text-left px-3 py-2 hover:bg-amber-50 transition flex items-center gap-2.5 text-amber-900 border-t border-slate-100"
+                    >
+                      <Sliders className="w-4 h-4 text-amber-600" />
+                      <div>
+                        <div className="font-bold">Admin Pricing Config</div>
+                        <div className="text-[10px] text-amber-700/80 font-normal">Entitlements &amp; Multi-Tenant Setup</div>
+                      </div>
+                    </button>
+                  )}
+
+                  {isDemo && (
+                    <button
+                      onClick={() => {
+                        setShowToolsMenu(false);
+                        handleResetDemo();
+                      }}
+                      disabled={isResetting}
+                      className="w-full text-left px-3 py-2 hover:bg-rose-50 transition flex items-center gap-2.5 text-rose-700 border-t border-slate-100"
+                    >
+                      <RotateCcw className={`w-4 h-4 text-rose-600 ${isResetting ? 'animate-spin' : ''}`} />
+                      <div>
+                        <div className="font-bold">Reset Demo Data</div>
+                        <div className="text-[10px] text-rose-600/80 font-normal">Restore seed baseline state</div>
+                      </div>
+                    </button>
+                  )}
+                </div>
+
+              </div>
+            )}
+          </div>
+
+          {/* Compact Web3 Wallet Button */}
           <button
             onClick={handleConnectWalletNavbar}
             disabled={isConnectingWallet}
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-mono font-bold transition shadow-xs cursor-pointer ${
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-mono font-bold transition shadow-xs cursor-pointer shrink-0 ${
               connectedWallet
                 ? 'bg-emerald-500/10 hover:bg-emerald-500/20 border-emerald-500/40 text-emerald-800'
-                : 'bg-gradient-to-r from-amber-500/10 to-orange-500/10 hover:from-amber-500/20 hover:to-orange-500/20 border-amber-500/40 text-amber-900'
+                : 'bg-amber-50 hover:bg-amber-100 border-amber-300 text-amber-900'
             }`}
             title={connectedWallet ? `Connected: ${connectedWallet}` : 'Connect MetaMask to AuraX L1 (Chain ID: 9924)'}
           >
@@ -474,118 +537,15 @@ export const Navbar: React.FC<NavbarProps> = ({
                 ? `${connectedWallet.substring(0, 6)}...${connectedWallet.substring(connectedWallet.length - 4)}`
                 : isConnectingWallet
                 ? 'Connecting...'
-                : 'Connect Wallet'}
+                : 'Wallet'}
             </span>
-            <span className={`px-1 py-0.2 rounded text-[9px] font-black ${
-              connectedWallet ? 'bg-emerald-200 text-emerald-950' : 'bg-amber-200 text-amber-950'
-            }`}>
+            <span className="px-1 py-0.2 rounded text-[9px] bg-amber-200 text-amber-950 font-black">
               9924
             </span>
           </button>
 
-          {/* AI Podcast Studio Button */}
-          {onOpenPodcast && (
-            <button
-              id="navbar-podcast-studio-btn"
-              onClick={onOpenPodcast}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-cyan-950 to-slate-900 hover:from-cyan-900 hover:to-slate-800 border border-cyan-500/40 text-cyan-300 text-xs font-mono font-bold transition shadow-xs cursor-pointer"
-              title="Open Two-Way AI Voice Podcast Studio & YouTube Syndicate"
-            >
-              <Headphones className="w-3.5 h-3.5 text-cyan-400" />
-              <span className="hidden md:inline">Podcast Studio</span>
-              <span className="px-1 py-0.2 rounded text-[9px] bg-cyan-500 text-slate-950 font-black">
-                AI
-              </span>
-            </button>
-          )}
-
-          {/* Tools & Admin Dropdown (Consolidates Roadmap, System Tests, Admin Config, Reset Demo to prevent right bar overflow) */}
-          <div className="relative">
-            <button
-              id="navbar-tools-menu-btn"
-              onClick={() => setShowToolsMenu(!showToolsMenu)}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-mono font-medium transition shadow-xs cursor-pointer"
-              title="More System Engines & Tools"
-            >
-              <Sliders className="w-3.5 h-3.5 text-slate-500" />
-              <span className="hidden lg:inline">Tools</span>
-              <ChevronDown className="w-3 h-3 text-slate-400" />
-            </button>
-
-            {showToolsMenu && (
-              <div className="absolute right-0 mt-1 w-56 rounded-xl bg-white border border-slate-200 shadow-xl py-1 z-50 text-xs font-mono">
-                <div className="px-3 py-1.5 text-[10px] text-slate-400 uppercase border-b border-slate-100 font-bold">
-                  System Tools & Enclaves
-                </div>
-
-                <button
-                  id="roadmap-matrix-btn"
-                  onClick={() => {
-                    setShowToolsMenu(false);
-                    onOpenRoadmap();
-                  }}
-                  className="w-full text-left px-3 py-2 hover:bg-slate-50 transition flex items-center gap-2 text-slate-700"
-                >
-                  <Milestone className="w-4 h-4 text-amber-500" />
-                  <div>
-                    <div className="font-semibold text-slate-800">5-Phase Roadmap</div>
-                    <div className="text-[10px] text-slate-400 font-sans">$10B Sovereign Architecture</div>
-                  </div>
-                </button>
-
-                <button
-                  id="test-suite-btn"
-                  onClick={() => {
-                    setShowToolsMenu(false);
-                    onOpenTestSuite();
-                  }}
-                  className="w-full text-left px-3 py-2 hover:bg-slate-50 transition flex items-center gap-2 text-slate-700"
-                >
-                  <FlaskConical className="w-4 h-4 text-emerald-500" />
-                  <div>
-                    <div className="font-semibold text-slate-800">System Tests</div>
-                    <div className="text-[10px] text-slate-400 font-sans">20-Point Verification Suite</div>
-                  </div>
-                </button>
-
-                {isUserAdmin && (
-                  <button
-                    onClick={() => {
-                      setShowToolsMenu(false);
-                      onOpenAdminPricing();
-                    }}
-                    className="w-full text-left px-3 py-2 hover:bg-amber-50 transition flex items-center gap-2 text-amber-900 border-t border-slate-100"
-                  >
-                    <Sliders className="w-4 h-4 text-amber-600" />
-                    <div>
-                      <div className="font-semibold text-amber-950">Admin Config</div>
-                      <div className="text-[10px] text-amber-700/80 font-sans">Pricing & Entitlements</div>
-                    </div>
-                  </button>
-                )}
-
-                {isDemo && (
-                  <button
-                    onClick={() => {
-                      setShowToolsMenu(false);
-                      handleResetDemo();
-                    }}
-                    disabled={isResetting}
-                    className="w-full text-left px-3 py-2 hover:bg-rose-50 transition flex items-center gap-2 text-rose-700 border-t border-slate-100"
-                  >
-                    <RotateCcw className={`w-4 h-4 text-rose-600 ${isResetting ? 'animate-spin' : ''}`} />
-                    <div>
-                      <div className="font-semibold text-rose-950">Reset Demo Data</div>
-                      <div className="text-[10px] text-rose-600/80 font-sans">Restore baseline seed state</div>
-                    </div>
-                  </button>
-                )}
-              </div>
-            )}
-          </div>
-
           {/* Role Switcher (RBAC simulation) */}
-          <div className="relative">
+          <div className="relative shrink-0">
             <button
               onClick={() => setShowRoleMenu(!showRoleMenu)}
               className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-xs font-mono text-slate-700 shadow-xs"
@@ -619,45 +579,43 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </div>
 
-          {/* Round Pill Action Buttons (Search, Notification, Profile dropdown) */}
-          <div className="flex items-center gap-1.5 pl-1">
+          {/* Action Buttons (Search, Notification, Profile dropdown) */}
+          <div className="flex items-center gap-1.5 shrink-0">
             <button 
               id="navbar-global-search-btn"
               onClick={() => setShowGlobalSearch(true)}
-              className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 hover:text-slate-900 transition shadow-xs cursor-pointer group"
-              title="Search 100 System Layers by Name or ID (⌘K / Ctrl+K)"
+              className="flex items-center gap-1.5 px-2 py-1.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 hover:text-slate-900 transition shadow-xs cursor-pointer group"
+              title="Search 100 System Layers (⌘K / Ctrl+K)"
               aria-label="Open 100 System Layers Search"
             >
-              <Search className="w-4 h-4 text-slate-400 group-hover:text-amber-500 transition" />
-              <span className="hidden xl:inline text-xs font-mono text-slate-600 font-medium">Search Layers...</span>
-              <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 text-[10px] text-slate-500 font-mono font-semibold">
+              <Search className="w-3.5 h-3.5 text-slate-400 group-hover:text-amber-500 transition" />
+              <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.2 rounded bg-slate-100 border border-slate-200 text-[10px] text-slate-500 font-mono font-semibold">
                 ⌘K
               </kbd>
             </button>
 
             <button 
-              className="w-9 h-9 rounded-full bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 hover:text-slate-900 flex items-center justify-center transition relative shadow-xs"
+              className="w-8 h-8 rounded-full bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 hover:text-slate-900 flex items-center justify-center transition relative shadow-xs"
               title="Notifications"
             >
-              <Bell className="w-4 h-4" />
-              <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-amber-500 ring-2 ring-white"></span>
+              <Bell className="w-3.5 h-3.5" />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-amber-500 ring-2 ring-white"></span>
             </button>
 
             {/* Interactive User Profile & Identity Menu */}
-            <div className="relative">
+            <div className="relative shrink-0">
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="flex items-center gap-2 p-1 rounded-xl hover:bg-slate-100 transition cursor-pointer"
+                className="flex items-center gap-1.5 p-1 rounded-xl hover:bg-slate-100 transition cursor-pointer"
                 title="Account & Identity Settings"
               >
-                <div className="w-9 h-9 rounded-full bg-[#132338] text-white flex items-center justify-center text-xs font-bold shadow-xs">
+                <div className="w-8 h-8 rounded-full bg-[#132338] text-white flex items-center justify-center text-xs font-bold shadow-xs">
                   {user?.name?.charAt(0) || 'M'}
                 </div>
-                <div className="hidden lg:block text-left">
+                <div className="hidden xl:block text-left">
                   <div className="text-xs font-semibold text-slate-800 leading-none">{user?.name || 'Meek Ifti'}</div>
-                  <div className="text-[10px] font-mono text-slate-400 leading-none mt-0.5">{user?.email || 'meekifti@gmail.com'}</div>
                 </div>
-                <ChevronDown className="w-3 h-3 text-slate-400 hidden lg:block" />
+                <ChevronDown className="w-3 h-3 text-slate-400" />
               </button>
 
               {showUserMenu && (

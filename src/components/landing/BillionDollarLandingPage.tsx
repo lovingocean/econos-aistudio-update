@@ -23,7 +23,10 @@ import {
   Database,
   Coins,
   Target,
-  PhoneCall
+  PhoneCall,
+  Moon,
+  Sun,
+  Maximize2
 } from 'lucide-react';
 import { AppLayer } from '../../types/econos';
 import {
@@ -47,6 +50,8 @@ export const BillionDollarLandingPage: React.FC<BillionDollarLandingPageProps> =
 }) => {
   const [activeLoopStep, setActiveLoopStep] = useState<number>(1);
   const [activeLayersTab, setActiveLayersTab] = useState<'BUSINESS' | 'WEALTH' | 'TRUST' | 'OMNIFIN'>('BUSINESS');
+  const [showcaseConcept, setShowcaseConcept] = useState<'DARK_LUXURY' | 'LIGHT_MINIMALIST'>('DARK_LUXURY');
+  const [isZoomOpen, setIsZoomOpen] = useState<boolean>(false);
 
   const selectedStepData = OPERATING_LOOP_STEPS.find(s => s.step === activeLoopStep) || OPERATING_LOOP_STEPS[0];
 
@@ -191,39 +196,126 @@ export const BillionDollarLandingPage: React.FC<BillionDollarLandingPageProps> =
           </div>
         </div>
 
-        {/* Hero Visual Mockup Asset Showcase */}
-        <div className="mt-14 relative max-w-5xl mx-auto rounded-3xl p-1 bg-gradient-to-b from-white/20 via-white/5 to-transparent shadow-2xl">
-          <div className="rounded-[22px] overflow-hidden bg-slate-950 border border-white/10 relative">
-            <img
-              src="/billion_dollar_landing.jpg"
-              alt="ECONOS Sovereign Operating System & Layer-1 Holographic Visual"
-              className="w-full h-auto object-cover max-h-[540px] opacity-95 hover:opacity-100 transition duration-500"
-              referrerPolicy="no-referrer"
-            />
-            {/* Ambient Overlay Vignette */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#040711] via-transparent to-transparent opacity-80" />
+        {/* Interactive Billion-Dollar Dashboard Design Showcase */}
+        <div className="mt-14 relative max-w-6xl mx-auto rounded-3xl p-1 bg-gradient-to-b from-emerald-500/30 via-slate-800/40 to-transparent shadow-2xl">
+          <div className="rounded-[22px] overflow-hidden bg-slate-950 border border-emerald-500/40 relative">
+            
+            {/* Design Selector Bar */}
+            <div className="p-4 bg-slate-900/90 border-b border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 font-mono text-xs">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                <span className="font-bold text-white uppercase tracking-wider text-xs">
+                  Billion-Dollar Dashboard Design Preview:
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowcaseConcept('DARK_LUXURY')}
+                  className={`px-3.5 py-1.5 rounded-xl border flex items-center gap-1.5 transition cursor-pointer font-bold ${
+                    showcaseConcept === 'DARK_LUXURY'
+                      ? 'bg-slate-950 border-emerald-400 text-white shadow-md'
+                      : 'bg-slate-900 border-slate-700 text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <Moon className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Concept A: Dark Luxury (Stripe / Ramp)</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setShowcaseConcept('LIGHT_MINIMALIST')}
+                  className={`px-3.5 py-1.5 rounded-xl border flex items-center gap-1.5 transition cursor-pointer font-bold ${
+                    showcaseConcept === 'LIGHT_MINIMALIST'
+                      ? 'bg-white border-slate-300 text-slate-900 shadow-md'
+                      : 'bg-slate-900 border-slate-700 text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <Sun className="w-3.5 h-3.5 text-amber-500" />
+                  <span>Concept B: Swiss Clean White (Mercury)</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setIsZoomOpen(true)}
+                  className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition cursor-pointer"
+                  title="Zoom Full Screen"
+                >
+                  <Maximize2 className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* The Direct Screenshot Image */}
+            <div 
+              onClick={() => setIsZoomOpen(true)}
+              className="relative cursor-zoom-in group"
+            >
+              <img
+                src={
+                  showcaseConcept === 'DARK_LUXURY'
+                    ? '/src/assets/images/fintech_dashboard_design_1790933281321.jpg'
+                    : '/src/assets/images/fintech_dashboard_light_1790933302655.jpg'
+                }
+                alt={showcaseConcept === 'DARK_LUXURY' ? 'ECONOS Dark Luxury Fintech Dashboard' : 'ECONOS Swiss Minimalist Light Dashboard'}
+                className="w-full h-auto object-cover max-h-[640px] transition duration-300 group-hover:scale-[1.005]"
+                referrerPolicy="no-referrer"
+              />
+
+              {/* Click to expand overlay hint */}
+              <div className="absolute top-4 right-4 bg-slate-950/80 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/20 text-xs font-mono text-white opacity-0 group-hover:opacity-100 transition shadow-lg flex items-center gap-1.5">
+                <Maximize2 className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Click image to view full-screen high-res</span>
+              </div>
+            </div>
 
             {/* In-Image Floating Stats Strip */}
-            <div className="absolute bottom-6 left-6 right-6 grid grid-cols-2 sm:grid-cols-4 gap-3 font-mono text-center">
-              <div className="p-3.5 rounded-xl bg-slate-950/80 backdrop-blur-md border border-white/10">
-                <div className="text-[10px] text-slate-400 uppercase">Monitored AUM</div>
-                <div className="text-base font-black text-cyan-400">$142 Billion</div>
+            <div className="p-4 bg-slate-950/95 border-t border-slate-800/80 grid grid-cols-2 sm:grid-cols-4 gap-3 font-mono text-center">
+              <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+                <div className="text-[10px] text-slate-400 uppercase">Liquid Working Capital</div>
+                <div className="text-base font-black text-emerald-400">$1,842,500</div>
               </div>
-              <div className="p-3.5 rounded-xl bg-slate-950/80 backdrop-blur-md border border-white/10">
-                <div className="text-[10px] text-slate-400 uppercase">Causal Latency</div>
-                <div className="text-base font-black text-emerald-400">0.42 ms</div>
+              <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+                <div className="text-[10px] text-slate-400 uppercase">Net Receivables Due</div>
+                <div className="text-base font-black text-cyan-400">$480,200</div>
               </div>
-              <div className="p-3.5 rounded-xl bg-slate-950/80 backdrop-blur-md border border-white/10">
-                <div className="text-[10px] text-slate-400 uppercase">Autonomous Loop</div>
-                <div className="text-base font-black text-purple-400">12 Steps Continuous</div>
+              <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+                <div className="text-[10px] text-slate-400 uppercase">Days Sales Outstanding</div>
+                <div className="text-base font-black text-purple-400">21 Days (was 58d)</div>
               </div>
-              <div className="p-3.5 rounded-xl bg-slate-950/80 backdrop-blur-md border border-white/10">
-                <div className="text-[10px] text-slate-400 uppercase">Real-World Layers</div>
-                <div className="text-base font-black text-amber-400">100 Production Layers</div>
+              <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+                <div className="text-[10px] text-slate-400 uppercase">Captured Early Discounts</div>
+                <div className="text-base font-black text-amber-400">+$34,200 / yr</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        {/* Full-Screen Zoom Modal */}
+        {isZoomOpen && (
+          <div 
+            onClick={() => setIsZoomOpen(false)}
+            className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4 cursor-zoom-out animate-in fade-in duration-150"
+          >
+            <div className="relative max-w-7xl w-full">
+              <img
+                src={
+                  showcaseConcept === 'DARK_LUXURY'
+                    ? '/src/assets/images/fintech_dashboard_design_1790933281321.jpg'
+                    : '/src/assets/images/fintech_dashboard_light_1790933302655.jpg'
+                }
+                alt="Full screen dashboard design preview"
+                className="w-full h-auto object-contain max-h-[92vh] rounded-2xl shadow-2xl border border-slate-800"
+                referrerPolicy="no-referrer"
+              />
+              <div className="absolute top-4 right-4 text-xs font-mono bg-slate-900/90 px-3.5 py-2 rounded-xl border border-slate-700 text-white shadow-xl">
+                Click anywhere to close full screen
               </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Live Autonomous Revenue & Burn Ticker Strip */}
         <div className="mt-8 max-w-5xl mx-auto rounded-3xl bg-gradient-to-r from-amber-950/40 via-slate-950 to-indigo-950/40 border border-amber-500/30 p-5 font-mono shadow-xl">

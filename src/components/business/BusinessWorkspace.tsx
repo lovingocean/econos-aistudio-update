@@ -27,6 +27,7 @@ import { ScenarioEngine } from './ScenarioEngine';
 import { OutcomeVerificationView } from './OutcomeVerification';
 import { EconomicGraphView } from '../graph/EconomicGraphView';
 import { AgenticOperationsHub } from './AgenticOperationsHub';
+import { MasterExecutiveDashboard } from '../dashboard/MasterExecutiveDashboard';
 import { AppLayer } from '../../types/econos';
 import { 
   BarChart3, 
@@ -440,11 +441,19 @@ export const BusinessWorkspace: React.FC<BusinessWorkspaceProps> = ({ onNavigate
 
       {/* Active Tab Content */}
       {subTab === 'SNAPSHOT' && (
-        <EconomicSnapshot
-          business={currentBusiness}
-          profile={profile}
-          onRefresh={loadBusinessData}
-        />
+        <div className="space-y-6">
+          <MasterExecutiveDashboard 
+            onNavigateToLayer={onNavigateToLayer} 
+            onOpenVoiceCloser={() => {
+              if (onNavigateToLayer) onNavigateToLayer('CLIENT_ACQUISITION');
+            }}
+          />
+          <EconomicSnapshot
+            business={currentBusiness}
+            profile={profile}
+            onRefresh={loadBusinessData}
+          />
+        </div>
       )}
 
       {subTab === 'PRICING' && (

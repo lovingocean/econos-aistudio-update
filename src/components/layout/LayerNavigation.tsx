@@ -139,12 +139,12 @@ export const LayerNavigation: React.FC<LayerNavigationProps> = ({
     },
     {
       id: 'CLIENT_ACQUISITION' as AppLayer,
-      name: 'Client Acquisition',
-      subtitle: 'Maps Scraper • Outbound Email • Voice Agent',
-      question: 'Automated Lead Harvest • Roadmap Dispatch • Phone Calls',
+      name: '📞 Voice Closer AI & Scraper',
+      subtitle: 'Google Maps Places & B2B Telephony Closer',
+      question: 'Live Places API • Contractor Voice Negotiation • B2B Checkout ($3,499)',
       icon: PhoneCall,
       color: 'emerald',
-      badge: 'MAPS + CALLS'
+      badge: 'LIVE GOOGLE MAPS'
     },
     {
       id: 'WEALTH' as AppLayer,
@@ -782,63 +782,6 @@ export const LayerNavigation: React.FC<LayerNavigationProps> = ({
           >
             <Shield className="w-3.5 h-3.5 text-emerald-300" />
             <span>Sovereign Rails &amp; Defense (L11-19)</span>
-          </button>
-
-          <button
-            onClick={() => {
-              setActiveGroup('PLANETARY_SYSTEMS');
-              if (!['SYNTHETIC_CENTRAL_BANK', 'ORBITAL_ESCROW', 'POST_QUANTUM_ENCLAVE', 'FIDUCIARY_GOVERNANCE', 'COMPUTE_ENERGY_GRID'].includes(selected)) {
-                onSelectLayer('SYNTHETIC_CENTRAL_BANK');
-              }
-            }}
-            className={`px-3 py-1.5 rounded-lg font-bold transition flex items-center gap-1.5 cursor-pointer ${
-              activeGroup === 'PLANETARY_SYSTEMS'
-                ? 'bg-gradient-to-r from-purple-700 via-indigo-700 to-sky-700 text-white shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-            }`}
-          >
-            <Globe2 className="w-3.5 h-3.5 text-purple-300" />
-            <span>Planetary Grid (L22-26)</span>
-          </button>
-
-          <button
-            onClick={() => {
-              setActiveGroup('CIVILIZATIONAL_FRONTIER');
-              if (!['RELATIVISTIC_LIGHT_CONE', 'GEOENGINEERING_DERIVATIVE', 'POST_HUMAN_ENTERPRISE', 'BIOLOGICAL_NEUROMORPHIC_GRID', 'KARDASHEV_OMEGA_PROTOCOL'].includes(selected)) {
-                onSelectLayer('RELATIVISTIC_LIGHT_CONE');
-              }
-            }}
-            className={`px-3 py-1.5 rounded-lg font-bold transition flex items-center gap-1.5 cursor-pointer ${
-              activeGroup === 'CIVILIZATIONAL_FRONTIER'
-                ? 'bg-gradient-to-r from-amber-600 via-rose-600 to-purple-700 text-white shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-            }`}
-          >
-            <Rocket className="w-3.5 h-3.5 text-amber-300" />
-            <span>Civilizational Frontier (L27-31)</span>
-            <span className="px-1.5 py-0.2 rounded-full bg-amber-950 text-amber-300 text-[9px] font-mono font-bold">
-              5 FRONTIER
-            </span>
-          </button>
-
-          <button
-            onClick={() => {
-              setActiveGroup('OMNI_SINGULARITY');
-              if (!['OMNI_TELEMETRY_BUS', 'OMNI_CLEARING_MESH', 'OMNI_MINERAL_TITLE', 'OMNI_LEGAL_SYNTHESIS', 'OMNI_POWER_GRID', 'OMNI_CREDIT_MATRIX', 'OMNI_ROBOTIC_LABOR', 'OMNI_INTENT_TRANSLATION', 'OMNI_QUANTUM_CITADEL', 'OMNI_CIVILIZATION_ANCHOR'].includes(selected)) {
-                onSelectLayer('OMNI_TELEMETRY_BUS');
-              }
-            }}
-            className={`px-3 py-1.5 rounded-lg font-bold transition flex items-center gap-1.5 cursor-pointer ${
-              activeGroup === 'OMNI_SINGULARITY'
-                ? 'bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white shadow-md border border-amber-400/40 ring-1 ring-amber-400/30'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-            }`}
-          >
-            <Radio className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
-            <span>Omni-Access (L32-41)</span>
-            <span className="px-1.5 py-0.2 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/40 text-[9px] font-mono font-bold">
-              10 OMNI
-            </span>
           </button>
 
           <button

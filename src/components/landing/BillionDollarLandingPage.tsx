@@ -22,7 +22,8 @@ import {
   CheckCircle2,
   Database,
   Coins,
-  Target
+  Target,
+  PhoneCall
 } from 'lucide-react';
 import { AppLayer } from '../../types/econos';
 import {
@@ -127,47 +128,51 @@ export const BillionDollarLandingPage: React.FC<BillionDollarLandingPageProps> =
       <section className="relative z-10 pt-16 sm:pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="text-center space-y-6 max-w-4xl mx-auto">
           {/* Top Announcement Kicker (No Pill Enclosure Slop) */}
-          <div className="inline-flex items-center gap-2 text-xs font-mono text-cyan-400 tracking-wide font-bold">
-            <Sparkles className="w-4 h-4 text-cyan-400" />
-            <span>THE SOVEREIGN FINANCIAL OPERATING SYSTEM & ZERO-FRAUD LAYER-1</span>
+          <div className="inline-flex items-center gap-2 text-xs font-mono text-emerald-400 tracking-wide font-bold">
+            <Sparkles className="w-4 h-4 text-emerald-400" />
+            <span>AUTONOMOUS FINOPS, INVOICE ACCELERATION &amp; COMMERCIAL WORKING CAPITAL</span>
           </div>
 
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tight leading-[1.08]">
-            The Autonomous Operating System for Global Wealth & Enterprise
+            The Autonomous Cash Flow &amp; FinOps OS for Commercial Enterprises
           </h1>
 
           <p className="text-base sm:text-lg text-slate-300 leading-relaxed font-normal max-w-3xl mx-auto">
-            ECONOS orchestrates <strong className="text-white">100 real-world business, wealth, and trust layers</strong> on top of AuraX — the world's first zero-fraud sovereign Layer-1 with 100,000+ real TPS and physical silicon consensus.
+            ECONOS eliminates the fatal 60-day working capital lag for commercial contractors, freight operators, and high-volume trade businesses. Automate accounts receivable collections, 3-way payables reconciliation, and unlock same-day invoice factoring.
           </p>
 
           {/* Hero CTAs */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4 font-mono text-xs font-black">
             <button
               type="button"
-              onClick={onEnterTestnet}
-              className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-600 hover:from-cyan-300 hover:to-purple-500 text-slate-950 flex items-center justify-center gap-2 shadow-xl shadow-cyan-500/25 transition cursor-pointer text-xs"
+              onClick={() => {
+                window.dispatchEvent(new CustomEvent('navigate-layer', { detail: 'CLIENT_ACQUISITION' }));
+              }}
+              className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 flex items-center justify-center gap-2 shadow-xl shadow-emerald-500/25 transition cursor-pointer text-xs font-black"
             >
-              <Cpu className="w-4 h-4 text-slate-950" />
-              <span>Launch Genesis Node &amp; Testnet</span>
+              <PhoneCall className="w-4 h-4 text-slate-950" />
+              <span>Launch Voice Closer AI &amp; Maps Scraper</span>
               <ArrowRight className="w-4 h-4 text-slate-950" />
             </button>
 
             <button
               type="button"
               onClick={() => window.dispatchEvent(new CustomEvent('open-buyer-funnel'))}
-              className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 flex items-center justify-center gap-2 shadow-xl shadow-emerald-500/20 transition cursor-pointer text-xs font-black"
+              className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white flex items-center justify-center gap-2 shadow-xl shadow-indigo-500/20 transition cursor-pointer text-xs font-bold"
             >
-              <Target className="w-4 h-4 text-slate-950" />
-              <span>Free 3-Min Financial ROI &amp; Prop Audit</span>
+              <Target className="w-4 h-4 text-amber-300" />
+              <span>Free 3-Min Cash Flow &amp; Prop Audit</span>
             </button>
 
             <button
               type="button"
-              onClick={onEnterAirdrop}
+              onClick={() => {
+                window.dispatchEvent(new CustomEvent('navigate-layer', { detail: 'BUSINESS' }));
+              }}
               className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-slate-900/90 hover:bg-slate-800 text-white border border-slate-700 flex items-center justify-center gap-2 transition cursor-pointer text-xs shadow-md"
             >
-              <Trophy className="w-4 h-4 text-amber-400" />
-              <span>Airdrop &amp; NFTs</span>
+              <Building2 className="w-4 h-4 text-emerald-400" />
+              <span>Open FinOps Operating Core</span>
             </button>
           </div>
 

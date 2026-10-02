@@ -25,7 +25,8 @@ import {
   Wallet,
   Trophy,
   Home,
-  Target
+  Target,
+  PhoneCall
 } from 'lucide-react';
 import { UserRole, AppLayer } from '../../types/econos';
 import { GlobalLayerSearch } from './GlobalLayerSearch';
@@ -416,19 +417,23 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
           )}
 
-          {/* Daily Social Airdrop & NFTs Button */}
+          {/* Autonomous Voice Closer & Google Maps Scraper */}
           {onSelectLayer && (
             <button
-              onClick={() => onSelectLayer('DAILY_AIRDROP')}
-              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-mono font-bold transition shadow-xs cursor-pointer ${
-                currentLayer === 'DAILY_AIRDROP'
-                  ? 'bg-amber-500 text-slate-950 border-amber-400 shadow-md ring-2 ring-amber-400/40'
-                  : 'bg-amber-50 hover:bg-amber-100 text-amber-900 border-amber-200 shadow-sm'
+              id="navbar-voice-closer-btn"
+              onClick={() => onSelectLayer('CLIENT_ACQUISITION')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-mono font-bold transition shadow-xs cursor-pointer ${
+                currentLayer === 'CLIENT_ACQUISITION'
+                  ? 'bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 border-emerald-400 shadow-md ring-2 ring-emerald-400/40'
+                  : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border-emerald-300 shadow-sm'
               }`}
-              title="Daily Social Airdrop Quests & Proof-of-Action NFTs"
+              title="Launch Autonomous Google Maps Scraper & Voice Closer AI"
             >
-              <Trophy className="w-3.5 h-3.5 text-amber-600" />
-              <span className="hidden md:inline">Daily Airdrop & NFTs</span>
+              <PhoneCall className="w-3.5 h-3.5 text-emerald-700 animate-pulse" />
+              <span className="font-extrabold tracking-tight">Voice Closer AI</span>
+              <span className="px-1.5 py-0.2 rounded text-[9px] bg-emerald-600 text-white font-black">
+                LIVE
+              </span>
             </button>
           )}
 

@@ -31,7 +31,6 @@ import { OutboundEmailModal } from './OutboundEmailModal';
 import { LiveVoiceCallModal } from './LiveVoiceCallModal';
 import { AutomatedPhoneDispatcherModal } from './AutomatedPhoneDispatcherModal';
 import { ProspectCfoPortalModal } from './ProspectCfoPortalModal';
-import { AutonomousVoiceCloser } from '../commercial/AutonomousVoiceCloser';
 
 export const LeadDiscoveryWorkspace: React.FC = () => {
   // Leads state
@@ -44,7 +43,7 @@ export const LeadDiscoveryWorkspace: React.FC = () => {
   const [category, setCategory] = useState('Commercial HVAC & Mechanical');
   const [location, setLocation] = useState('Dallas, TX');
   const [scrapeLimit, setScrapeLimit] = useState(6);
-  const [activeTab, setActiveTab] = useState<'VOICE_CLOSER' | 'LEADS' | 'CALL_LOGS' | 'WORKFLOW_EXPLAINER'>('VOICE_CLOSER');
+  const [activeTab, setActiveTab] = useState<'LEADS' | 'CALL_LOGS' | 'WORKFLOW_EXPLAINER'>('LEADS');
   const [filterStatus, setFilterStatus] = useState<string>('ALL');
 
   // Modals state
@@ -305,10 +304,9 @@ export const LeadDiscoveryWorkspace: React.FC = () => {
       <div className="flex items-center justify-between border-b border-slate-200 font-mono text-xs pb-1">
         <div className="flex items-center gap-2 overflow-x-auto">
           {[
-            { id: 'VOICE_CLOSER', label: '📞 Autonomous Voice Closer & B2B Checkout' },
-            { id: 'LEADS', label: `Discovered Businesses (${leads.length})` },
-            { id: 'CALL_LOGS', label: `Telephony & Voice Logs (${calls.length})` },
-            { id: 'WORKFLOW_EXPLAINER', label: 'Acquisition Architecture' }
+            { id: 'LEADS', label: `🏢 Discovered Businesses (${leads.length})` },
+            { id: 'CALL_LOGS', label: `📋 Verification Logs (${calls.length})` },
+            { id: 'WORKFLOW_EXPLAINER', label: '📐 Acquisition Architecture' }
           ].map(tab => (
             <button
               key={tab.id}
@@ -336,19 +334,12 @@ export const LeadDiscoveryWorkspace: React.FC = () => {
               <option value="NOT_CONTACTED">Not Contacted</option>
               <option value="EMAIL_SENT">Email Sent</option>
               <option value="CLICKED">Clicked Portal</option>
-              <option value="VOICE_CALLED">Voice Called</option>
+              <option value="VOICE_CALLED">Called / Contacted</option>
               <option value="CONVERTED">Walkthrough Booked</option>
             </select>
           </div>
         )}
       </div>
-
-      {/* TAB 0: AUTONOMOUS VOICE CLOSER AI & B2B CHECKOUT */}
-      {activeTab === 'VOICE_CLOSER' && (
-        <div className="space-y-4">
-          <AutonomousVoiceCloser />
-        </div>
-      )}
 
       {/* TAB 1: LEADS GRID & CARDS */}
       {activeTab === 'LEADS' && (

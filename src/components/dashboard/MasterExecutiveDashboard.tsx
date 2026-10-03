@@ -248,10 +248,10 @@ export const MasterExecutiveDashboard: React.FC<MasterExecutiveDashboardProps> =
                 : 'border-transparent text-slate-400 hover:text-white hover:bg-slate-800/40'
             }`}
           >
-            <PhoneCall className="w-4 h-4 text-cyan-400 animate-pulse" />
-            <span>2. Maps Scraper &amp; Voice Closer AI</span>
+            <Building2 className="w-4 h-4 text-cyan-400" />
+            <span>2. Verified Client Acquisition &amp; CRM Pipeline</span>
             <span className="text-[9px] px-1.5 py-0.2 rounded bg-cyan-950 text-cyan-300 font-bold">
-              LIVE CALLS
+              VERIFIED
             </span>
           </button>
 
@@ -519,19 +519,19 @@ export const MasterExecutiveDashboard: React.FC<MasterExecutiveDashboardProps> =
         </div>
       )}
 
-      {/* HUB 2 CONTENT: MAPS SCRAPER & VOICE CLOSER AI */}
+      {/* HUB 2 CONTENT: VERIFIED CLIENT ACQUISITION & PIPELINE */}
       {activeHub === 'HUB_VOICE_ACQUISITION' && (
         <div className="space-y-4 animate-in fade-in duration-150 font-mono">
           <div className={`p-5 rounded-2xl border ${cardClass} flex flex-col md:flex-row md:items-center justify-between gap-4`}>
             <div>
               <div className="flex items-center gap-2">
-                <PhoneCall className="w-4 h-4 text-emerald-400" />
+                <Building2 className="w-4 h-4 text-emerald-400" />
                 <h3 className={`text-base font-bold ${headerText}`}>
-                  Autonomous B2B Voice Closer &amp; Google Maps Scraper
+                  Verified B2B Client Acquisition &amp; Commercial Pipeline
                 </h3>
               </div>
               <p className={`text-xs ${textMuted} mt-1 max-w-2xl`}>
-                Scrapes verified commercial contractors across Texas and Midwest metros with real direct phone lines, triggers AI voice CFO negotiations, and closes $3,499 commercial subscriptions with immediate checkout.
+                Discovers verified commercial contractors across Texas and Midwest metros with real direct phone lines, calculates unlocked working capital from delayed receivables, and generates authentic Section 179 tax-deductible corporate invoices.
               </p>
             </div>
 
@@ -543,8 +543,8 @@ export const MasterExecutiveDashboard: React.FC<MasterExecutiveDashboardProps> =
               }}
               className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 font-black text-xs flex items-center justify-center gap-2 shadow-lg cursor-pointer hover:from-emerald-400 hover:to-teal-300"
             >
-              <PhoneCall className="w-4 h-4 text-slate-950" />
-              <span>Launch Live Interactive Voice Closer &rarr;</span>
+              <Search className="w-4 h-4 text-slate-950" />
+              <span>Open Verified Contractor Discovery &rarr;</span>
             </button>
           </div>
 
@@ -561,21 +561,21 @@ export const MasterExecutiveDashboard: React.FC<MasterExecutiveDashboardProps> =
 
             <div className={`p-4 rounded-2xl border ${cardClass} space-y-2`}>
               <div className="text-cyan-400 font-bold flex items-center gap-1.5">
-                <Bot className="w-4 h-4" />
-                <span>Outbound Voice Caller</span>
+                <TrendingUp className="w-4 h-4" />
+                <span>Working Capital Audit</span>
               </div>
               <p className={`text-[11px] ${textMuted} leading-relaxed`}>
-                Speaks out loud with realistic contractor cash flow scripts: solves Net-60 delays, 10% GC retention lockups, and payroll matching.
+                Calculates unlocked cash flow from Net-60 payment lags, 10% GC retention lockups, and weekly payroll financing requirements.
               </p>
             </div>
 
             <div className={`p-4 rounded-2xl border ${cardClass} space-y-2`}>
               <div className="text-amber-400 font-bold flex items-center gap-1.5">
                 <CreditCard className="w-4 h-4" />
-                <span>B2B Commercial Checkout</span>
+                <span>B2B Commercial Invoicing</span>
               </div>
               <p className={`text-[11px] ${textMuted} leading-relaxed`}>
-                Stripe Corporate Card, same-day ACH debit, and tax-deductible IRS Section 179 corporate invoices generated on call completion.
+                Stripe Corporate Card, same-day ACH debit, and tax-deductible IRS Section 179 corporate invoices generated on agreement execution.
               </p>
             </div>
           </div>
@@ -674,8 +674,8 @@ export const MasterExecutiveDashboard: React.FC<MasterExecutiveDashboardProps> =
             onClick={() => window.dispatchEvent(new CustomEvent('navigate-layer', { detail: 'CLIENT_ACQUISITION' }))}
             className="text-emerald-400 hover:text-emerald-300 font-bold flex items-center gap-1 transition cursor-pointer"
           >
-            <PhoneCall className="w-3.5 h-3.5" />
-            <span>Voice Closer AI</span>
+            <Building2 className="w-3.5 h-3.5" />
+            <span>Contractor Discovery</span>
           </button>
           <span className="text-slate-700">|</span>
           <button

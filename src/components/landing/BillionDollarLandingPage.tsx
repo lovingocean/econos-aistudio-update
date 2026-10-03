@@ -155,8 +155,8 @@ export const BillionDollarLandingPage: React.FC<BillionDollarLandingPageProps> =
               }}
               className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 flex items-center justify-center gap-2 shadow-xl shadow-emerald-500/25 transition cursor-pointer text-xs font-black"
             >
-              <PhoneCall className="w-4 h-4 text-slate-950" />
-              <span>Launch Voice Closer AI &amp; Maps Scraper</span>
+              <Building2 className="w-4 h-4 text-slate-950" />
+              <span>Explore Commercial Contractor Discovery</span>
               <ArrowRight className="w-4 h-4 text-slate-950" />
             </button>
 

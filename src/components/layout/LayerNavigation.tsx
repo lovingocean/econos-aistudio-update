@@ -139,12 +139,12 @@ export const LayerNavigation: React.FC<LayerNavigationProps> = ({
     },
     {
       id: 'CLIENT_ACQUISITION' as AppLayer,
-      name: '📞 Voice Closer AI & Scraper',
-      subtitle: 'Google Maps Places & B2B Telephony Closer',
-      question: 'Live Places API • Contractor Voice Negotiation • B2B Checkout ($3,499)',
-      icon: PhoneCall,
+      name: '🏢 Client Acquisition & Places API',
+      subtitle: 'Verified Commercial B2B Pipeline & CRM',
+      question: 'Google Places API • Contractor Discovery • B2B Enterprise Audit',
+      icon: Building2,
       color: 'emerald',
-      badge: 'LIVE GOOGLE MAPS'
+      badge: 'VERIFIED PIPELINE'
     },
     {
       id: 'WEALTH' as AppLayer,

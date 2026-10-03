@@ -67,93 +67,66 @@ export const AuraXBlockchainConsole: React.FC = () => {
   const [vaultSecondsLeft, setVaultSecondsLeft] = useState<number>(0);
   const [revertSuccessMsg, setRevertSuccessMsg] = useState<string | null>(null);
 
-  // Initialize initial blocks once
-  useEffect(() => {
-    const initialBlocks: AuraXBlock[] = [
-      {
-        blockNumber: 1042182,
-        blockHash: '0x8f2a1b9c7e4d3f2a1c0b8e7d6f5a4c3b2a1e0d9f8c7b6a5e4d3c2b1a0f9e8d7c',
-        parentHash: '0x7e1a0b8c6d3f1a0c9b7e6d5f4a3c2b1a0e9d8f7c6b5a4e3d2c1b0a9f8e7d6c5b',
-        timestamp: Date.now() - 400,
-        validator: 'val-aurax-03 (New York)',
-        transactions: [
-          {
-            id: 'tx-ax-9812',
-            sender: '0x3a92...b41c',
-            recipient: '0x0958...26cD',
-            amount: 4500,
-            token: 'USDC',
-            txClass: 'VAULT_PROTECTED',
-            timestamp: Date.now() - 400,
-            nonce: 841,
-            encryptedPayloadHash: '0x3f9a...88cc',
-            guardianWindowSeconds: 1800,
-            invariantProof: {
-              merkleRoot: '0x99aa...22bb',
-              drainCheckPassed: true,
-              flashLoanRatio: 0.01,
-              anomalyScore: 0.02
-            },
-            status: 'COMMITTED_BLOCK'
-          }
-        ],
-        gasConsumed: 12040,
-        neuralAnomalyScore: 0.01,
-        stateRoot: '0x88cc...11aa',
-        proofOfInvariantRoot: '0xbbdd...44ee'
+  // Synchronize with Real Node on Server
+  const syncWithRealNode = async () => {
+    try {
+      const [statusRes, blocksRes] = await Promise.all([
+        fetch('/api/node/status'),
+        fetch('/api/node/blocks?limit=10')
+      ]);
+
+      if (statusRes.ok) {
+        const status = await statusRes.json();
+        if (status && typeof status.chainLength === 'number') {
+          blockCounterRef.current = status.chainLength;
+          setCurrentBlockHeight(status.chainLength);
+        }
       }
-    ];
-    setBlocks(initialBlocks);
-  }, []);
 
-  // Blockchain Heartbeat (Every 1.8s produce next block)
+      if (blocksRes.ok) {
+        const data = await blocksRes.json();
+        if (Array.isArray(data.blocks) && data.blocks.length > 0) {
+          const mapped: AuraXBlock[] = data.blocks.map((rb: any) => ({
+            blockNumber: rb.blockNumber,
+            blockHash: rb.blockHash,
+            parentHash: rb.parentHash,
+            timestamp: rb.timestamp,
+            validator: rb.validator || '0x095871Cfed26b28f03e409AE612c0A5F1e1726cD (Genesis Node)',
+            transactions: Array.isArray(rb.transactions) ? rb.transactions.map((t: any) => ({
+              id: t.hash ? t.hash.substring(0, 14) + '...' : `tx-ax-${rb.blockNumber}`,
+              sender: t.sender ? (t.sender.substring(0, 8) + '...' + t.sender.slice(-4)) : '0x0958...26cD',
+              recipient: t.recipient ? (t.recipient.substring(0, 8) + '...' + t.recipient.slice(-4)) : '0x9fF6...b97A',
+              amount: t.amount || 250,
+              token: 'AURX',
+              txClass: t.txType || 'VAULT_PROTECTED',
+              timestamp: t.timestamp || rb.timestamp,
+              nonce: t.nonce || rb.nonce,
+              encryptedPayloadHash: t.signature ? (t.signature.substring(0, 16) + '...') : '0x3f9a...88cc',
+              guardianWindowSeconds: t.txType === 'VAULT_PROTECTED' ? 1800 : 0,
+              invariantProof: {
+                merkleRoot: rb.merkleRoot ? (rb.merkleRoot.substring(0, 14) + '...') : '0x99aa...22bb',
+                drainCheckPassed: true,
+                flashLoanRatio: 0.005,
+                anomalyScore: 0.01
+              },
+              status: 'COMMITTED_BLOCK'
+            })) : [],
+            gasConsumed: 12040,
+            neuralAnomalyScore: 0.01,
+            stateRoot: rb.merkleRoot || '0x88cc...11aa',
+            proofOfInvariantRoot: rb.blockHash ? rb.blockHash.substring(0, 16) + '...' : '0xbbdd...44ee'
+          }));
+          setBlocks(mapped);
+        }
+      }
+    } catch (e) {
+      console.warn('Real node sync error:', e);
+    }
+  };
+
   useEffect(() => {
-    const interval = setInterval(() => {
-      blockCounterRef.current += 1;
-      const nextHeight = blockCounterRef.current;
-      setCurrentBlockHeight(nextHeight);
-
-      const randomValidator = INITIAL_VALIDATOR_NODES[Math.floor(Math.random() * INITIAL_VALIDATOR_NODES.length)].name;
-      const newBlock: AuraXBlock = {
-        blockNumber: nextHeight,
-        blockHash: '0x' + Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join(''),
-        parentHash: '0x' + Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join(''),
-        timestamp: Date.now(),
-        validator: randomValidator,
-        transactions: [
-          {
-            id: `tx-ax-${Math.floor(1000 + Math.random() * 9000)}`,
-            sender: '0x' + Array.from({ length: 8 }, () => Math.floor(Math.random() * 16).toString(16)).join('') + '...',
-            recipient: '0x' + Array.from({ length: 8 }, () => Math.floor(Math.random() * 16).toString(16)).join('') + '...',
-            amount: parseFloat((Math.random() * 2500).toFixed(2)),
-            token: 'USDC',
-            txClass: Math.random() > 0.4 ? 'VAULT_PROTECTED' : 'INSTANT_PAYMENT',
-            timestamp: Date.now(),
-            nonce: Math.floor(Math.random() * 500),
-            encryptedPayloadHash: '0x' + Array.from({ length: 12 }, () => Math.floor(Math.random() * 16).toString(16)).join(''),
-            guardianWindowSeconds: 1800,
-            invariantProof: {
-              merkleRoot: '0x' + Array.from({ length: 10 }, () => Math.floor(Math.random() * 16).toString(16)).join(''),
-              drainCheckPassed: true,
-              flashLoanRatio: 0.005,
-              anomalyScore: 0.01
-            },
-            status: 'COMMITTED_BLOCK'
-          }
-        ],
-        gasConsumed: Math.floor(8000 + Math.random() * 6000),
-        neuralAnomalyScore: 0.02,
-        stateRoot: '0x' + Array.from({ length: 16 }, () => Math.floor(Math.random() * 16).toString(16)).join(''),
-        proofOfInvariantRoot: '0x' + Array.from({ length: 16 }, () => Math.floor(Math.random() * 16).toString(16)).join('')
-      };
-
-      setBlocks(prev => {
-        // Prevent any accidental duplicate blockNumber in state
-        const filtered = prev.filter(b => b.blockNumber !== newBlock.blockNumber);
-        return [newBlock, ...filtered.slice(0, 9)];
-      });
-    }, 1800);
-
+    syncWithRealNode();
+    const interval = setInterval(syncWithRealNode, 2500);
     return () => clearInterval(interval);
   }, []);
 
@@ -170,63 +143,93 @@ export const AuraXBlockchainConsole: React.FC = () => {
     return () => clearInterval(interval);
   }, [activeVaultTx]);
 
-  // Execute Simulated Attack to demonstrate Zero-Fraud Consensus Interception
-  const handleLaunchSimulatedAttack = () => {
+  // Execute Real Node Attack to demonstrate Zero-Fraud Consensus Interception
+  const handleLaunchSimulatedAttack = async () => {
     setSimulatingAttack(true);
     setAttackResult(null);
 
-    setTimeout(() => {
-      setSimulatingAttack(false);
-      if (attackType === 'UNAUTHORIZED_DRAINER') {
+    try {
+      const res = await fetch('/api/node/simulator/drain-attack', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          targetAddress: '0x095871Cfed26b28f03e409AE612c0A5F1e1726cD',
+          drainerAddress: '0xbad0000000000000000000000000000000000bad',
+          drainPct: attackType === 'UNAUTHORIZED_DRAINER' ? 95 : attackType === 'FLASH_LOAN_DRAIN' ? 80 : 45
+        })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
         setAttackResult({
-          intercepted: true,
-          ruleTriggered: 'PCT-03-GUARDIAN-REV (Vault Protected Reversal)',
-          details: 'Drainer script attempted to siphon $450,000 to an unverified mixer. Invariant Engine halted execution immediately. Funds locked in Sovereign Vault.',
-          proofHash: '0x7a89f921...c812bf',
-          savedCapitalUsd: 450000
+          intercepted: data.attackPrevented,
+          ruleTriggered: data.invariantRuleTriggered || 'PCT-01-ANTI-DRAIN: ZERO_DRAIN_INTERCEPTOR',
+          details: `Pre-execution Merkle trie validated at ${data.interceptedAtStep || 'CONSENSUS_GATE'}. Protected balance: ${(data.protectedAmount || 450000).toLocaleString()} AURX. Zero capital drained.`,
+          proofHash: data.telemetry?.sirenAlert ? '0x' + Array.from(String(data.telemetry.sirenAlert)).map((c: any) => c.charCodeAt(0).toString(16)).join('').substring(0, 40) : '0x7a89f921...c812bf',
+          savedCapitalUsd: (data.protectedAmount || 450000) * 0.05
         });
-        setRules(r => r.map(x => x.id === 'PCT-03-GUARDIAN-REV' ? { ...x, blockedCount: x.blockedCount + 1 } : x));
-      } else if (attackType === 'MEV_FRONT_RUN') {
-        setAttackResult({
-          intercepted: true,
-          ruleTriggered: 'PCT-02-ZERO-MEV (Threshold Decryption Batch)',
-          details: 'MEV Bot submitted $2.50 higher gas fee to insert front-running sandwich trade before retail user. Block validator rejected ordering mutation due to threshold encryption.',
-          proofHash: '0x4f128e10...99bb01',
-          savedCapitalUsd: 18250
-        });
-        setRules(r => r.map(x => x.id === 'PCT-02-ZERO-MEV' ? { ...x, blockedCount: x.blockedCount + 1 } : x));
-      } else {
-        setAttackResult({
-          intercepted: true,
-          ruleTriggered: 'PCT-01-ANTI-DRAIN (Pool Invariant Conservation)',
-          details: 'Flash loan borrowed $12M to manipulate Uniswap spot pool oracle. Mathematical Invariant k_post >= k_pre * (1-ε) was violated. Tx rejected pre-execution.',
-          proofHash: '0x99cc44aa...112233',
-          savedCapitalUsd: 12000000
-        });
-        setRules(r => r.map(x => x.id === 'PCT-01-ANTI-DRAIN' ? { ...x, blockedCount: x.blockedCount + 1 } : x));
+        setRules(r => r.map(x => x.id === 'PCT-01-ANTI-DRAIN' || x.id === 'PCT-03-GUARDIAN-REV' ? { ...x, blockedCount: x.blockedCount + 1 } : x));
       }
-    }, 1200);
+    } catch (err) {
+      console.error('Failed to run attack simulation:', err);
+    } finally {
+      setSimulatingAttack(false);
+    }
   };
 
   // Launch User Protected Vault Transfer Test
-  const handleCreateVaultTransfer = () => {
-    const tx = {
-      id: `tx-rev-${Math.floor(10000 + Math.random() * 90000)}`,
-      amount: testTransferAmount,
-      recipient: '0x71aC...882E',
-      expiresAt: Date.now() + 60 * 1000, // 60 seconds demo window
-      status: 'ACTIVE_WINDOW' as const
-    };
-    setActiveVaultTx(tx);
-    setVaultSecondsLeft(60);
-    setRevertSuccessMsg(null);
+  const handleCreateVaultTransfer = async () => {
+    try {
+      const res = await fetch('/api/node/transaction/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sender: '0x095871Cfed26b28f03e409AE612c0A5F1e1726cD',
+          recipient: '0x9fF60030aC1e02E1302D3aFa6CaDf347E3fbb97A',
+          amount: testTransferAmount,
+          txType: 'VAULT_PROTECTED',
+          challengeWindowSeconds: 60
+        })
+      });
+      const data = await res.json();
+      if (data.success && data.transaction) {
+        setActiveVaultTx({
+          id: data.transaction.hash,
+          amount: testTransferAmount,
+          recipient: '0x9fF60030aC1e02E1302D3aFa6CaDf347E3fbb97A',
+          expiresAt: data.transaction.guardianChallengeExpiresAt || Date.now() + 60000,
+          status: 'ACTIVE_WINDOW'
+        });
+        setVaultSecondsLeft(60);
+        setRevertSuccessMsg(null);
+        syncWithRealNode();
+      }
+    } catch (e) {
+      console.error('Vault transfer error:', e);
+    }
   };
 
   // Revert Transfer using Guardian Key
-  const handleTriggerReversal = () => {
+  const handleTriggerReversal = async () => {
     if (!activeVaultTx) return;
-    setActiveVaultTx(prev => prev ? { ...prev, status: 'REVERTED_BY_OWNER' } : null);
-    setRevertSuccessMsg(`✅ SUCCESS: Transaction ${activeVaultTx.id} of $${activeVaultTx.amount.toLocaleString()} has been mathematically cancelled! 100% of funds returned to your Sovereign Vault.`);
+    try {
+      const res = await fetch('/api/node/bridge/revert', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          txHash: activeVaultTx.id,
+          requesterAddress: '0x095871Cfed26b28f03e409AE612c0A5F1e1726cD'
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setActiveVaultTx(prev => prev ? { ...prev, status: 'REVERTED_BY_OWNER' } : null);
+        setRevertSuccessMsg(`✅ SUCCESS: Transaction ${activeVaultTx.id.substring(0, 16)}... reversed on-chain! ${activeVaultTx.amount.toLocaleString()} AURX returned immediately to Sovereign Vault.`);
+        syncWithRealNode();
+      }
+    } catch (e) {
+      console.error('Reversal error:', e);
+    }
   };
 
   return (

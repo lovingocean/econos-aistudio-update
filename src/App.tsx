@@ -54,6 +54,9 @@ import { BillionDollarLandingPage } from './components/landing/BillionDollarLand
 import { AuraXDailySocialAirdropNFT } from './components/omnifin/AuraXDailySocialAirdropNFT';
 import { BillionDollarBuyerFunnelModal } from './components/commercial/BillionDollarBuyerFunnelModal';
 import { BillionDollarDashboardDesignModal } from './components/design/BillionDollarDashboardDesignModal';
+import { SmartContractModal } from './components/commercial/SmartContractModal';
+import { EnterprisePaymentGatewayModal } from './components/commercial/EnterprisePaymentGatewayModal';
+import { P2PConsoleModal } from './components/commercial/P2PConsoleModal';
 import { AppLayer } from './types/econos';
 import { 
   Building2, 
@@ -93,6 +96,9 @@ const AppContent: React.FC = () => {
   const [isPodcastModalOpen, setIsPodcastModalOpen] = useState(false);
   const [isBuyerFunnelOpen, setIsBuyerFunnelOpen] = useState(false);
   const [isDesignModalOpen, setIsDesignModalOpen] = useState(false);
+  const [isSmartContractModalOpen, setIsSmartContractModalOpen] = useState(false);
+  const [isPaymentGatewayOpen, setIsPaymentGatewayOpen] = useState(false);
+  const [isP2PConsoleOpen, setIsP2PConsoleOpen] = useState(false);
 
   // Sync AuthContext openOnboarding state with local onboarding modal state
   React.useEffect(() => {
@@ -112,13 +118,24 @@ const AppContent: React.FC = () => {
     };
     const buyerFunnelHandler = () => setIsBuyerFunnelOpen(true);
     const designModalHandler = () => setIsDesignModalOpen(true);
+    const smartContractHandler = () => setIsSmartContractModalOpen(true);
+    const paymentGatewayHandler = () => setIsPaymentGatewayOpen(true);
+    const p2pConsoleHandler = () => setIsP2PConsoleOpen(true);
+
     window.addEventListener('navigate-layer', handler);
     window.addEventListener('open-buyer-funnel', buyerFunnelHandler);
     window.addEventListener('open-design-modal', designModalHandler);
+    window.addEventListener('open-smart-contracts', smartContractHandler);
+    window.addEventListener('open-payment-gateway', paymentGatewayHandler);
+    window.addEventListener('open-p2p-console', p2pConsoleHandler);
+
     return () => {
       window.removeEventListener('navigate-layer', handler);
       window.removeEventListener('open-buyer-funnel', buyerFunnelHandler);
       window.removeEventListener('open-design-modal', designModalHandler);
+      window.removeEventListener('open-smart-contracts', smartContractHandler);
+      window.removeEventListener('open-payment-gateway', paymentGatewayHandler);
+      window.removeEventListener('open-p2p-console', p2pConsoleHandler);
     };
   }, []);
 
@@ -149,7 +166,7 @@ const AppContent: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#f0f3f6] text-slate-900 bg-architect-grid flex flex-col selection:bg-amber-500/20 selection:text-amber-900">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#f0f3f6] text-slate-900 bg-architect-grid flex flex-col selection:bg-amber-500/20 selection:text-amber-900">
       {/* Global 100 System Layers Progress Bar */}
       <GlobalLayersProgressBar
         currentLayer={currentLayer}
@@ -169,12 +186,15 @@ const AppContent: React.FC = () => {
         onOpenOnboarding={() => setIsOnboardingModalOpen(true)}
         onOpenBuyerFunnel={() => setIsBuyerFunnelOpen(true)}
         onOpenDesignModal={() => setIsDesignModalOpen(true)}
+        onOpenSmartContracts={() => setIsSmartContractModalOpen(true)}
+        onOpenPaymentGateway={() => setIsPaymentGatewayOpen(true)}
+        onOpenP2PConsole={() => setIsP2PConsoleOpen(true)}
         currentLayer={currentLayer}
         onSelectLayer={setCurrentLayer}
       />
 
       {/* Main Container */}
-      <main className="flex-1 max-w-[1720px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+      <main className="flex-1 w-full max-w-full px-3 sm:px-6 py-6 space-y-6 overflow-x-hidden">
         {/* Layer Selector Bar */}
         <LayerNavigation
           currentLayer={currentLayer}
@@ -490,6 +510,24 @@ const AppContent: React.FC = () => {
       <BillionDollarDashboardDesignModal
         isOpen={isDesignModalOpen}
         onClose={() => setIsDesignModalOpen(false)}
+      />
+
+      {/* PILLAR 1: Sovereign Smart Contract Architecture Modal */}
+      <SmartContractModal
+        isOpen={isSmartContractModalOpen}
+        onClose={() => setIsSmartContractModalOpen(false)}
+      />
+
+      {/* PILLAR 2: Stripe & Plaid Enterprise Payment Gateway Modal */}
+      <EnterprisePaymentGatewayModal
+        isOpen={isPaymentGatewayOpen}
+        onClose={() => setIsPaymentGatewayOpen(false)}
+      />
+
+      {/* PILLAR 3: Distributed Multi-Server P2P Gossip Mesh Console Modal */}
+      <P2PConsoleModal
+        isOpen={isP2PConsoleOpen}
+        onClose={() => setIsP2PConsoleOpen(false)}
       />
     </div>
   );

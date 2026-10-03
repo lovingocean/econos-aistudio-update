@@ -260,45 +260,45 @@ export const GlobalLayersProgressBar: React.FC<GlobalLayersProgressBarProps> = (
     <aside 
       id="global-100-layers-progress-header" 
       aria-label="100 Sovereign Layers Progress Tracker"
-      className="bg-[#0f172a] text-slate-100 border-b border-slate-800 shadow-sm relative z-30 transition-all duration-300"
+      className="bg-[#0f172a] text-slate-100 border-b border-slate-800 shadow-sm relative z-30 transition-all duration-300 w-full max-w-full overflow-x-hidden"
     >
-      <div className="max-w-[1720px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-2">
+      <div className="w-full max-w-full px-3 sm:px-6 py-2">
         {/* Main Bar: Header, Progress, & Key Controls */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
+        <div className="flex flex-wrap items-center justify-between gap-2 w-full">
           
           {/* Left: Metric Label & Completion Status */}
-          <div className="flex items-center gap-2.5 flex-wrap">
-            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-slate-800/90 border border-slate-700/80 text-[11px] font-mono font-bold text-amber-300">
+          <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-slate-800/90 border border-slate-700/80 text-[11px] font-mono font-bold text-amber-300 shrink-0">
               <Layers className="w-3.5 h-3.5 text-amber-400" />
-              <span>100 SYSTEM LAYERS</span>
+              <span>100 LAYERS</span>
             </div>
 
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 shrink-0">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
               </span>
               <span className="text-xs font-bold font-mono text-emerald-400">
-                {operationalLayers}/{totalLayers} ({completionPercentage}%) OPERATIONAL
+                {operationalLayers}/{totalLayers} ({completionPercentage}%) LIVE
               </span>
             </div>
 
             {/* Current Active Layer indicator badge */}
-            <div className="hidden md:flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-800/60 border border-slate-700 text-[11px] text-slate-300">
+            <div className="hidden xl:flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-800/60 border border-slate-700 text-[11px] text-slate-300">
               <span className="text-slate-400 font-mono">Active:</span>
-              <span className="font-semibold text-white truncate max-w-[210px]">
-                {currentLayer === 'OMNIFIN' ? '⚡ OMNIFIN Global Layer' : `L${currentLayerNumber}. ${activeLayerSpec?.shortName || currentLayer}`}
+              <span className="font-semibold text-white truncate max-w-[160px]">
+                {currentLayer === 'OMNIFIN' ? '⚡ OMNIFIN Global' : `L${currentLayerNumber}. ${activeLayerSpec?.shortName || currentLayer}`}
               </span>
             </div>
           </div>
 
           {/* Right: Quick Jumps & Expand Drawer Button */}
-          <div className="flex items-center gap-1.5 self-end sm:self-auto text-[11px] font-mono">
+          <div className="flex items-center gap-1.5 flex-wrap text-[11px] font-mono">
             {/* Quick jump to OMNIFIN Global Layer */}
             <button
               id="jump-to-omnifin-btn"
               onClick={() => onSelectLayer('OMNIFIN')}
-              className={`px-2 py-1 rounded text-xs font-bold transition flex items-center gap-1 cursor-pointer border ${
+              className={`px-2 py-1 rounded text-xs font-bold transition flex items-center gap-1 cursor-pointer border shrink-0 ${
                 currentLayer === 'OMNIFIN'
                   ? 'bg-cyan-500 text-slate-950 border-cyan-400 shadow-sm'
                   : 'bg-cyan-950/70 text-cyan-300 hover:bg-cyan-900 border-cyan-500/40'
@@ -313,7 +313,7 @@ export const GlobalLayersProgressBar: React.FC<GlobalLayersProgressBarProps> = (
             <button
               id="jump-to-layer-62-btn"
               onClick={() => onSelectLayer('LAYER_62_RD_TAX_CREDIT')}
-              className={`px-2 py-1 rounded text-xs font-bold transition flex items-center gap-1 cursor-pointer border ${
+              className={`px-2 py-1 rounded text-xs font-bold transition flex items-center gap-1 cursor-pointer border shrink-0 ${
                 currentLayerNumber === 62
                   ? 'bg-amber-500 text-slate-950 border-amber-400 shadow-sm'
                   : 'bg-amber-950/60 text-amber-300 hover:bg-amber-900/80 border-amber-500/40'
@@ -321,14 +321,14 @@ export const GlobalLayersProgressBar: React.FC<GlobalLayersProgressBarProps> = (
               title="Jump directly to Layer 62: R&D Tax Credit (§41)"
             >
               <Calculator className="w-3 h-3" />
-              <span>⭐ L62 R&amp;D Tax</span>
+              <span>⭐ L62 R&amp;D</span>
             </button>
 
             {/* Quick jump to Enterprise Synthetics */}
             <button
               id="jump-to-layer-42-btn"
               onClick={() => onSelectLayer('LAYER_42_SYNTHETIC_BALANCE_SHEET')}
-              className={`px-2 py-1 rounded text-xs font-bold transition flex items-center gap-1 cursor-pointer border ${
+              className={`hidden sm:inline-flex px-2 py-1 rounded text-xs font-bold transition items-center gap-1 cursor-pointer border shrink-0 ${
                 currentLayerNumber >= 42 && currentLayerNumber <= 61
                   ? 'bg-blue-600 text-white border-blue-400'
                   : 'bg-slate-800 hover:bg-slate-700 text-blue-300 border-slate-700'
@@ -336,8 +336,7 @@ export const GlobalLayersProgressBar: React.FC<GlobalLayersProgressBarProps> = (
               title="Jump to Layer 42: Enterprise Balance Sheet"
             >
               <Building2 className="w-3 h-3" />
-              <span className="hidden sm:inline">L42 Enterprise</span>
-              <span className="sm:hidden">L42</span>
+              <span>L42</span>
             </button>
 
             {/* System Health Pulse Trigger Button */}

@@ -111,7 +111,7 @@ export const AuraXRealNodeLive: React.FC = () => {
   // Active sub-tab within Real Node
   const [activeEngineTab, setActiveEngineTab] = useState<
     'DAILY_SOCIAL_NFT' | 'AIRDROP_PORTAL' | 'REFERRAL_QUESTS' | 'TOKEN_LAUNCHPAD' | 'LIQUIDITY_POOLS' | 'BLOCK_EXPLORER' | 'DEX_SWAP' | 'STAKING' | 'DRAIN_SIMULATOR' | 'BROADCAST' | 'FAUCET' | 'BASE_BRIDGE' | 'EXPLORER_SEARCH' | 'METAMASK_RPC' | 'WHITEPAPER_DOCS' | 'RUN_VALIDATOR'
-  >('DAILY_SOCIAL_NFT');
+  >('BLOCK_EXPLORER');
 
   // Custom User Token Holdings & Portfolio
   const [userTokens, setUserTokens] = useState<any[]>([]);

@@ -107,14 +107,30 @@ export const SecondaryNodeMarketplace: React.FC = () => {
     setShowListModal(false);
   };
 
-  const handleExecutePurchase = (node: SecondaryNodeListing) => {
+  const handleExecutePurchase = async (node: SecondaryNodeListing) => {
     setPurchasingNode(node);
-    setTimeout(() => {
-      setPurchaseSuccess(`Successfully acquired Node #${node.nodeId} for $${node.askPriceUsdc.toLocaleString()} USDC! Ownership NFT transferred to your wallet.`);
-      setListings(listings.filter(l => l.nodeId !== node.nodeId));
+    try {
+      const res = await fetch('/api/node/transaction/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sender: '0x095871Cfed26b28f03e409AE612c0A5F1e1726cD',
+          recipient: node.sellerAddress.split(' ')[0],
+          amount: node.askPriceUsdc,
+          txType: 'INSTANT'
+        })
+      });
+      const data = await res.json();
+      if (data.success && data.transaction) {
+        setPurchaseSuccess(`✅ Verified On-Chain Purchase: Acquired Node #${node.nodeId} for $${node.askPriceUsdc.toLocaleString()} USDC! Tx Hash: ${data.transaction.hash.substring(0, 18)}... Ownership NFT transferred to your wallet.`);
+        setListings(listings.filter(l => l.nodeId !== node.nodeId));
+      }
+    } catch (e) {
+      console.warn('Node purchase transaction error:', e);
+    } finally {
       setPurchasingNode(null);
-      setTimeout(() => setPurchaseSuccess(null), 6000);
-    }, 1500);
+      setTimeout(() => setPurchaseSuccess(null), 8000);
+    }
   };
 
   return (

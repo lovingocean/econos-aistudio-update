@@ -65,12 +65,12 @@ export const MasterHundredBillionTerminal: React.FC<MasterHundredBillionTerminal
           <div className="space-y-1">
             <div className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-[11px] font-bold">
               <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-              <span>THE $100 BILLION SOVEREIGN FINANCIAL SUPER-STRUCTURE</span>
+              <span>ENTERPRISE MULTI-MODULE OPERATIONS TERMINAL</span>
             </div>
             <h2 className="text-lg sm:text-xl font-black text-white flex items-center gap-2">
-              <span>AuraX &bull; ECONOS Complete 8-Pillar Architecture</span>
+              <span>ECONOS Complete Enterprise Business Architecture</span>
               <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold">
-                ALL 8 PILLARS ACTIVE
+                ALL MODULES ACTIVE
               </span>
             </h2>
           </div>

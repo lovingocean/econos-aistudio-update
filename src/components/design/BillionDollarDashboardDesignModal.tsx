@@ -43,7 +43,7 @@ export const BillionDollarDashboardDesignModal: React.FC<BillionDollarDashboardD
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-base font-black text-white tracking-wide">
-                  Billion-Dollar Enterprise Dashboard Architecture
+                  Enterprise Financial Dashboard Architecture
                 </h2>
                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-mono font-bold border border-emerald-500/30">
                   YC TIER • ZERO CLUTTER

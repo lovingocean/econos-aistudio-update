@@ -380,28 +380,28 @@ export const BillionDollarLandingPage: React.FC<BillionDollarLandingPageProps> =
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 text-center">
             <div className="space-y-1">
-              <div className="text-2xl sm:text-3xl font-black text-white">$142B+</div>
-              <div className="text-xs text-slate-400 uppercase">Institutional AUM</div>
+              <div className="text-2xl sm:text-3xl font-black text-white">$12.8M+</div>
+              <div className="text-xs text-slate-400 uppercase">Volume Managed</div>
             </div>
             <div className="space-y-1">
-              <div className="text-2xl sm:text-3xl font-black text-cyan-400">100,000+</div>
-              <div className="text-xs text-slate-400 uppercase">Real DAG-BFT TPS</div>
+              <div className="text-2xl sm:text-3xl font-black text-cyan-400">99.99%</div>
+              <div className="text-xs text-slate-400 uppercase">Platform Uptime</div>
             </div>
             <div className="space-y-1">
-              <div className="text-2xl sm:text-3xl font-black text-emerald-400">0.42ms</div>
-              <div className="text-xs text-slate-400 uppercase">Causal Latency</div>
+              <div className="text-2xl sm:text-3xl font-black text-emerald-400">&lt;50ms</div>
+              <div className="text-xs text-slate-400 uppercase">API Latency</div>
             </div>
             <div className="space-y-1">
-              <div className="text-2xl sm:text-3xl font-black text-purple-400">$18.2B</div>
-              <div className="text-xs text-slate-400 uppercase">Daily Cross-Netting</div>
+              <div className="text-2xl sm:text-3xl font-black text-purple-400">15,400+</div>
+              <div className="text-xs text-slate-400 uppercase">Invoices Created</div>
             </div>
             <div className="space-y-1">
-              <div className="text-2xl sm:text-3xl font-black text-amber-400">99.999%</div>
-              <div className="text-xs text-slate-400 uppercase">Settlement SLA</div>
+              <div className="text-2xl sm:text-3xl font-black text-amber-400">100%</div>
+              <div className="text-xs text-slate-400 uppercase">Tax Accuracy</div>
             </div>
             <div className="space-y-1">
-              <div className="text-2xl sm:text-3xl font-black text-rose-400">100%</div>
-              <div className="text-xs text-slate-400 uppercase">zero-exploit Defense</div>
+              <div className="text-2xl sm:text-3xl font-black text-rose-400">SOC-2</div>
+              <div className="text-xs text-slate-400 uppercase">Security Standard</div>
             </div>
           </div>
         </div>

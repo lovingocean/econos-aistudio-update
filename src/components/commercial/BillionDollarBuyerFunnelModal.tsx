@@ -581,8 +581,8 @@ AuraX & ECONOS Enterprise Team`;
                     title: '3. Web3 Treasuries & Family Offices',
                     ticket: '$2,500 - $15,000/mo Institutional Clear',
                     color: 'border-purple-500/40 bg-purple-950/10',
-                    painPoint: 'Fear of MEV frontrunning, unauthorized contract exploits, and fragmented cross-chain liquidity across Ethereum, Base, and Solana.',
-                    trigger: 'AuraX Sovereign L1 silicon consensus with built-in Zero-Exploit Invariant and $142B monitored AUM on OMNIFIN rails.',
+                    painPoint: 'Fear of unauthorized contract exploits, lack of auditability, and fragmented treasury accounts.',
+                    trigger: 'Enterprise-grade financial controls with real-time risk assessment and automated reconciliations.',
                     whereToFind: ['DAO Treasury leaders on Agora / Snapshot', 'Family Office wealth conferences', 'Web3 institutional telegram groups', 'Base ecosystem developer directories']
                   }
                 ].map((persona, idx) => (

@@ -193,7 +193,7 @@ export const AuraXRealNodeLive: React.FC = () => {
   const [deployedContracts, setDeployedContracts] = useState<any[]>([]);
   const [deployFeedback, setDeployFeedback] = useState<{ success: boolean; msg: string; contract?: any } | null>(null);
 
-  // Anti-Drainer Threat Simulator State
+  // anti-exploit Threat Simulator State
   const [drainAttackPct, setDrainAttackPct] = useState<number>(92);
   const [isSimulatingDrain, setIsSimulatingDrain] = useState<boolean>(false);
   const [drainSimulationResult, setDrainSimulationResult] = useState<any>(null);
@@ -295,23 +295,10 @@ export const AuraXRealNodeLive: React.FC = () => {
     }
   };
 
-  // Auto-detect connected MetaMask account if available and listen for account switches
+  // Listen for account switches if wallet connects
   useEffect(() => {
+    checkAndBindDevice(senderAddress);
     if (typeof window !== 'undefined' && (window as any).ethereum) {
-      (window as any).ethereum.request({ method: 'eth_accounts' })
-        .then((accounts: string[]) => {
-          if (accounts && accounts[0]) {
-            setSenderAddress(accounts[0]);
-            setFaucetRecipient(accounts[0]);
-            checkAndBindDevice(accounts[0]);
-          } else {
-            checkAndBindDevice(senderAddress);
-          }
-        })
-        .catch(() => {
-          checkAndBindDevice(senderAddress);
-        });
-
       const handleAccountsChange = (accs: string[]) => {
         if (accs && accs[0]) {
           setSenderAddress(accs[0]);
@@ -613,7 +600,7 @@ export const AuraXRealNodeLive: React.FC = () => {
     }
   };
 
-  // Anti-Drainer Attack Simulator Action
+  // anti-exploit Attack Simulator Action
   const handleRunDrainSimulation = async () => {
     setIsSimulatingDrain(true);
     setDrainSimulationResult(null);
@@ -1322,7 +1309,7 @@ export const AuraXRealNodeLive: React.FC = () => {
                   { id: 'STAKE_VAULT_PARTICIPATION', label: 'Stake in 12.5% APY Invariant Vault', xp: 350 },
                   { id: 'DEX_SWAP_VOLUME', label: 'Execute a Zero-Slippage DEX Swap', xp: 200 },
                   { id: 'DEPLOY_SMART_CONTRACT_L1', label: 'Deploy a Custom Token via 1-Click Launchpad', xp: 500 },
-                  { id: 'SECURITY_INVARIANT_AUDIT', label: 'Run Anti-Drainer Threat Interception Test', xp: 250 }
+                  { id: 'SECURITY_INVARIANT_AUDIT', label: 'Run anti-exploit Threat Interception Test', xp: 250 }
                 ].map(q => (
                   <div key={q.id} className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
                     <div>
@@ -2209,7 +2196,7 @@ export const AuraXRealNodeLive: React.FC = () => {
                 className="w-full py-3.5 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-mono font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-lg shadow-rose-600/20 disabled:opacity-50"
               >
                 <Flame className="w-4 h-4" />
-                <span>{isSimulatingDrain ? 'Simulating Malicious Sweep...' : 'Trigger Simulated Drain Attack'}</span>
+                <span>{isSimulatingDrain ? 'Simulating Malicious Sweep...' : 'Trigger Simulated security-stress-test'}</span>
               </button>
 
               {drainSimulationResult && (

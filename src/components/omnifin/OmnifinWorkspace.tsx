@@ -415,15 +415,15 @@ STATUS: READY_FOR_SIGNATURE [TRANSACTION SIGNED & DISPATCHED]`);
           {/* Master Telemetry Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 pt-1">
             <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
-              <div className="text-[10px] font-mono text-slate-400">Total Monitored AUM</div>
-              <div className="text-lg font-black text-amber-300 font-mono mt-0.5">$142.85B</div>
+              <div className="text-[10px] font-mono text-slate-400">Total Monitored Volume</div>
+              <div className="text-lg font-black text-amber-300 font-mono mt-0.5">$1,428,500</div>
               <div className="text-[10px] text-emerald-400 mt-1 font-mono">15 Asset Classes</div>
             </div>
 
             <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
               <div className="text-[10px] font-mono text-slate-400">Autonomous Clearing</div>
               <div className="text-lg font-black text-cyan-300 font-mono mt-0.5">98.4%</div>
-              <div className="text-[10px] text-slate-400 mt-1 font-mono">$18.2B Netted Today</div>
+              <div className="text-[10px] text-slate-400 mt-1 font-mono">$280,000 Reconciled Today</div>
             </div>
 
             <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">

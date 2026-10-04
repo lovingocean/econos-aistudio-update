@@ -98,23 +98,27 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [isResetting, setIsResetting] = useState(false);
   const [connectedWallet, setConnectedWallet] = useState<string | null>(null);
   const [isConnectingWallet, setIsConnectingWallet] = useState(false);
+  const [showWalletMenu, setShowWalletMenu] = useState(false);
 
-  // Auto-detect connected Web3 wallet (MetaMask)
-  useEffect(() => {
-    if (typeof window !== 'undefined' && (window as any).ethereum) {
-      (window as any).ethereum.request({ method: 'eth_accounts' })
-        .then((accounts: string[]) => {
-          if (accounts && accounts[0]) {
-            setConnectedWallet(accounts[0]);
-          }
-        })
-        .catch(() => {});
+  // 1-Click Sandbox Wallet (Never blocked by MetaMask)
+  const handleActivateSandboxWallet = () => {
+    const sandboxWallet = '0x71aE92b4C67029bCa38914D120B89104fE589841';
+    setConnectedWallet(sandboxWallet);
+    setShowWalletMenu(false);
+    if (onSelectLayer && currentLayer !== 'OMNIFIN') {
+      onSelectLayer('OMNIFIN');
     }
-  }, []);
+  };
 
+  const handleDisconnectWallet = () => {
+    setConnectedWallet(null);
+    setShowWalletMenu(false);
+  };
+
+  // User-initiated wallet connection only (no auto-probing on mount)
   const handleConnectWalletNavbar = async () => {
     if (typeof window === 'undefined' || !(window as any).ethereum) {
-      alert('No Web3 wallet detected. Please install MetaMask browser extension.');
+      alert('MetaMask browser extension not detected. You can use the 1-Click Sandbox Wallet instead.');
       return;
     }
     setIsConnectingWallet(true);
@@ -122,13 +126,14 @@ export const Navbar: React.FC<NavbarProps> = ({
       const accounts = await (window as any).ethereum.request({ method: 'eth_requestAccounts' });
       if (accounts && accounts[0]) {
         setConnectedWallet(accounts[0]);
+        setShowWalletMenu(false);
         // Also auto-switch to OMNIFIN AuraX blockchain layer if not already there
         if (onSelectLayer && currentLayer !== 'OMNIFIN') {
           onSelectLayer('OMNIFIN');
         }
       }
     } catch (err: any) {
-      console.error('Wallet connection failed', err);
+      console.warn('Wallet connection cancelled or rejected by user/extension:', err);
     } finally {
       setIsConnectingWallet(false);
     }
@@ -283,18 +288,18 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
           )}
 
-          {/* $100B Complete 8-Pillars Master Terminal Button */}
+          {/* Enterprise Multi-Module Command Terminal Button */}
           {onOpenMasterTerminal && (
             <button
               onClick={onOpenMasterTerminal}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 via-purple-600 to-cyan-500 hover:brightness-110 text-white border border-amber-300/40 text-xs font-mono font-black transition shadow-sm cursor-pointer shrink-0"
-              title="Open $100 Billion Sovereign Super-Infrastructure Master Terminal"
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-blue-700 via-indigo-600 to-cyan-600 hover:brightness-110 text-white border border-blue-400/40 text-xs font-mono font-bold transition shadow-sm cursor-pointer shrink-0"
+              title="Open Enterprise Multi-Module Operations Terminal"
             >
-              <Sparkles className="w-3.5 h-3.5 text-amber-200 animate-pulse" />
-              <span className="hidden lg:inline">$100B Super-Terminal</span>
-              <span className="lg:hidden hidden sm:inline">$100B</span>
-              <span className="px-1 py-0.2 rounded text-[9px] bg-slate-950/80 text-amber-300 border border-amber-500/40 font-black">
-                8-PILLARS
+              <Sparkles className="w-3.5 h-3.5 text-cyan-200" />
+              <span className="hidden lg:inline">Enterprise Hub</span>
+              <span className="lg:hidden hidden sm:inline">Hub</span>
+              <span className="px-1 py-0.2 rounded text-[9px] bg-slate-950/80 text-cyan-300 border border-cyan-500/40 font-bold">
+                OPERATIONS
               </span>
             </button>
           )}
@@ -406,24 +411,24 @@ export const Navbar: React.FC<NavbarProps> = ({
                   )}
                 </div>
 
-                {/* The $100B Complete 8-Pillars Super-Infrastructure */}
-                <div className="px-3 py-1.5 text-[10px] text-amber-600 uppercase font-black tracking-wider pt-2 bg-amber-50/60 flex items-center justify-between">
-                  <span>$100B Super-Infrastructure</span>
-                  <span className="px-1.5 py-0.2 rounded bg-amber-200/60 text-amber-900 font-extrabold text-[9px]">8 PILLARS</span>
+                {/* Enterprise Operations Modules */}
+                <div className="px-3 py-1.5 text-[10px] text-slate-700 uppercase font-bold tracking-wider pt-2 bg-slate-100 flex items-center justify-between">
+                  <span>Core Business Modules</span>
+                  <span className="px-1.5 py-0.2 rounded bg-slate-200 text-slate-800 font-bold text-[9px]">ENTERPRISE</span>
                 </div>
-                <div className="py-1 bg-amber-50/20">
+                <div className="py-1 bg-slate-50/50">
                   {onOpenMasterTerminal && (
                     <button
                       onClick={() => {
                         setShowToolsMenu(false);
                         onOpenMasterTerminal();
                       }}
-                      className="w-full text-left px-3 py-2 bg-gradient-to-r from-amber-500/10 to-cyan-500/10 hover:from-amber-500/20 hover:to-cyan-500/20 transition flex items-center gap-2.5 text-slate-900 font-bold border-b border-amber-200/40"
+                      className="w-full text-left px-3 py-2 bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 transition flex items-center gap-2.5 text-slate-900 font-bold border-b border-slate-200"
                     >
-                      <Sparkles className="w-4 h-4 text-amber-500" />
+                      <Sparkles className="w-4 h-4 text-indigo-600" />
                       <div>
-                        <div className="text-amber-900 font-black">🌟 Open Master 8-Pillar Terminal</div>
-                        <div className="text-[10px] text-slate-500 font-normal">All 8 Sovereign Engines in 1 View</div>
+                        <div className="text-slate-900 font-bold">Open Operations Terminal</div>
+                        <div className="text-[10px] text-slate-500 font-normal">All 8 Business Modules in 1 View</div>
                       </div>
                     </button>
                   )}
@@ -592,29 +597,97 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </div>
 
-          {/* Compact Web3 Wallet Button */}
-          <button
-            onClick={handleConnectWalletNavbar}
-            disabled={isConnectingWallet}
-            className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1.5 rounded-xl border text-xs font-mono font-bold transition shadow-xs cursor-pointer shrink-0 ${
-              connectedWallet
-                ? 'bg-emerald-500/10 hover:bg-emerald-500/20 border-emerald-500/40 text-emerald-800'
-                : 'bg-amber-50 hover:bg-amber-100 border-amber-300 text-amber-900'
-            }`}
-            title={connectedWallet ? `Connected: ${connectedWallet}` : 'Connect MetaMask to AuraX L1 (Chain ID: 9924)'}
-          >
-            <Wallet className={`w-3.5 h-3.5 ${connectedWallet ? 'text-emerald-600' : 'text-amber-600'}`} />
-            <span className="hidden md:inline">
-              {connectedWallet
-                ? `${connectedWallet.substring(0, 6)}...${connectedWallet.substring(connectedWallet.length - 4)}`
-                : isConnectingWallet
-                ? 'Connecting...'
-                : 'Wallet'}
-            </span>
-            <span className="px-1 py-0.2 rounded text-[9px] bg-amber-200 text-amber-950 font-black">
-              9924
-            </span>
-          </button>
+          {/* Compact Web3 Wallet Button & Dropdown */}
+          <div className="relative shrink-0">
+            <button
+              onClick={() => setShowWalletMenu(!showWalletMenu)}
+              disabled={isConnectingWallet}
+              className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1.5 rounded-xl border text-xs font-mono font-bold transition shadow-xs cursor-pointer shrink-0 ${
+                connectedWallet
+                  ? 'bg-emerald-500/10 hover:bg-emerald-500/20 border-emerald-500/40 text-emerald-800'
+                  : 'bg-amber-50 hover:bg-amber-100 border-amber-300 text-amber-900'
+              }`}
+              title={connectedWallet ? `Connected: ${connectedWallet}` : 'Web3 Wallet & Sandbox Mode'}
+            >
+              <Wallet className={`w-3.5 h-3.5 ${connectedWallet ? 'text-emerald-600' : 'text-amber-600'}`} />
+              <span className="hidden md:inline">
+                {connectedWallet
+                  ? `${connectedWallet.substring(0, 6)}...${connectedWallet.substring(connectedWallet.length - 4)}`
+                  : isConnectingWallet
+                  ? 'Connecting...'
+                  : 'Wallet'}
+              </span>
+              <span className="px-1 py-0.2 rounded text-[9px] bg-amber-200 text-amber-950 font-black">
+                {connectedWallet ? 'ACTIVE' : 'READY'}
+              </span>
+            </button>
+
+            {/* Wallet Connection Popover */}
+            {showWalletMenu && (
+              <div className="absolute right-0 mt-2 w-72 rounded-2xl bg-slate-900 border border-slate-800 p-3 shadow-2xl z-50 text-white font-mono text-xs space-y-2.5 animate-in fade-in zoom-in-95 duration-100">
+                <div className="flex items-center justify-between pb-2 border-b border-slate-800">
+                  <span className="text-[11px] font-bold text-slate-300 flex items-center gap-1.5">
+                    <Wallet className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>Web3 Connection Hub</span>
+                  </span>
+                  <button
+                    onClick={() => setShowWalletMenu(false)}
+                    className="text-slate-500 hover:text-white text-xs px-1"
+                  >
+                    &times;
+                  </button>
+                </div>
+
+                {connectedWallet ? (
+                  <div className="space-y-2">
+                    <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
+                      <div className="text-[10px] text-slate-400">Connected Address:</div>
+                      <div className="text-emerald-400 font-bold break-all text-[11px]">{connectedWallet}</div>
+                      <div className="text-[10px] text-slate-400 pt-1">Balances:</div>
+                      <div className="text-white font-bold text-[10px]">25,400 USDC &bull; 1,500 AURX</div>
+                    </div>
+                    <button
+                      onClick={handleDisconnectWallet}
+                      className="w-full py-2 px-3 rounded-xl bg-rose-950/60 hover:bg-rose-900/80 border border-rose-500/40 text-rose-300 text-xs font-bold transition cursor-pointer"
+                    >
+                      Disconnect Wallet
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {/* Option A: Instant Sandbox Wallet */}
+                    <button
+                      onClick={handleActivateSandboxWallet}
+                      className="w-full text-left p-2.5 rounded-xl bg-gradient-to-r from-emerald-950/60 to-cyan-950/60 hover:brightness-110 border border-emerald-500/40 text-emerald-300 font-bold transition cursor-pointer space-y-0.5"
+                    >
+                      <div className="flex items-center gap-1.5 text-emerald-400 text-xs font-black">
+                        <Zap className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                        <span>1-Click Sandbox Dev Wallet</span>
+                      </div>
+                      <p className="text-[10px] text-slate-400 font-sans font-normal">
+                        No MetaMask required. Zero warnings. Pre-loaded with $25k test capital.
+                      </p>
+                    </button>
+
+                    {/* Option B: MetaMask Extension */}
+                    <button
+                      onClick={handleConnectWalletNavbar}
+                      disabled={isConnectingWallet}
+                      className="w-full text-left p-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 text-slate-200 transition cursor-pointer space-y-0.5"
+                    >
+                      <div className="flex items-center gap-1.5 text-xs font-bold">
+                        <span className="text-amber-500 font-black">🦊</span>
+                        <span>Connect MetaMask Extension</span>
+                      </div>
+                      <p className="text-[10px] text-slate-500 font-sans font-normal">
+                        Connect your personal Web3 browser extension.
+                      </p>
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
 
           {/* Role Switcher (RBAC simulation) */}
           <div className="relative shrink-0 hidden sm:block">

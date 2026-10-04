@@ -40,18 +40,7 @@ export const SmartContractDeploymentHub: React.FC = () => {
 
   const netConfig = AURAX_CONTRACT_ADDRESSES[activeNetwork];
 
-  useEffect(() => {
-    if (typeof window !== 'undefined' && (window as any).ethereum) {
-      (window as any).ethereum.request({ method: 'eth_accounts' })
-        .then((accounts: string[]) => {
-          if (accounts && accounts.length > 0) setWalletAddress(accounts[0]);
-        })
-        .catch(() => {});
-      (window as any).ethereum.request({ method: 'eth_chainId' })
-        .then((chain: string) => setCurrentChainId(parseInt(chain, 16)))
-        .catch(() => {});
-    }
-  }, []);
+  // User-initiated wallet connection only (no auto-probing on mount)
 
   const handleCopy = (text: string, key: string) => {
     navigator.clipboard.writeText(text);

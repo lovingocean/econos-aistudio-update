@@ -116,7 +116,7 @@ export const SystemHealthPulse: React.FC<SystemHealthPulseProps> = ({
   const [radarHoveredTier, setRadarHoveredTier] = useState<number | null>(null);
   const [radarRotation, setRadarRotation] = useState(0);
 
-  // Global Billion-Dollar Telemetry State
+  // Global Telemetry State
   const [globalLatency, setGlobalLatency] = useState(0.84);
   const [globalThroughput, setGlobalThroughput] = useState(120450);
   const [globalErrorRate, setGlobalErrorRate] = useState(0.001);
@@ -528,7 +528,7 @@ export const SystemHealthPulse: React.FC<SystemHealthPulseProps> = ({
       <div className="absolute top-0 right-1/4 w-96 h-96 bg-cyan-500/5 blur-[120px] pointer-events-none" />
       <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-emerald-500/5 blur-[120px] pointer-events-none" />
 
-      {/* Top Billion-Dollar Institutional Command Header */}
+      {/* Top Institutional Command Header */}
       <div className="relative flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-800/90 pb-4">
         <div className="flex items-start sm:items-center gap-3.5">
           <div className="p-2.5 rounded-2xl bg-gradient-to-br from-emerald-500/20 via-cyan-500/15 to-transparent border border-emerald-500/40 text-emerald-400 relative shadow-[0_0_15px_rgba(16,185,129,0.2)]">

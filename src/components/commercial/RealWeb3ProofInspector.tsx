@@ -43,17 +43,6 @@ export const RealWeb3ProofInspector: React.FC = () => {
   useEffect(() => {
     if (typeof window !== 'undefined' && (window as any).ethereum) {
       setHasMetaMask(true);
-      (window as any).ethereum.request({ method: 'eth_accounts' })
-        .then((accounts: string[]) => {
-          if (accounts && accounts.length > 0) {
-            setConnectedWallet(accounts[0]);
-            fetchRealBalance(accounts[0]);
-          }
-        })
-        .catch(() => {});
-      (window as any).ethereum.request({ method: 'eth_chainId' })
-        .then((hexChain: string) => setRealChainId(parseInt(hexChain, 16)))
-        .catch(() => {});
     }
     fetchLiveRpcBlocks();
   }, []);
@@ -357,6 +346,17 @@ export const RealWeb3ProofInspector: React.FC = () => {
                 {signError}
               </div>
             )}
+
+            {/* Blockaid / Vercel explanation banner */}
+            <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 text-[11px] text-slate-300 space-y-1">
+              <div className="text-amber-400 font-bold flex items-center gap-1.5">
+                <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+                <span>MetaMask "Flagged as unsafe" Explanation:</span>
+              </div>
+              <p className="text-slate-400 leading-relaxed">
+                MetaMask's partner (Blockaid) flags newly created free-tier <code className="text-cyan-300">*.vercel.app</code> preview URLs. To proceed, click <strong className="text-white">"Proceed anyway" / "I understand the risks"</strong> in MetaMask. Custom production domains eliminate this warning.
+              </p>
+            </div>
 
             {realSignature && (
               <div className="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/40 space-y-1 text-xs">

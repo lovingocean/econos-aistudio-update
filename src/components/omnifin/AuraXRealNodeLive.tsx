@@ -50,6 +50,8 @@ import {
   HelpCircle,
   CheckCheck
 } from 'lucide-react';
+import { SmartContractDeploymentHub } from '../commercial/SmartContractDeploymentHub';
+import { P2PNodeFederationConsole } from '../commercial/P2PNodeFederationConsole';
 
 interface RealBlock {
   blockNumber: number;
@@ -110,7 +112,7 @@ export const AuraXRealNodeLive: React.FC = () => {
 
   // Active sub-tab within Real Node
   const [activeEngineTab, setActiveEngineTab] = useState<
-    'DAILY_SOCIAL_NFT' | 'AIRDROP_PORTAL' | 'REFERRAL_QUESTS' | 'TOKEN_LAUNCHPAD' | 'LIQUIDITY_POOLS' | 'BLOCK_EXPLORER' | 'DEX_SWAP' | 'STAKING' | 'DRAIN_SIMULATOR' | 'BROADCAST' | 'FAUCET' | 'BASE_BRIDGE' | 'EXPLORER_SEARCH' | 'METAMASK_RPC' | 'WHITEPAPER_DOCS' | 'RUN_VALIDATOR'
+    'DAILY_SOCIAL_NFT' | 'AIRDROP_PORTAL' | 'REFERRAL_QUESTS' | 'TOKEN_LAUNCHPAD' | 'LIQUIDITY_POOLS' | 'BLOCK_EXPLORER' | 'DEX_SWAP' | 'STAKING' | 'DRAIN_SIMULATOR' | 'BROADCAST' | 'FAUCET' | 'BASE_BRIDGE' | 'EXPLORER_SEARCH' | 'METAMASK_RPC' | 'WHITEPAPER_DOCS' | 'RUN_VALIDATOR' | 'SMART_CONTRACTS' | 'P2P_MESH'
   >('BLOCK_EXPLORER');
 
   // Custom User Token Holdings & Portfolio
@@ -1234,7 +1236,9 @@ export const AuraXRealNodeLive: React.FC = () => {
           { id: 'EXPLORER_SEARCH', label: '12. 🔎 Quick Search & Invariants', icon: Search },
           { id: 'METAMASK_RPC', label: '13. 🦊 MetaMask RPC Endpoint', icon: Wallet },
           { id: 'WHITEPAPER_DOCS', label: '14. 📚 Developer Docs & Web3 SDK', icon: BookOpen },
-          { id: 'RUN_VALIDATOR', label: '15. 🐳 Run Validator Node', icon: Terminal }
+          { id: 'RUN_VALIDATOR', label: '15. 🐳 Run Validator Node', icon: Terminal },
+          { id: 'SMART_CONTRACTS', label: '16. 📜 Base Smart Contracts', icon: ShieldCheck },
+          { id: 'P2P_MESH', label: '17. 🌐 Distributed P2P Mesh', icon: Globe }
         ].map(tab => {
           const Icon = tab.icon;
           const isSelected = activeEngineTab === tab.id;
@@ -2876,6 +2880,20 @@ export const AuraXRealNodeLive: React.FC = () => {
                   ⚡ Claim / Buy Node License ($2,499)
                 </button>
               </div>
+            </div>
+          )}
+
+          {/* TAB 16: SOVEREIGN SMART CONTRACTS (BASE MAINNET) */}
+          {activeEngineTab === 'SMART_CONTRACTS' && (
+            <div className="bg-[#0b1328] rounded-3xl border border-cyan-500/40 p-6 shadow-xs space-y-5">
+              <SmartContractDeploymentHub />
+            </div>
+          )}
+
+          {/* TAB 17: DISTRIBUTED MULTI-SERVER P2P GOSSIP MESH */}
+          {activeEngineTab === 'P2P_MESH' && (
+            <div className="bg-[#0b1328] rounded-3xl border border-cyan-500/40 p-6 shadow-xs space-y-5">
+              <P2PNodeFederationConsole />
             </div>
           )}
 

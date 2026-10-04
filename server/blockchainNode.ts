@@ -1745,6 +1745,10 @@ export class AuraXNode {
     ]
   ]);
 
+  public getLatestBlock(): RealBlock {
+    return this.chain[this.chain.length - 1];
+  }
+
   public getP2PPeers(): P2PPeer[] {
     const peers = Array.from(this.p2pPeers.values());
     const latestHeight = this.chain.length > 0 ? this.chain[this.chain.length - 1].blockNumber : 1042194;

@@ -57,6 +57,7 @@ import { BillionDollarDashboardDesignModal } from './components/design/BillionDo
 import { SmartContractModal } from './components/commercial/SmartContractModal';
 import { EnterprisePaymentGatewayModal } from './components/commercial/EnterprisePaymentGatewayModal';
 import { P2PConsoleModal } from './components/commercial/P2PConsoleModal';
+import { MasterHundredBillionTerminal } from './components/commercial/MasterHundredBillionTerminal';
 import { AppLayer } from './types/econos';
 import { 
   Building2, 
@@ -99,6 +100,7 @@ const AppContent: React.FC = () => {
   const [isSmartContractModalOpen, setIsSmartContractModalOpen] = useState(false);
   const [isPaymentGatewayOpen, setIsPaymentGatewayOpen] = useState(false);
   const [isP2PConsoleOpen, setIsP2PConsoleOpen] = useState(false);
+  const [isMasterTerminalOpen, setIsMasterTerminalOpen] = useState(false);
 
   // Sync AuthContext openOnboarding state with local onboarding modal state
   React.useEffect(() => {
@@ -121,6 +123,7 @@ const AppContent: React.FC = () => {
     const smartContractHandler = () => setIsSmartContractModalOpen(true);
     const paymentGatewayHandler = () => setIsPaymentGatewayOpen(true);
     const p2pConsoleHandler = () => setIsP2PConsoleOpen(true);
+    const masterTerminalHandler = () => setIsMasterTerminalOpen(true);
 
     window.addEventListener('navigate-layer', handler);
     window.addEventListener('open-buyer-funnel', buyerFunnelHandler);
@@ -128,6 +131,7 @@ const AppContent: React.FC = () => {
     window.addEventListener('open-smart-contracts', smartContractHandler);
     window.addEventListener('open-payment-gateway', paymentGatewayHandler);
     window.addEventListener('open-p2p-console', p2pConsoleHandler);
+    window.addEventListener('open-master-terminal', masterTerminalHandler);
 
     return () => {
       window.removeEventListener('navigate-layer', handler);
@@ -136,6 +140,7 @@ const AppContent: React.FC = () => {
       window.removeEventListener('open-smart-contracts', smartContractHandler);
       window.removeEventListener('open-payment-gateway', paymentGatewayHandler);
       window.removeEventListener('open-p2p-console', p2pConsoleHandler);
+      window.removeEventListener('open-master-terminal', masterTerminalHandler);
     };
   }, []);
 
@@ -189,6 +194,7 @@ const AppContent: React.FC = () => {
         onOpenSmartContracts={() => setIsSmartContractModalOpen(true)}
         onOpenPaymentGateway={() => setIsPaymentGatewayOpen(true)}
         onOpenP2PConsole={() => setIsP2PConsoleOpen(true)}
+        onOpenMasterTerminal={() => setIsMasterTerminalOpen(true)}
         currentLayer={currentLayer}
         onSelectLayer={setCurrentLayer}
       />
@@ -528,6 +534,12 @@ const AppContent: React.FC = () => {
       <P2PConsoleModal
         isOpen={isP2PConsoleOpen}
         onClose={() => setIsP2PConsoleOpen(false)}
+      />
+
+      {/* THE COMPLETE $100B 8-PILLARS MASTER SUPER-TERMINAL */}
+      <MasterHundredBillionTerminal
+        isOpen={isMasterTerminalOpen}
+        onClose={() => setIsMasterTerminalOpen(false)}
       />
     </div>
   );

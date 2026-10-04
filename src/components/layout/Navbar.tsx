@@ -26,7 +26,8 @@ import {
   Trophy,
   Home,
   Target,
-  PhoneCall
+  PhoneCall,
+  CreditCard
 } from 'lucide-react';
 import { UserRole, AppLayer } from '../../types/econos';
 import { GlobalLayerSearch } from './GlobalLayerSearch';
@@ -46,6 +47,7 @@ interface NavbarProps {
   onOpenSmartContracts?: () => void;
   onOpenPaymentGateway?: () => void;
   onOpenP2PConsole?: () => void;
+  onOpenMasterTerminal?: () => void;
   currentLayer?: AppLayer;
   onSelectLayer?: (layer: AppLayer) => void;
 }
@@ -65,6 +67,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenSmartContracts,
   onOpenPaymentGateway,
   onOpenP2PConsole,
+  onOpenMasterTerminal,
   currentLayer,
   onSelectLayer
 }) => {
@@ -280,6 +283,22 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
           )}
 
+          {/* $100B Complete 8-Pillars Master Terminal Button */}
+          {onOpenMasterTerminal && (
+            <button
+              onClick={onOpenMasterTerminal}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 via-purple-600 to-cyan-500 hover:brightness-110 text-white border border-amber-300/40 text-xs font-mono font-black transition shadow-sm cursor-pointer shrink-0"
+              title="Open $100 Billion Sovereign Super-Infrastructure Master Terminal"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-amber-200 animate-pulse" />
+              <span className="hidden lg:inline">$100B Super-Terminal</span>
+              <span className="lg:hidden hidden sm:inline">$100B</span>
+              <span className="px-1 py-0.2 rounded text-[9px] bg-slate-950/80 text-amber-300 border border-amber-500/40 font-black">
+                8-PILLARS
+              </span>
+            </button>
+          )}
+
           {/* Unified Tools & Enclaves Dropdown */}
           <div className="relative shrink-0">
             <button
@@ -387,11 +406,28 @@ export const Navbar: React.FC<NavbarProps> = ({
                   )}
                 </div>
 
-                {/* Three $100B Core Foundation Pillars */}
-                <div className="px-3 py-1.5 text-[10px] text-cyan-600 uppercase font-black tracking-wider pt-2 bg-cyan-50/50">
-                  Three $100B Pillars (Live)
+                {/* The $100B Complete 8-Pillars Super-Infrastructure */}
+                <div className="px-3 py-1.5 text-[10px] text-amber-600 uppercase font-black tracking-wider pt-2 bg-amber-50/60 flex items-center justify-between">
+                  <span>$100B Super-Infrastructure</span>
+                  <span className="px-1.5 py-0.2 rounded bg-amber-200/60 text-amber-900 font-extrabold text-[9px]">8 PILLARS</span>
                 </div>
-                <div className="py-1 bg-cyan-50/20">
+                <div className="py-1 bg-amber-50/20">
+                  {onOpenMasterTerminal && (
+                    <button
+                      onClick={() => {
+                        setShowToolsMenu(false);
+                        onOpenMasterTerminal();
+                      }}
+                      className="w-full text-left px-3 py-2 bg-gradient-to-r from-amber-500/10 to-cyan-500/10 hover:from-amber-500/20 hover:to-cyan-500/20 transition flex items-center gap-2.5 text-slate-900 font-bold border-b border-amber-200/40"
+                    >
+                      <Sparkles className="w-4 h-4 text-amber-500" />
+                      <div>
+                        <div className="text-amber-900 font-black">🌟 Open Master 8-Pillar Terminal</div>
+                        <div className="text-[10px] text-slate-500 font-normal">All 8 Sovereign Engines in 1 View</div>
+                      </div>
+                    </button>
+                  )}
+
                   {onOpenSmartContracts && (
                     <button
                       onClick={() => {

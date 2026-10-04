@@ -39,7 +39,7 @@ export const EnterprisePaymentGatewayModal: React.FC<EnterprisePaymentGatewayMod
   
   // Card Inputs
   const [cardNumber, setCardNumber] = useState('4242 •••• •••• 4242');
-  const [cardHolder, setCardHolder] = useState(user?.displayName || 'CFO / Financial Controller');
+  const [cardHolder, setCardHolder] = useState((user as any)?.name || (user as any)?.displayName || 'CFO / Financial Controller');
   const [cardExpiry, setCardExpiry] = useState('12/28');
   const [cardCvc, setCardCvc] = useState('888');
   

@@ -401,7 +401,7 @@ export const BillionDollarLandingPage: React.FC<BillionDollarLandingPageProps> =
             </div>
             <div className="space-y-1">
               <div className="text-2xl sm:text-3xl font-black text-rose-400">100%</div>
-              <div className="text-xs text-slate-400 uppercase">Zero-Drainer Defense</div>
+              <div className="text-xs text-slate-400 uppercase">zero-exploit Defense</div>
             </div>
           </div>
         </div>

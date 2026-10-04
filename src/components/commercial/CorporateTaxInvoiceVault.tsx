@@ -56,7 +56,7 @@ export const CorporateTaxInvoiceVault: React.FC = () => {
     buyerAddress: '100 Montgomery St, Suite 2400, San Francisco, CA 94104',
     buyerEmail: 'finance@apexwealthcapital.com',
     itemName: 'AuraX Sovereign Genesis Node License NFT (Serial #142)',
-    itemDescription: 'Full hardware validator consensus rights, 100k TPS dedicated clearing lane, Zero-Drainer Invariant protection, and Proof-of-Yield distribution.',
+    itemDescription: 'Full hardware validator consensus rights, 100k TPS dedicated clearing lane, zero-exploit Invariant protection, and Proof-of-Yield distribution.',
     amount: 3499.00,
     currency: 'USD (Settled in USDC on Base)',
     taxRatePct: 0.0,

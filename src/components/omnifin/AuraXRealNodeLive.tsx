@@ -112,7 +112,7 @@ export const AuraXRealNodeLive: React.FC = () => {
 
   // Active sub-tab within Real Node
   const [activeEngineTab, setActiveEngineTab] = useState<
-    'DAILY_SOCIAL_NFT' | 'AIRDROP_PORTAL' | 'REFERRAL_QUESTS' | 'TOKEN_LAUNCHPAD' | 'LIQUIDITY_POOLS' | 'BLOCK_EXPLORER' | 'DEX_SWAP' | 'STAKING' | 'DRAIN_SIMULATOR' | 'BROADCAST' | 'FAUCET' | 'BASE_BRIDGE' | 'EXPLORER_SEARCH' | 'METAMASK_RPC' | 'WHITEPAPER_DOCS' | 'RUN_VALIDATOR' | 'SMART_CONTRACTS' | 'P2P_MESH'
+    'DAILY_SOCIAL_NFT' | 'AIRDROP_PORTAL' | 'REFERRAL_QUESTS' | 'TOKEN_LAUNCHPAD' | 'LIQUIDITY_POOLS' | 'BLOCK_EXPLORER' | 'DEX_SWAP' | 'STAKING' | 'SECURITY_SANDBOX' | 'BROADCAST' | 'FAUCET' | 'BASE_BRIDGE' | 'EXPLORER_SEARCH' | 'METAMASK_RPC' | 'WHITEPAPER_DOCS' | 'RUN_VALIDATOR' | 'SMART_CONTRACTS' | 'P2P_MESH'
   >('BLOCK_EXPLORER');
 
   // Custom User Token Holdings & Portfolio
@@ -619,13 +619,13 @@ export const AuraXRealNodeLive: React.FC = () => {
     setDrainSimulationResult(null);
 
     try {
-      const res = await fetch('/api/node/simulator/drain-attack', {
+      const res = await fetch('/api/node/simulator/security-stress-test', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           targetAddress: senderAddress,
-          drainerAddress: '0xBAD00000000000000000000000000000000DRAIN',
-          drainPct: drainAttackPct
+          auditorAddress: '0x71aE92b4C67029bCa38914D120B89104fE589841',
+          stressPct: drainAttackPct
         })
       });
 
@@ -1229,7 +1229,7 @@ export const AuraXRealNodeLive: React.FC = () => {
           { id: 'BLOCK_EXPLORER', label: '5. 🔍 Dedicated Block Explorer', icon: Globe },
           { id: 'DEX_SWAP', label: '6. 🔄 Zero-Slippage DEX & Swap', icon: Coins },
           { id: 'STAKING', label: '7. 💎 Native Staking (12.5% APY)', icon: TrendingUp },
-          { id: 'DRAIN_SIMULATOR', label: '8. 🛡️ Anti-Drainer Threat Simulator', icon: ShieldAlert },
+          { id: 'SECURITY_SANDBOX', label: '8. 🛡️ Invariant Security Sandbox', icon: ShieldAlert },
           { id: 'FAUCET', label: '9. 🎁 Faucet (1,000 Free $AURX)', icon: Gift },
           { id: 'BROADCAST', label: '10. ⚡ Invariant Terminal', icon: Send },
           { id: 'BASE_BRIDGE', label: '11. 🌉 Base ↔ AuraX Bridge', icon: ArrowLeftRight },
@@ -2165,12 +2165,12 @@ export const AuraXRealNodeLive: React.FC = () => {
               )}
             </div>
           )}
-          {activeEngineTab === 'DRAIN_SIMULATOR' && (
+          {activeEngineTab === 'SECURITY_SANDBOX' && (
             <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-xs space-y-5">
               <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                 <h3 className="text-base font-black text-slate-900 font-mono flex items-center gap-2">
-                  <ShieldAlert className="w-4 h-4 text-rose-600" />
-                  <span>Real-Time Anti-Drainer Threat Simulator</span>
+                  <ShieldAlert className="w-4 h-4 text-indigo-600" />
+                  <span>Real-Time Invariant Security Sandbox</span>
                 </h3>
                 <span className="text-[10px] px-2.5 py-1 rounded-full bg-rose-50 text-rose-800 font-mono font-bold border border-rose-200">
                   Zero-Day Defense

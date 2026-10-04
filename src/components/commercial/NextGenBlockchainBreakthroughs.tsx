@@ -119,7 +119,7 @@ export const NextGenBlockchainBreakthroughs: React.FC = () => {
               </span>
             </h2>
             <p className="text-xs text-slate-300 font-sans max-w-2xl">
-              Traditional blockchains punish human error: one typo or approval drainer permanently loses life savings. AuraX introduces mathematical timelock invariants, post-quantum lattices, and protocol-sponsored gas.
+              Traditional blockchains punish human error: one typo or unauthorized exploit permanently loses life savings. AuraX introduces mathematical timelock invariants, post-quantum lattices, and protocol-sponsored gas.
             </p>
           </div>
 

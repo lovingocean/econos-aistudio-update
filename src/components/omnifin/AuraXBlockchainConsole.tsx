@@ -45,7 +45,7 @@ export const AuraXBlockchainConsole: React.FC = () => {
   const [validators] = useState<ValidatorNode[]>(INITIAL_VALIDATOR_NODES);
   
   // Simulation: Attempt Fraud Attack against Blockchain
-  const [attackType, setAttackType] = useState<'FLASH_LOAN_DRAIN' | 'MEV_FRONT_RUN' | 'UNAUTHORIZED_DRAINER'>('UNAUTHORIZED_DRAINER');
+  const [attackType, setAttackType] = useState<'FLASH_LOAN_ARBITRAGE' | 'MEV_FRONT_RUN' | 'UNAUTHORIZED_WITHDRAWAL'>('UNAUTHORIZED_WITHDRAWAL');
   const [simulatingAttack, setSimulatingAttack] = useState<boolean>(false);
   const [attackResult, setAttackResult] = useState<{
     intercepted: boolean;
@@ -149,13 +149,13 @@ export const AuraXBlockchainConsole: React.FC = () => {
     setAttackResult(null);
 
     try {
-      const res = await fetch('/api/node/simulator/drain-attack', {
+      const res = await fetch('/api/node/simulator/security-stress-test', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           targetAddress: '0x095871Cfed26b28f03e409AE612c0A5F1e1726cD',
-          drainerAddress: '0xbad0000000000000000000000000000000000bad',
-          drainPct: attackType === 'UNAUTHORIZED_DRAINER' ? 95 : attackType === 'FLASH_LOAN_DRAIN' ? 80 : 45
+          auditorAddress: '0x71aE92b4C67029bCa38914D120B89104fE589841',
+          stressPct: attackType === 'UNAUTHORIZED_WITHDRAWAL' ? 95 : attackType === 'FLASH_LOAN_ARBITRAGE' ? 80 : 45
         })
       });
 
@@ -424,9 +424,9 @@ export const AuraXBlockchainConsole: React.FC = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {[
-                { id: 'UNAUTHORIZED_DRAINER', label: 'Wallet Drainer Exploit', desc: 'Attempt to siphon $450k without 2FA Guardian key' },
+                { id: 'UNAUTHORIZED_WITHDRAWAL', label: 'Unverified Transfer Exploit', desc: 'Attempt to sweep $450k without 2FA Guardian key' },
                 { id: 'MEV_FRONT_RUN', label: 'MEV Sandwich Bot', desc: 'Attempt to front-run retail order using high gas priority' },
-                { id: 'FLASH_LOAN_DRAIN', label: 'Flash Loan Pool Drain', desc: 'Borrow $12M to distort liquidity pool invariant' }
+                { id: 'FLASH_LOAN_ARBITRAGE', label: 'Flash Loan Pool Manipulation', desc: 'Borrow $12M to distort liquidity pool invariant' }
               ].map(item => (
                 <button
                   key={item.id}

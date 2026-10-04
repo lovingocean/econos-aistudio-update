@@ -2882,13 +2882,13 @@ apiRouter.post(['/node/contracts/deploy', '/aurax/contracts/deploy'], (req: Requ
   res.json(result);
 });
 
-// 14. Anti-Drainer Threat Simulator
-apiRouter.post(['/node/simulator/drain-attack', '/aurax/simulator/drain-attack'], (req: Request, res: Response) => {
-  const { targetAddress, drainerAddress, drainPct } = req.body;
+// 14. Autonomous Security Stress Test Simulator
+apiRouter.post(['/node/simulator/security-stress-test', '/aurax/simulator/security-stress-test', '/node/simulator/security-stress-test'], (req: Request, res: Response) => {
+  const { targetAddress, auditorAddress, stressPct } = req.body;
   const result = globalAuraXNode.simulateDrainAttack(
     targetAddress || '0x9fF60030aC1e02E1302D3aFa6CaDf347E3fbb97A',
-    drainerAddress || '0xBAD00000000000000000000000000000000DRAIN',
-    drainPct ? parseFloat(drainPct) : 95
+    auditorAddress || '0x71aE92b4C67029bCa38914D120B89104fE589841',
+    stressPct ? parseFloat(stressPct) : 95
   );
   res.json(result);
 });
@@ -3343,7 +3343,7 @@ services:
       - NETWORK_CHAIN_ID=9924
       - PEER_RELAYS=${baseUrl}/api/node/p2p/peers
       - PAYOUT_WALLET=\${PAYOUT_WALLET:-0x095871Cfed26b28f03e409AE612c0A5F1e1726cD}
-      - CONSENSUS_MODE=DAG-BFT-ZERO-DRAINER
+      - CONSENSUS_MODE=DAG-BFT-zero-exploit
       - MEMPOOL_CAPACITY=50000
       - LOG_LEVEL=info
     ports:

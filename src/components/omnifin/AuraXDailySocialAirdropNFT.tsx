@@ -148,7 +148,7 @@ export const AuraXDailySocialAirdropNFT: React.FC<AuraXDailySocialAirdropNFTProp
       )}`,
       recommendedPost: `🚀 Testing the AuraX Sovereign Layer-1 Incentivized Testnet!
 
-Zero wallet drainers, 100,000+ Real TPS, and silicon hardware consensus. Connect your wallet to claim 1,000 Free $AURX & run an in-browser Genesis Node:
+Zero unauthorized exploits, 100,000+ Real TPS, and silicon hardware consensus. Connect your wallet to claim 1,000 Free $AURX & run an in-browser Genesis Node:
 ${cleanShortLink}
 
 #AuraX #Layer1 #Blockchain #CryptoAirdrop #Web3 #DeFi`
@@ -165,7 +165,7 @@ ${cleanShortLink}
       tokenReward: 50,
       guideStep: 'Publish a public Facebook post or group recommendation, then paste your post link.',
       shareUrl: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(cleanShortLink)}`,
-      recommendedPost: `Check out AuraX Sovereign Layer-1! It is the world's first blockchain with a built-in Zero-Fraud Shield that prevents wallet drainers and phishing attacks. Their Incentivized Testnet is live today with free faucet tokens: ${cleanShortLink}`
+      recommendedPost: `Check out AuraX Sovereign Layer-1! It is the world's first blockchain with a built-in Zero-Fraud Shield that prevents unauthorized exploits and phishing attacks. Their Incentivized Testnet is live today with free faucet tokens: ${cleanShortLink}`
     },
     {
       id: 'REDDIT',
@@ -178,8 +178,8 @@ ${cleanShortLink}
       xpReward: 300,
       tokenReward: 80,
       guideStep: 'Create a post or comprehensive comment detailing your testnet benchmark, then submit the Reddit permalink.',
-      shareUrl: `https://reddit.com/submit?url=${encodeURIComponent(cleanShortLink)}&title=${encodeURIComponent('AuraX Layer-1: 100k TPS and Zero-Drainer Invariant Consensus Tested')}`,
-      recommendedPost: `Title: Testing AuraX: The first Zero-Fraud Layer-1 with mathematical balance drainer interception
+      shareUrl: `https://reddit.com/submit?url=${encodeURIComponent(cleanShortLink)}&title=${encodeURIComponent('AuraX Layer-1: 100k TPS and zero-exploit Invariant Consensus Tested')}`,
+      recommendedPost: `Title: Testing AuraX: The first Zero-Fraud Layer-1 with mathematical unauthorized sweep interception
 Body: I spent today benchmarking the AuraX Genesis Node. It runs a DAG-BFT pipeline capable of 100,000+ TPS and hardware-attested consensus. You can spin up an in-browser node and claim 1,000 testnet tokens right here: ${cleanShortLink}`
     },
     {
@@ -193,7 +193,7 @@ Body: I spent today benchmarking the AuraX Genesis Node. It runs a DAG-BFT pipel
       xpReward: 200,
       tokenReward: 50,
       guideStep: 'Drop your invite link & feedback in a Discord crypto/testnet channel, then paste a screenshot or message link.',
-      recommendedPost: `Hey everyone! AuraX Sovereign L1 testnet is live. Hardware-backed validator consensus with 100k TPS and anti-drainer security. Claim 1,000 free $AURX from the faucet: ${cleanShortLink}`
+      recommendedPost: `Hey everyone! AuraX Sovereign L1 testnet is live. Hardware-backed validator consensus with 100k TPS and anti-exploit security. Claim 1,000 free $AURX from the faucet: ${cleanShortLink}`
     },
     {
       id: 'INSTAGRAM',
@@ -219,7 +219,7 @@ Body: I spent today benchmarking the AuraX Genesis Node. It runs a DAG-BFT pipel
       xpReward: 400,
       tokenReward: 120,
       guideStep: 'Upload a short video review on TikTok with tags #crypto #airdrop #aurax #web3, then paste your video link.',
-      recommendedPost: `POV: You found a blockchain that actually stops scammers from draining your crypto. Testing AuraX Sovereign L1 with 100k TPS! Link in bio: ${cleanShortLink}`
+      recommendedPost: `POV: You found a blockchain that actually stops scammers from compromising your assets. Testing AuraX Sovereign L1 with 100k TPS! Link in bio: ${cleanShortLink}`
     },
     {
       id: 'YOUTUBE',

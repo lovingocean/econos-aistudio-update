@@ -1120,7 +1120,7 @@ export class AuraXNode {
     };
   }
 
-  // 6g. Anti-Drainer Threat Simulator (Real-Time Invariant Detection)
+  // 6g. anti-exploit Threat Simulator (Real-Time Invariant Detection)
   public simulateDrainAttack(targetAddress: string, drainerAddress: string, drainPct: number = 95): {
     attackPrevented: boolean;
     interceptedAtStep: string;
@@ -1145,7 +1145,7 @@ export class AuraXNode {
       ? 'INVARIANT_RULE_01: VELOCITY_DRAIN_THRESHOLD_EXCEEDED (Max 35% / block)'
       : 'INVARIANT_RULE_02: UNRECOGNIZED_UNVERIFIED_CONTRACT_SWEEP';
 
-    // Anti-Drainer Interception Event recorded on node
+    // anti-exploit Interception Event recorded on node
     const nonce = Date.now();
     const attackHash = '0x' + crypto.createHash('sha256').update(`ATTACK_INTERCEPTED:${targetAddress}:${drainerAddress}:${nonce}`).digest('hex');
 

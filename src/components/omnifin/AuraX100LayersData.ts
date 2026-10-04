@@ -37,7 +37,7 @@ export const OPERATING_LOOP_STEPS: OperatingLoopStep[] = [
     step: 3,
     name: 'DETECT',
     tagline: 'Anomaly, Leakage & Threat Discovery',
-    description: 'Instant algorithmic detection of duplicate billings, cash flow cliffs, FX exposure risks, and wallet-draining authorization vectors.',
+    description: 'Instant algorithmic detection of duplicate billings, cash flow cliffs, FX exposure risks, and unauthorized transfer authorization vectors.',
     category: 'ANALYSIS',
     color: 'from-indigo-500 to-purple-500'
   },
@@ -227,7 +227,7 @@ This loop runs autonomously 24/7/365 across 4 unified enterprise layers:
 4️⃣ OMNIFIN GLOBAL LAYER & AURAX SOVEREIGN L1:
 • Universal financial state layer across 15 asset classes & 14 trading surfaces
 • $142B AUM monitored | $18.2B netted daily | $245M saved via bilateral netting
-• AuraX Sovereign L1: 100,000+ TPS DAG-BFT with Physical Silicon Hardware Consensus (PCT) and consensus-level Anti-Drainer Threat Interception
+• AuraX Sovereign L1: 100,000+ TPS DAG-BFT with Physical Silicon Hardware Consensus (PCT) and consensus-level anti-exploit Threat Interception
 
 Experience the future of autonomous corporate finance and sovereign settlement:
 🔗 Explore the Platform & Incentivized Testnet: https://econos-aistudio-update.vercel.app
@@ -238,7 +238,7 @@ Experience the future of autonomous corporate finance and sovereign settlement:
     `1/8 🧵 The financial world is broken:
 - CFOs wait 15 days to close monthly books
 - Companies lose 4% of revenue to duplicate invoices & leaks
-- Blockchains suffer from wallet-drainer scams
+- Blockchains suffer from unauthorized exploits scams
 
 Here is THE SOLUTION: The 100-Layer Autonomous Financial Operating System 👇`,
 
@@ -284,7 +284,7 @@ Universal financial state layer above all banks & chains:
 The world's first Zero-Fraud physical settlement layer:
 • 100,000+ TPS DAG-BFT
 • Silicon Hardware Consensus (PCT) (1-PC = 1-Validator)
-• Protocol-Level Anti-Drainer Interception
+• Protocol-Level anti-exploit Interception
 • Full EVM Compatibility & Zero-Gas Onboarding
 • 12.5% Non-Inflationary Staking Yield`,
 

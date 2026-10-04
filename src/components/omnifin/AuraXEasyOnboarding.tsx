@@ -619,7 +619,7 @@ export const AuraXEasyOnboarding: React.FC<AuraXEasyOnboardingProps> = ({
           <div>
             <div className="text-sm font-bold text-white">Looking for Advanced Developer Tools?</div>
             <div className="text-xs text-slate-400">
-              ERC-20 Token Launchpad, Anti-Drainer Threat Simulator, Airdrop Quests Leaderboard, SDK Docs & Explorer Search.
+              ERC-20 Token Launchpad, anti-exploit Threat Simulator, Airdrop Quests Leaderboard, SDK Docs & Explorer Search.
             </div>
           </div>
         </div>

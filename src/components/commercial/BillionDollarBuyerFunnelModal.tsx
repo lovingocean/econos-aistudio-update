@@ -581,8 +581,8 @@ AuraX & ECONOS Enterprise Team`;
                     title: '3. Web3 Treasuries & Family Offices',
                     ticket: '$2,500 - $15,000/mo Institutional Clear',
                     color: 'border-purple-500/40 bg-purple-950/10',
-                    painPoint: 'Fear of MEV frontrunning, wallet-drainer phishing attacks, and fragmented cross-chain liquidity across Ethereum, Base, and Solana.',
-                    trigger: 'AuraX Sovereign L1 silicon consensus with built-in Zero-Drainer Invariant and $142B monitored AUM on OMNIFIN rails.',
+                    painPoint: 'Fear of MEV frontrunning, unauthorized contract exploits, and fragmented cross-chain liquidity across Ethereum, Base, and Solana.',
+                    trigger: 'AuraX Sovereign L1 silicon consensus with built-in Zero-Exploit Invariant and $142B monitored AUM on OMNIFIN rails.',
                     whereToFind: ['DAO Treasury leaders on Agora / Snapshot', 'Family Office wealth conferences', 'Web3 institutional telegram groups', 'Base ecosystem developer directories']
                   }
                 ].map((persona, idx) => (
@@ -844,7 +844,7 @@ AuraX & ECONOS Enterprise Team`;
                           price: 3499,
                           billingPeriod: '/year',
                           description: 'Full hardware validation node rights, priority clearing throughput, and 12.5% Proof-of-Yield.',
-                          features: ['Hardware Invariant Consensus', 'Zero-Drainer Protection', '100k TPS Dedicated Lane', 'Direct Settlement Fees'],
+                          features: ['Hardware Invariant Consensus', 'zero-exploit Protection', '100k TPS Dedicated Lane', 'Direct Settlement Fees'],
                           badge: '🔥 Tier 1: 142/500 Claimed (Next: $4,999)'
                         }
                       ].map(prod => (
@@ -1100,7 +1100,7 @@ AuraX & ECONOS Enterprise Team`;
                         price: 3499,
                         billingPeriod: '/year',
                         description: 'Full hardware validation node rights, priority clearing throughput, and 12.5% Proof-of-Yield.',
-                        features: ['Hardware Invariant Consensus', 'Zero-Drainer Protection', '100k TPS Dedicated Lane', 'Direct Settlement Fees'],
+                        features: ['Hardware Invariant Consensus', 'zero-exploit Protection', '100k TPS Dedicated Lane', 'Direct Settlement Fees'],
                         badge: '🔥 Tier 1: 142/500 Claimed (Next: $4,999)'
                       });
                       setActiveTab('INSTANT_CHECKOUT');
@@ -1222,10 +1222,10 @@ AuraX & ECONOS Enterprise Team`;
                   </div>
                   <div className="p-3 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-1">
                     <div className="font-bold text-rose-400 flex items-center gap-1">
-                      <CheckCircle2 className="w-3.5 h-3.5" /> 5. Anti-Drainer Safe
+                      <CheckCircle2 className="w-3.5 h-3.5" /> 5. anti-exploit Safe
                     </div>
                     <p className="text-[11px] text-slate-400 font-sans">
-                      Silicon Hardware Consensus (1-PC = 1-Validator) with consensus-level Zero-Drainer Invariant intercepting malicious exploits.
+                      Silicon Hardware Consensus (1-PC = 1-Validator) with consensus-level zero-exploit Invariant intercepting malicious exploits.
                     </p>
                   </div>
                 </div>
@@ -1502,7 +1502,7 @@ AuraX & ECONOS Enterprise Team`;
                         Don't have time to manage Linux servers? AuraX Foundation provisions a high-availability VPS cluster with 99.99% uptime on your behalf.
                       </p>
                       <ul className="text-xs text-slate-300 font-sans space-y-1 list-disc list-inside pt-1">
-                        <li>Automatic zero-drainer invariant monitoring and continuous software upgrades.</li>
+                        <li>Automatic security invariant monitoring and continuous software upgrades.</li>
                         <li>Micro-gas settlement rewards wired directly to your Base wallet address monthly.</li>
                         <li>Zero additional hosting fees for the entire 12-month license duration.</li>
                       </ul>

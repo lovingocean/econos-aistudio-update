@@ -25,6 +25,7 @@ import { ZkTaxAuditEnclave } from './ZkTaxAuditEnclave';
 import { InvoiceFactoringMarketplace } from './InvoiceFactoringMarketplace';
 import { QuantitativePropClearing } from './QuantitativePropClearing';
 import { NextGenBlockchainBreakthroughs } from './NextGenBlockchainBreakthroughs';
+import { RealWeb3ProofInspector } from './RealWeb3ProofInspector';
 
 interface MasterHundredBillionTerminalProps {
   isOpen: boolean;
@@ -43,6 +44,7 @@ export const MasterHundredBillionTerminal: React.FC<MasterHundredBillionTerminal
   if (!isOpen) return null;
 
   const pillars = [
+    { id: 10, label: '🔬 Real Web3 & RPC Proofs', title: 'Live Base RPC & MetaMask Signing', icon: ShieldCheck, color: 'text-emerald-400' },
     { id: 1, label: '1. Smart Contracts', title: 'Sovereign Validator Contracts', icon: ShieldCheck, color: 'text-cyan-400' },
     { id: 2, label: '2. Stripe & Plaid', title: 'Corporate Payment Rails', icon: CreditCard, color: 'text-indigo-400' },
     { id: 3, label: '3. P2P Gossip Mesh', title: 'Global Multi-Server Relays', icon: Globe2, color: 'text-purple-400' },
@@ -185,6 +187,11 @@ export const MasterHundredBillionTerminal: React.FC<MasterHundredBillionTerminal
           {/* Breakthroughs: 5 Unsolved Invariants */}
           {activePillar === 9 && (
             <NextGenBlockchainBreakthroughs />
+          )}
+
+          {/* Real Web3 Proof Inspector */}
+          {activePillar === 10 && (
+            <RealWeb3ProofInspector />
           )}
         </div>
 

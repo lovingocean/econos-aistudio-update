@@ -24,6 +24,8 @@ import { CommercialContinuousCloseWorkspace } from './CommercialContinuousCloseW
 import { CommercialAuditVaultWorkspace } from './CommercialAuditVaultWorkspace';
 import { CommercialLienWaiverWorkspace } from './CommercialLienWaiverWorkspace';
 import { CommercialFactoringExchangeWorkspace } from './CommercialFactoringExchangeWorkspace';
+import { CommercialJointCheckEscrowWorkspace } from './CommercialJointCheckEscrowWorkspace';
+import { CommercialSection179DTaxWorkspace } from './CommercialSection179DTaxWorkspace';
 import { OpportunityEngine } from './OpportunityEngine';
 import { ScenarioEngine } from './ScenarioEngine';
 import { OutcomeVerificationView } from './OutcomeVerification';
@@ -58,7 +60,9 @@ import {
   CalendarCheck,
   ShieldCheck,
   FileCheck2,
-  Coins
+  Coins,
+  Lock,
+  Zap
 } from 'lucide-react';
 
 type BusinessSubTab = 
@@ -73,6 +77,8 @@ type BusinessSubTab =
   | 'CASHFLOW' 
   | 'FACTORING_EXCHANGE'
   | 'LIEN_WAIVERS'
+  | 'JOINT_CHECK_ESCROW'
+  | 'SECTION_179D_TAX'
   | 'WHAT_IF_STUDIO'
   | 'FX_HEDGING'
   | 'TAX' 
@@ -128,6 +134,8 @@ const SUBTABS: {
   { id: 'AUDIT_VAULT', label: '20. SOC-2 Cryptographic Vault', shortLabel: 'SOC-2 Audit Vault', icon: ShieldCheck, category: 'ENTERPRISE', isNew: true, badge: 'NEW', activeColor: 'bg-emerald-800 text-white', inactiveColor: 'text-emerald-800 bg-emerald-50/80 hover:bg-emerald-100 border border-emerald-200' },
   { id: 'FACTORING_EXCHANGE', label: '21. Working Capital Factoring Exchange', shortLabel: 'Factoring Terminal', icon: Coins, category: 'ENTERPRISE', isNew: true, badge: 'SAME-DAY CASH', activeColor: 'bg-emerald-700 text-white', inactiveColor: 'text-emerald-800 bg-emerald-50/80 hover:bg-emerald-100 border border-emerald-200' },
   { id: 'LIEN_WAIVERS', label: '22. Contractor Statutory Lien Waivers', shortLabel: 'Lien Waivers', icon: FileCheck2, category: 'ENTERPRISE', isNew: true, badge: '50-STATE LEGAL', activeColor: 'bg-amber-700 text-white', inactiveColor: 'text-amber-800 bg-amber-50/80 hover:bg-amber-100 border border-amber-200' },
+  { id: 'JOINT_CHECK_ESCROW', label: '23. Tri-Party Joint-Check & Escrow', shortLabel: 'Tri-Party Escrow', icon: Lock, category: 'ENTERPRISE', isNew: true, badge: 'WORLD-FIRST', activeColor: 'bg-indigo-800 text-white', inactiveColor: 'text-indigo-800 bg-indigo-50/80 hover:bg-indigo-100 border border-indigo-200' },
+  { id: 'SECTION_179D_TAX', label: '24. IRS §179D & Altman Z-Score', shortLabel: '§179D Tax & Z-Score', icon: Zap, category: 'ENTERPRISE', isNew: true, badge: 'TAX CASH', activeColor: 'bg-emerald-800 text-white', inactiveColor: 'text-emerald-800 bg-emerald-50/80 hover:bg-emerald-100 border border-emerald-200' },
 
   // STRATEGY & SIMULATION
   { id: 'GRAPH', label: '21. Live Network Graph', shortLabel: 'Network Graph', icon: Network, category: 'STRATEGY', activeColor: 'bg-purple-700 text-white', inactiveColor: 'text-purple-700 bg-purple-50/80 hover:bg-purple-100 border border-purple-200' },
@@ -559,6 +567,14 @@ export const BusinessWorkspace: React.FC<BusinessWorkspaceProps> = ({ onNavigate
 
       {subTab === 'LIEN_WAIVERS' && (
         <CommercialLienWaiverWorkspace />
+      )}
+
+      {subTab === 'JOINT_CHECK_ESCROW' && (
+        <CommercialJointCheckEscrowWorkspace />
+      )}
+
+      {subTab === 'SECTION_179D_TAX' && (
+        <CommercialSection179DTaxWorkspace />
       )}
 
       {subTab === 'GRAPH' && (

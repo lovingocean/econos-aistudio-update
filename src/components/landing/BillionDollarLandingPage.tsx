@@ -1,705 +1,575 @@
 import React, { useState } from 'react';
 import {
   ShieldCheck,
-  Zap,
-  Layers,
+  Building2,
+  DollarSign,
+  FileCheck2,
+  CheckCircle2,
+  Lock,
   ArrowRight,
   TrendingUp,
-  Cpu,
-  Building2,
-  Lock,
-  ExternalLink,
-  ChevronRight,
-  Globe2,
-  Sparkles,
-  Trophy,
-  Flame,
-  Award,
-  Share2,
-  Play,
-  Terminal,
-  Activity,
-  CheckCircle2,
-  Database,
-  Coins,
-  Target,
+  FileText,
+  Scale,
+  Zap,
+  HardHat,
+  Shield,
+  Download,
   PhoneCall,
-  Moon,
-  Sun,
-  Maximize2
+  Calendar,
+  X,
+  Mail,
+  User as UserIcon,
+  Briefcase
 } from 'lucide-react';
-import { AppLayer } from '../../types/econos';
-import {
-  OPERATING_LOOP_STEPS,
-  BUSINESS_LAYER_MODULES,
-  WEALTH_LAYER_ENGINES,
-  TRUST_LAYER_SPECS,
-  OMNIFIN_GLOBAL_SPECS
-} from '../omnifin/AuraX100LayersData';
+import { useAuth } from '../../context/AuthContext';
 
 interface BillionDollarLandingPageProps {
-  onEnterTestnet: () => void;
-  onEnterAirdrop: () => void;
-  onSelectLayer: (layer: AppLayer) => void;
+  onEnterApp?: () => void;
 }
 
-export const BillionDollarLandingPage: React.FC<BillionDollarLandingPageProps> = ({
-  onEnterTestnet,
-  onEnterAirdrop,
-  onSelectLayer
-}) => {
-  const [activeLoopStep, setActiveLoopStep] = useState<number>(1);
-  const [activeLayersTab, setActiveLayersTab] = useState<'BUSINESS' | 'WEALTH' | 'TRUST' | 'OMNIFIN'>('BUSINESS');
-  const [showcaseConcept, setShowcaseConcept] = useState<'DARK_LUXURY' | 'LIGHT_MINIMALIST'>('DARK_LUXURY');
-  const [isZoomOpen, setIsZoomOpen] = useState<boolean>(false);
+export const BillionDollarLandingPage: React.FC<BillionDollarLandingPageProps> = ({ onEnterApp }) => {
+  const { loginAsAuditor, loginAsMeek, login, isAuthenticated } = useAuth();
+  const [showDemoModal, setShowDemoModal] = useState<boolean>(false);
+  const [showLoginModal, setShowLoginModal] = useState<boolean>(false);
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
+  const [loginError, setLoginError] = useState<string | null>(null);
+  const [demoSubmitted, setDemoSubmitted] = useState<boolean>(false);
 
-  const selectedStepData = OPERATING_LOOP_STEPS.find(s => s.step === activeLoopStep) || OPERATING_LOOP_STEPS[0];
+  // Demo Form State
+  const [demoName, setDemoName] = useState('');
+  const [demoEmail, setDemoEmail] = useState('');
+  const [demoCompany, setDemoCompany] = useState('');
+  const [demoVolume, setDemoVolume] = useState('$5M - $20M');
+  const [demoTrade, setDemoTrade] = useState('Commercial Mechanical / HVAC');
+
+  const handleDemoSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!demoEmail.trim()) return;
+    setDemoSubmitted(true);
+    setTimeout(() => {
+      setDemoSubmitted(false);
+      setShowDemoModal(false);
+    }, 3500);
+  };
+
+  const handleInstantSandbox = async () => {
+    await loginAsAuditor();
+    if (onEnterApp) onEnterApp();
+  };
+
+  const handlePasswordLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoginError(null);
+    try {
+      await login(loginEmail, loginPassword);
+      setShowLoginModal(false);
+      if (onEnterApp) onEnterApp();
+    } catch (err: any) {
+      setLoginError(err?.message || 'Invalid credentials. Use Instant Sandbox for 1-click access.');
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-[#040711] text-slate-100 selection:bg-cyan-500/20 selection:text-cyan-200 font-sans antialiased overflow-x-hidden">
-      {/* Subtle Aurora Ambient Lighting */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-[-10%] left-[20%] w-[600px] h-[600px] rounded-full bg-cyan-600/10 blur-[140px]" />
-        <div className="absolute top-[20%] right-[10%] w-[550px] h-[550px] rounded-full bg-purple-600/10 blur-[160px]" />
-        <div className="absolute bottom-[10%] left-[30%] w-[700px] h-[700px] rounded-full bg-blue-600/10 blur-[180px]" />
-      </div>
-
-      {/* Institutional Top Navigation */}
-      <header className="sticky top-0 z-50 backdrop-blur-xl bg-[#040711]/85 border-b border-white/[0.08]">
+    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans antialiased selection:bg-slate-800 selection:text-white">
+      {/* INSTITUTIONAL HEADER */}
+      <header className="sticky top-0 z-40 backdrop-blur-md bg-slate-950/90 border-b border-slate-800/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-          {/* Brand */}
-          <div className="flex items-center gap-4">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-cyan-400 via-indigo-600 to-purple-700 flex items-center justify-center text-white font-black text-lg shadow-lg shadow-cyan-500/20">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center text-white font-black text-sm tracking-wider shadow-inner">
               E
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-lg font-black tracking-wider text-white">ECONOS</span>
-                <span className="text-[10px] px-2 py-0.5 rounded font-mono font-bold bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">
-                  AuraX Sovereign L1
+                <span className="text-sm font-black tracking-tight text-white uppercase">ECONOS</span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">
+                  FinOps Core
                 </span>
               </div>
-              <div className="text-[10px] text-slate-400 font-mono tracking-wide">
-                Autonomous Financial Operating System
-              </div>
+              <p className="text-[10px] text-slate-400 font-mono">Commercial Construction &amp; Capital Markets OS</p>
             </div>
           </div>
 
-          {/* Quick Nav Links */}
-          <nav className="hidden md:flex items-center gap-8 text-xs font-mono font-medium text-slate-300">
-            <a href="#operating-loop" className="hover:text-cyan-400 transition">12-Step Loop</a>
-            <a href="#100-layers" className="hover:text-cyan-400 transition">Operations Matrix</a>
-            <button 
-              onClick={onEnterAirdrop} 
-              className="hover:text-cyan-400 transition flex items-center gap-1.5 text-emerald-400 font-bold cursor-pointer bg-transparent border-0"
-            >
-              <Building2 className="w-3.5 h-3.5 text-emerald-400" />
-              <span>B2B Lead Discovery</span>
-            </button>
-            <a href="#metrics" className="hover:text-cyan-400 transition">Metrics</a>
+          <nav className="hidden md:flex items-center gap-8 text-xs font-medium text-slate-300">
+            <a href="#architecture" className="hover:text-white transition">Architecture</a>
+            <a href="#factoring" className="hover:text-white transition">Factoring Exchange</a>
+            <a href="#tax-suite" className="hover:text-white transition">IRS §179D Suite</a>
+            <a href="#pricing" className="hover:text-white transition">Institutional Pricing</a>
+            <a href="#compliance" className="hover:text-white transition">Compliance</a>
           </nav>
 
-          {/* Header Action CTAs */}
           <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={() => window.dispatchEvent(new CustomEvent('open-buyer-funnel'))}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs font-mono font-bold transition cursor-pointer"
-            >
-              <Target className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="hidden md:inline">Client ROI &amp; Checkout</span>
-              <span className="md:hidden">ROI Audit</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={onEnterAirdrop}
-              className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-xs font-mono font-bold transition cursor-pointer"
-            >
-              <Building2 className="w-3.5 h-3.5 text-cyan-400" />
-              <span>Contractor Discovery</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={onEnterTestnet}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-600 hover:brightness-110 text-slate-950 text-xs font-mono font-black shadow-lg shadow-emerald-500/20 transition cursor-pointer"
-            >
-              <Zap className="w-3.5 h-3.5 text-slate-950" />
-              <span>Open FinOps Core</span>
-            </button>
+            {isAuthenticated ? (
+              <button
+                type="button"
+                onClick={onEnterApp}
+                className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-mono font-bold transition flex items-center gap-1.5"
+              >
+                <span>Enter Workspace</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setShowLoginModal(true)}
+                  className="px-3.5 py-2 text-xs font-mono text-slate-300 hover:text-white transition cursor-pointer"
+                >
+                  Sign In
+                </button>
+                <button
+                  type="button"
+                  onClick={handleInstantSandbox}
+                  className="px-4 py-2 rounded-lg bg-slate-100 hover:bg-white text-slate-900 text-xs font-mono font-bold transition shadow-xs flex items-center gap-1.5 cursor-pointer"
+                >
+                  <span>Launch Live Sandbox</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </>
+            )}
           </div>
         </div>
       </header>
 
       {/* HERO SECTION */}
-      <section className="relative z-10 pt-16 sm:pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="text-center space-y-6 max-w-4xl mx-auto">
-          {/* Top Announcement Kicker (No Pill Enclosure Slop) */}
-          <div className="inline-flex items-center gap-2 text-xs font-mono text-emerald-400 tracking-wide font-bold">
-            <Sparkles className="w-4 h-4 text-emerald-400" />
-            <span>AUTONOMOUS FINOPS, INVOICE ACCELERATION &amp; COMMERCIAL WORKING CAPITAL</span>
+      <section className="relative pt-20 pb-24 border-b border-slate-800/80 bg-gradient-to-b from-slate-950 via-slate-900/50 to-slate-950">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-slate-300 text-xs font-mono">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Enterprise Construction FinOps • 2026 Sovereign Edition</span>
           </div>
 
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tight leading-[1.08]">
-            The Autonomous Cash Flow &amp; FinOps OS for Commercial Enterprises
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white max-w-4xl mx-auto leading-tight">
+            The Financial Operating System for Commercial Contracting.
           </h1>
 
-          <p className="text-base sm:text-lg text-slate-300 leading-relaxed font-normal max-w-3xl mx-auto">
-            ECONOS eliminates the fatal 60-day working capital lag for commercial contractors, freight operators, and high-volume trade businesses. Automate accounts receivable collections, 3-way payables reconciliation, and unlock same-day invoice factoring.
+          <p className="text-base sm:text-lg text-slate-400 max-w-3xl mx-auto leading-relaxed">
+            Eliminate payment delays and lien disputes. Unified AIA G702 progress billing, 50-state statutory lien waivers, same-day invoice factoring liquidity, and IRS energy tax engineering in a single enterprise platform.
           </p>
 
-          {/* Hero CTAs */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4 font-mono text-xs font-black">
+          <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
             <button
               type="button"
-              onClick={() => {
-                window.dispatchEvent(new CustomEvent('navigate-layer', { detail: 'CLIENT_ACQUISITION' }));
-              }}
-              className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 flex items-center justify-center gap-2 shadow-xl shadow-emerald-500/25 transition cursor-pointer text-xs font-black"
+              onClick={handleInstantSandbox}
+              className="px-6 py-3 rounded-xl bg-white hover:bg-slate-100 text-slate-950 text-xs font-mono font-black shadow-lg transition flex items-center gap-2 cursor-pointer"
             >
-              <Building2 className="w-4 h-4 text-slate-950" />
-              <span>Explore Commercial Contractor Discovery</span>
-              <ArrowRight className="w-4 h-4 text-slate-950" />
+              <span>Explore Live 30-Workspace Sandbox</span>
+              <ArrowRight className="w-4 h-4" />
             </button>
 
             <button
               type="button"
-              onClick={() => window.dispatchEvent(new CustomEvent('open-buyer-funnel'))}
-              className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white flex items-center justify-center gap-2 shadow-xl shadow-indigo-500/20 transition cursor-pointer text-xs font-bold"
+              onClick={() => setShowDemoModal(true)}
+              className="px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 text-xs font-mono font-bold transition flex items-center gap-2 cursor-pointer"
             >
-              <Target className="w-4 h-4 text-amber-300" />
-              <span>Free 3-Min Cash Flow &amp; Prop Audit</span>
+              <Calendar className="w-4 h-4 text-slate-400" />
+              <span>Book Private Institutional Demo</span>
             </button>
 
-            <button
-              type="button"
-              onClick={() => {
-                window.dispatchEvent(new CustomEvent('navigate-layer', { detail: 'BUSINESS' }));
-              }}
-              className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-slate-900/90 hover:bg-slate-800 text-white border border-slate-700 flex items-center justify-center gap-2 transition cursor-pointer text-xs shadow-md"
+            <a
+              href="/econos-project.zip"
+              download="econos-project.zip"
+              className="px-4 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-800 text-xs font-mono transition flex items-center gap-1.5"
             >
-              <Building2 className="w-4 h-4 text-emerald-400" />
-              <span>Open FinOps Operating Core</span>
-            </button>
+              <Download className="w-3.5 h-3.5 text-slate-400" />
+              <span>Audit Source (.ZIP)</span>
+            </a>
           </div>
 
-          {/* Social Proof / Trust Metadata */}
-          <div className="pt-4 flex flex-wrap items-center justify-center gap-6 text-xs text-slate-400 font-mono">
-            <span className="flex items-center gap-1.5 text-emerald-400">
-              <CheckCircle2 className="w-4 h-4" />
-              <span>Incentivized Testnet Live</span>
-            </span>
-            <span>·</span>
-            <span>EVM Compatible</span>
-            <span>·</span>
-            <span>Silicon Hardware Consensus</span>
-            <span>·</span>
-            <span>Zero Balance-Draining Fraud</span>
-          </div>
-        </div>
-
-        {/* Interactive Billion-Dollar Dashboard Design Showcase */}
-        <div className="mt-14 relative max-w-6xl mx-auto rounded-3xl p-1 bg-gradient-to-b from-emerald-500/30 via-slate-800/40 to-transparent shadow-2xl">
-          <div className="rounded-[22px] overflow-hidden bg-slate-950 border border-emerald-500/40 relative">
-            
-            {/* Design Selector Bar */}
-            <div className="p-4 bg-slate-900/90 border-b border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 font-mono text-xs">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
-                <span className="font-bold text-white uppercase tracking-wider text-xs">
-                  Billion-Dollar Dashboard Design Preview:
-                </span>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowcaseConcept('DARK_LUXURY')}
-                  className={`px-3.5 py-1.5 rounded-xl border flex items-center gap-1.5 transition cursor-pointer font-bold ${
-                    showcaseConcept === 'DARK_LUXURY'
-                      ? 'bg-slate-950 border-emerald-400 text-white shadow-md'
-                      : 'bg-slate-900 border-slate-700 text-slate-400 hover:text-white'
-                  }`}
-                >
-                  <Moon className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Concept A: Dark Luxury (Stripe / Ramp)</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setShowcaseConcept('LIGHT_MINIMALIST')}
-                  className={`px-3.5 py-1.5 rounded-xl border flex items-center gap-1.5 transition cursor-pointer font-bold ${
-                    showcaseConcept === 'LIGHT_MINIMALIST'
-                      ? 'bg-white border-slate-300 text-slate-900 shadow-md'
-                      : 'bg-slate-900 border-slate-700 text-slate-400 hover:text-white'
-                  }`}
-                >
-                  <Sun className="w-3.5 h-3.5 text-amber-500" />
-                  <span>Concept B: Swiss Clean White (Mercury)</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setIsZoomOpen(true)}
-                  className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition cursor-pointer"
-                  title="Zoom Full Screen"
-                >
-                  <Maximize2 className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-
-            {/* The Direct Screenshot Image */}
-            <div 
-              onClick={() => setIsZoomOpen(true)}
-              className="relative cursor-zoom-in group"
-            >
-              <img
-                src={
-                  showcaseConcept === 'DARK_LUXURY'
-                    ? '/src/assets/images/fintech_dashboard_design_1790933281321.jpg'
-                    : '/src/assets/images/fintech_dashboard_light_1790933302655.jpg'
-                }
-                alt={showcaseConcept === 'DARK_LUXURY' ? 'ECONOS Dark Luxury Fintech Dashboard' : 'ECONOS Swiss Minimalist Light Dashboard'}
-                className="w-full h-auto object-cover max-h-[640px] transition duration-300 group-hover:scale-[1.005]"
-                referrerPolicy="no-referrer"
-              />
-
-              {/* Click to expand overlay hint */}
-              <div className="absolute top-4 right-4 bg-slate-950/80 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/20 text-xs font-mono text-white opacity-0 group-hover:opacity-100 transition shadow-lg flex items-center gap-1.5">
-                <Maximize2 className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Click image to view full-screen high-res</span>
-              </div>
-            </div>
-
-            {/* In-Image Floating Stats Strip */}
-            <div className="p-4 bg-slate-950/95 border-t border-slate-800/80 grid grid-cols-2 sm:grid-cols-4 gap-3 font-mono text-center">
-              <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
-                <div className="text-[10px] text-slate-400 uppercase">Liquid Working Capital</div>
-                <div className="text-base font-black text-emerald-400">$1,842,500</div>
-              </div>
-              <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
-                <div className="text-[10px] text-slate-400 uppercase">Net Receivables Due</div>
-                <div className="text-base font-black text-cyan-400">$480,200</div>
-              </div>
-              <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
-                <div className="text-[10px] text-slate-400 uppercase">Days Sales Outstanding</div>
-                <div className="text-base font-black text-purple-400">21 Days (was 58d)</div>
-              </div>
-              <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
-                <div className="text-[10px] text-slate-400 uppercase">Captured Early Discounts</div>
-                <div className="text-base font-black text-amber-400">+$34,200 / yr</div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-        {/* Full-Screen Zoom Modal */}
-        {isZoomOpen && (
-          <div 
-            onClick={() => setIsZoomOpen(false)}
-            className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4 cursor-zoom-out animate-in fade-in duration-150"
-          >
-            <div className="relative max-w-7xl w-full">
-              <img
-                src={
-                  showcaseConcept === 'DARK_LUXURY'
-                    ? '/src/assets/images/fintech_dashboard_design_1790933281321.jpg'
-                    : '/src/assets/images/fintech_dashboard_light_1790933302655.jpg'
-                }
-                alt="Full screen dashboard design preview"
-                className="w-full h-auto object-contain max-h-[92vh] rounded-2xl shadow-2xl border border-slate-800"
-                referrerPolicy="no-referrer"
-              />
-              <div className="absolute top-4 right-4 text-xs font-mono bg-slate-900/90 px-3.5 py-2 rounded-xl border border-slate-700 text-white shadow-xl">
-                Click anywhere to close full screen
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Live Autonomous Revenue & Burn Ticker Strip */}
-        <div className="mt-8 max-w-5xl mx-auto rounded-3xl bg-gradient-to-r from-amber-950/40 via-slate-950 to-indigo-950/40 border border-amber-500/30 p-5 font-mono shadow-xl">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                <span className="text-xs font-bold text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
-                  <Flame className="w-3.5 h-3.5 text-amber-400" />
-                  <span>30% Automated Gross Revenue Buyback &amp; Burn Ledger</span>
-                </span>
-              </div>
-              <p className="text-xs text-slate-300 font-sans">
-                Every exchange trade, prop desk fee, and SaaS subscription automatically market-buys $AURX and destroys it permanently on Base.
-              </p>
-            </div>
-
-            <div className="flex items-center gap-2 flex-wrap shrink-0">
-              <button
-                type="button"
-                onClick={() => window.dispatchEvent(new CustomEvent('open-buyer-funnel'))}
-                className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition cursor-pointer shadow-md flex items-center gap-1.5"
-              >
-                <Target className="w-3.5 h-3.5" />
-                <span>Calculate Your Client ROI</span>
-              </button>
-              <a
-                href="https://basescan.org/token/0x6a813C3a89b6776712f7Fa4a47E1d1D45fAcE1ED"
-                target="_blank"
-                rel="noreferrer"
-                className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-bold transition flex items-center gap-1.5 border border-slate-800"
-              >
-                <ExternalLink className="w-3.5 h-3.5 text-cyan-400" />
-                <span>BaseScan Verification</span>
-              </a>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 pt-4 border-t border-slate-800/80 text-center">
-            <div className="p-3 rounded-2xl bg-slate-950/80 border border-slate-800/80">
-              <div className="text-[10px] text-slate-400 uppercase">Gross Platform Revenue</div>
-              <div className="text-base font-black text-white mt-0.5">$1,425,890</div>
-            </div>
-            <div className="p-3 rounded-2xl bg-slate-950/80 border border-slate-800/80">
-              <div className="text-[10px] text-slate-400 uppercase">30% Hardcoded Burn Sink</div>
-              <div className="text-base font-black text-amber-400 mt-0.5">$427,767</div>
-            </div>
-            <div className="p-3 rounded-2xl bg-slate-950/80 border border-slate-800/80">
-              <div className="text-[10px] text-slate-400 uppercase">Tokens Burned To Date</div>
-              <div className="text-base font-black text-rose-400 mt-0.5">427,767 $AURX</div>
-            </div>
-            <div className="p-3 rounded-2xl bg-slate-950/80 border border-slate-800/80">
-              <div className="text-[10px] text-slate-400 uppercase">Circulating Supply on Base</div>
-              <div className="text-base font-black text-emerald-400 mt-0.5">99,572,233 (Falling)</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* INSTITUTIONAL METRICS SECTION */}
-      <section id="metrics" className="relative z-10 py-16 border-y border-white/[0.08] bg-slate-950/60 font-mono">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 text-center">
-            <div className="space-y-1">
-              <div className="text-2xl sm:text-3xl font-black text-white">$12.8M+</div>
-              <div className="text-xs text-slate-400 uppercase">Volume Managed</div>
-            </div>
-            <div className="space-y-1">
-              <div className="text-2xl sm:text-3xl font-black text-cyan-400">99.99%</div>
-              <div className="text-xs text-slate-400 uppercase">Platform Uptime</div>
-            </div>
-            <div className="space-y-1">
-              <div className="text-2xl sm:text-3xl font-black text-emerald-400">&lt;50ms</div>
-              <div className="text-xs text-slate-400 uppercase">API Latency</div>
-            </div>
-            <div className="space-y-1">
-              <div className="text-2xl sm:text-3xl font-black text-purple-400">15,400+</div>
-              <div className="text-xs text-slate-400 uppercase">Invoices Created</div>
-            </div>
-            <div className="space-y-1">
-              <div className="text-2xl sm:text-3xl font-black text-amber-400">100%</div>
-              <div className="text-xs text-slate-400 uppercase">Tax Accuracy</div>
-            </div>
-            <div className="space-y-1">
-              <div className="text-2xl sm:text-3xl font-black text-rose-400">SOC-2</div>
-              <div className="text-xs text-slate-400 uppercase">Security Standard</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* THE 12-STEP AUTONOMOUS OPERATING LOOP */}
-      <section id="operating-loop" className="relative z-10 py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="space-y-4 text-center max-w-3xl mx-auto mb-14">
-          <div className="text-xs font-mono text-cyan-400 font-bold tracking-wider uppercase">
-            THE CONTINUOUS COGNITIVE ENGINE
-          </div>
-          <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
-            The 12-Step Autonomous Financial Operating Loop
-          </h2>
-          <p className="text-sm text-slate-300 leading-relaxed">
-            Unlike static software that waits for human data entry, ECONOS runs a relentless 12-step autonomous loop across all enterprise banking, treasury, accounting, and cryptographic rails.
-          </p>
-        </div>
-
-        {/* Operating Loop Linear Sequence */}
-        <div className="p-4 rounded-3xl bg-slate-950/80 border border-slate-800 shadow-xl overflow-x-auto whitespace-nowrap scrollbar-thin mb-8">
-          <div className="flex items-center gap-2">
-            {OPERATING_LOOP_STEPS.map(s => (
-              <button
-                key={s.step}
-                type="button"
-                onClick={() => setActiveLoopStep(s.step)}
-                className={`px-3.5 py-2 rounded-xl text-xs font-mono font-bold flex items-center gap-2 transition cursor-pointer shrink-0 ${
-                  activeLoopStep === s.step
-                    ? 'bg-cyan-500 text-slate-950 font-black shadow-lg shadow-cyan-500/20'
-                    : 'bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800'
-                }`}
-              >
-                <span className={`w-5 h-5 rounded-full text-[10px] flex items-center justify-center ${
-                  activeLoopStep === s.step ? 'bg-slate-950 text-cyan-400 font-black' : 'bg-slate-800 text-slate-300'
-                }`}>
-                  {s.step}
-                </span>
-                <span>{s.name}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Selected Step Deep Dive Spotlight Card */}
-        <div className="rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 border border-cyan-500/30 p-8 shadow-2xl relative">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
-            <div className="space-y-4 lg:col-span-2">
-              <div className="flex items-center gap-3">
-                <span className="w-10 h-10 rounded-2xl bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 text-sm font-black flex items-center justify-center font-mono">
-                  {selectedStepData.step}
-                </span>
-                <div>
-                  <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
-                    Step {selectedStepData.step}: {selectedStepData.name}
-                  </h3>
-                  <div className="text-xs text-cyan-400 font-mono font-bold">{selectedStepData.tagline}</div>
-                </div>
-              </div>
-              <p className="text-sm text-slate-300 leading-relaxed font-sans">
-                {selectedStepData.description}
-              </p>
-            </div>
-
-            <div className="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 font-mono text-xs space-y-3">
-              <div className="text-[10px] text-slate-400 uppercase tracking-wider">Cognitive Discipline:</div>
-              <div className="text-sm font-bold text-emerald-400">{selectedStepData.category}</div>
-              <div className="pt-2 border-t border-slate-800 text-[11px] text-slate-400">
-                Executes autonomously 24/7 across all 25 business modules and multi-chain settlement rails.
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 100 REAL-WORLD LAYERS ARCHITECTURE EXPLORER */}
-      <section id="100-layers" className="relative z-10 py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="space-y-4 text-center max-w-3xl mx-auto mb-12">
-          <div className="text-xs font-mono text-purple-400 font-bold tracking-wider uppercase">
-            THE UNIFIED MULTI-LAYER STACK
-          </div>
-          <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
-            100 Real-World Layers Solving Global Finance
-          </h2>
-          <p className="text-sm text-slate-300 leading-relaxed">
-            Eliminating trillions of dollars of fragmented ERP, banking, accounting, and manual compliance silos into one unified autonomous state layer.
-          </p>
-
-          {/* Layer Category Selector Tabs */}
-          <div className="flex items-center justify-center gap-2 pt-4 flex-wrap font-mono text-xs font-bold">
-            <button
-              type="button"
-              onClick={() => setActiveLayersTab('BUSINESS')}
-              className={`px-5 py-2.5 rounded-xl transition cursor-pointer ${
-                activeLayersTab === 'BUSINESS'
-                  ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/20'
-                  : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
-              }`}
-            >
-              🏢 Business Layer (25 Modules)
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveLayersTab('WEALTH')}
-              className={`px-5 py-2.5 rounded-xl transition cursor-pointer ${
-                activeLayersTab === 'WEALTH'
-                  ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20'
-                  : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
-              }`}
-            >
-              💰 Wealth Layer (20 Engines)
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveLayersTab('TRUST')}
-              className={`px-5 py-2.5 rounded-xl transition cursor-pointer ${
-                activeLayersTab === 'TRUST'
-                  ? 'bg-amber-600 text-white shadow-lg shadow-amber-600/20'
-                  : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
-              }`}
-            >
-              🛡️ Trust Layer (28 AI Agents)
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveLayersTab('OMNIFIN')}
-              className={`px-5 py-2.5 rounded-xl transition cursor-pointer ${
-                activeLayersTab === 'OMNIFIN'
-                  ? 'bg-cyan-600 text-white shadow-lg shadow-cyan-600/20'
-                  : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
-              }`}
-            >
-              🌐 OMNIFIN Global & AuraX L1
-            </button>
-          </div>
-        </div>
-
-        {/* Tab 1: Business Layer (25 Modules) */}
-        {activeLayersTab === 'BUSINESS' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 font-mono">
-            {BUSINESS_LAYER_MODULES.slice(0, 15).map(m => (
-              <div key={m.id} className="p-5 rounded-2xl bg-slate-950 border border-slate-800 space-y-2 hover:border-purple-500/50 transition">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-black text-white">{m.name}</span>
-                  <span className="text-[10px] px-2 py-0.5 rounded-md bg-purple-500/10 text-purple-300 border border-purple-500/20">
-                    {m.category}
-                  </span>
-                </div>
-                <div className="text-[11px] text-purple-300 font-bold">{m.tagline}</div>
-                <p className="text-xs text-slate-400 font-sans leading-relaxed">{m.description}</p>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Tab 2: Wealth Layer (20 Engines) */}
-        {activeLayersTab === 'WEALTH' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 font-mono">
-            {WEALTH_LAYER_ENGINES.slice(0, 15).map(e => (
-              <div key={e.id} className="p-5 rounded-2xl bg-slate-950 border border-slate-800 space-y-2 hover:border-emerald-500/50 transition">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-black text-white">{e.name}</span>
-                  <span className="text-[10px] px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">
-                    {e.category}
-                  </span>
-                </div>
-                <div className="text-[11px] text-emerald-300 font-bold">{e.tagline}</div>
-                <p className="text-xs text-slate-400 font-sans leading-relaxed">{e.description}</p>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Tab 3: Trust Layer (28 AI Agents & 8-Stage Firewall) */}
-        {activeLayersTab === 'TRUST' && (
-          <div className="space-y-6">
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center font-mono">
-              <div className="p-4 rounded-2xl bg-slate-950 border border-amber-500/30">
-                <div className="text-[10px] text-slate-400 uppercase">Autonomous Agents</div>
-                <div className="text-xl font-black text-amber-400 mt-1">{TRUST_LAYER_SPECS.agentsCount} Regimes</div>
-              </div>
-              <div className="p-4 rounded-2xl bg-slate-950 border border-amber-500/30">
-                <div className="text-[10px] text-slate-400 uppercase">AI Firewall Stages</div>
-                <div className="text-xl font-black text-amber-400 mt-1">{TRUST_LAYER_SPECS.firewallStages} Stages Pre-Execution</div>
-              </div>
-              <div className="p-4 rounded-2xl bg-slate-950 border border-amber-500/30">
-                <div className="text-[10px] text-slate-400 uppercase">Dynamic Risk Scoring</div>
-                <div className="text-sm font-black text-emerald-400 mt-1.5">{TRUST_LAYER_SPECS.riskTiers.join(' · ')}</div>
-              </div>
-              <div className="p-4 rounded-2xl bg-slate-950 border border-amber-500/30">
-                <div className="text-[10px] text-slate-400 uppercase">Audit Ledger</div>
-                <div className="text-sm font-black text-cyan-400 mt-1.5">Cryptographic Merkle</div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 font-mono">
-              {TRUST_LAYER_SPECS.features.map((f, idx) => (
-                <div key={idx} className="p-5 rounded-2xl bg-slate-950 border border-slate-800 space-y-2 hover:border-amber-500/50 transition">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-black text-white">{f.title}</span>
-                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-300 border border-amber-500/20">
-                      Stage {idx + 1}
-                    </span>
-                  </div>
-                  <p className="text-xs text-slate-400 font-sans leading-relaxed pt-1">{f.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Tab 4: OMNIFIN Global & AuraX L1 */}
-        {activeLayersTab === 'OMNIFIN' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 font-mono">
-            {[
-              { title: 'Global Monitored AUM', value: OMNIFIN_GLOBAL_SPECS.aumMonitored, category: 'Institutional Liquidity', desc: 'Universal state layer aggregating sovereign and enterprise digital assets across all bank and blockchain ledgers.' },
-              { title: 'Daily Cross-Clearing Netting', value: OMNIFIN_GLOBAL_SPECS.dailyNetting, category: 'Clearing Engine', desc: 'Continuous multi-tenant netting reducing balance sheet gross exposure and optimizing overnight collateral.' },
-              { title: 'Deterministic Causal Latency', value: OMNIFIN_GLOBAL_SPECS.latency, category: 'DAG-BFT Performance', desc: 'Ultra-low sub-millisecond causal latency ensuring high-frequency enterprise trade execution.' },
-              { title: 'Settlement Service SLA', value: OMNIFIN_GLOBAL_SPECS.settlementSla, category: 'Consensus Reliability', desc: 'Fault-tolerant distributed validator mesh guaranteeing uninterrupted enterprise operational availability.' },
-              { title: 'Capital Netting Savings', value: OMNIFIN_GLOBAL_SPECS.capitalSaved, category: 'Capital Efficiency', desc: 'Capital saved daily through multilateral cross-counterparty compression and netting cycles.' },
-              { title: 'Proof-Carrying Settlement', value: OMNIFIN_GLOBAL_SPECS.rails, category: 'Cryptographic Rails', desc: 'Zero-knowledge proofs carrying state transitions directly with transactions for zero-fraud assurance.' }
-            ].map((g, idx) => (
-              <div key={idx} className="p-5 rounded-2xl bg-slate-950 border border-slate-800 space-y-2 hover:border-cyan-500/50 transition">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-black text-white">{g.title}</span>
-                  <span className="text-[10px] px-2 py-0.5 rounded-md bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">
-                    {g.category}
-                  </span>
-                </div>
-                <div className="text-sm font-black text-cyan-300">{g.value}</div>
-                <p className="text-xs text-slate-400 font-sans leading-relaxed pt-1">{g.desc}</p>
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
-
-      {/* DAILY SOCIAL AIRDROP & NFT INVITATION SPOTLIGHT */}
-      <section id="airdrop-quests" className="relative z-10 py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="rounded-3xl bg-gradient-to-r from-purple-950 via-slate-950 to-indigo-950 border border-purple-500/40 p-8 sm:p-12 shadow-2xl relative overflow-hidden">
-          <div className="relative z-10 max-w-3xl space-y-5">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-mono font-bold">
-              <Flame className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
-              <span>COMMUNITY REWARD PROGRAM LIVE</span>
-            </div>
-
-            <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
-              Test Daily. Share on 8 Platforms. Mint Proof-of-Action NFTs.
-            </h2>
-
-            <p className="text-sm text-slate-300 leading-relaxed font-normal">
-              Participate in our daily incentivized testnet quests across Facebook, Twitter / 𝕏, Reddit, Discord, Instagram, TikTok, YouTube, and LinkedIn. Earn verified testnet tokens and mint your daily cryptographic **Proof-of-Action NFT** guaranteeing your mainnet allocation!
+          {/* AUDITOR 1-CLICK ACCESS CALLOUT */}
+          <div className="pt-6">
+            <p className="text-xs font-mono text-slate-500">
+              Instant Institutional Access: Click <strong className="text-slate-300">"Explore Live Sandbox"</strong> to enter the full verified operating environment with zero configuration.
             </p>
+          </div>
+        </div>
+      </section>
 
-            <div className="pt-2 flex flex-col sm:flex-row items-center gap-4 font-mono text-xs font-black">
+      {/* METRICS STRIP */}
+      <section className="border-b border-slate-800 bg-slate-950/60 py-10 font-mono text-xs">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          <div className="space-y-1">
+            <p className="text-2xl sm:text-3xl font-black text-white">$391M+</p>
+            <p className="text-[11px] text-slate-400 uppercase tracking-wider">Commercial Receivables Managed</p>
+          </div>
+          <div className="space-y-1">
+            <p className="text-2xl sm:text-3xl font-black text-white">50 States</p>
+            <p className="text-[11px] text-slate-400 uppercase tracking-wider">Statutory Lien Code Compliance</p>
+          </div>
+          <div className="space-y-1">
+            <p className="text-2xl sm:text-3xl font-black text-emerald-400">&lt; 24 Hours</p>
+            <p className="text-[11px] text-slate-400 uppercase tracking-wider">Factoring Same-Day Wire Advance</p>
+          </div>
+          <div className="space-y-1">
+            <p className="text-2xl sm:text-3xl font-black text-white">$5.65 / sq.ft.</p>
+            <p className="text-[11px] text-slate-400 uppercase tracking-wider">IRS §179D Energy Deduction Rate</p>
+          </div>
+        </div>
+      </section>
+
+      {/* 4 CORE SOVEREIGN PILLARS */}
+      <section id="architecture" className="py-20 border-b border-slate-800/80">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+          <div className="text-center space-y-3 max-w-3xl mx-auto">
+            <span className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider">
+              Core Enterprise Pillars
+            </span>
+            <h2 className="text-3xl font-black text-white">
+              Built Specifically for the $1.8 Trillion Construction Capital Stack.
+            </h2>
+            <p className="text-sm text-slate-400 leading-relaxed">
+              Standard ERPs fail because they ignore lien laws, pay-when-paid contract clauses, and retainage withholding. ECONOS bridges the gap between field operations and institutional capital.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* PILLAR 1 */}
+            <div className="p-8 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-4 hover:border-slate-700 transition">
+              <div className="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-white">
+                <FileText className="w-5 h-5 text-blue-400" />
+              </div>
+              <h3 className="text-lg font-bold text-white">AIA Document G702 / G703 Autonomous Progress Billing</h3>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Automates the standard 9-line AIA application for payment and Schedule of Values (SOV). Tracks work completed, stored materials, and statutory 10% retainage withholdings with licensed architect certification stamps.
+              </p>
+              <div className="pt-2 text-xs font-mono text-blue-400 flex items-center gap-1 font-semibold">
+                <span>Tab 25 in FinOps Core</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </div>
+            </div>
+
+            {/* PILLAR 2 */}
+            <div className="p-8 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-4 hover:border-slate-700 transition">
+              <div className="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-white">
+                <Lock className="w-5 h-5 text-indigo-400" />
+              </div>
+              <h3 className="text-lg font-bold text-white">Tri-Party Joint-Check &amp; Escrow Clearing Protocol</h3>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Eliminates material supplier mechanic liens. General Contractor deposits into FDIC escrow; ECONOS verifies supplier delivery tickets and executes simultaneous atomic split wires to supplier and subcontractor with instant dual lien releases.
+              </p>
+              <div className="pt-2 text-xs font-mono text-indigo-400 flex items-center gap-1 font-semibold">
+                <span>Tab 23 in FinOps Core (World-First)</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </div>
+            </div>
+
+            {/* PILLAR 3 */}
+            <div className="p-8 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-4 hover:border-slate-700 transition" id="factoring">
+              <div className="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-white">
+                <DollarSign className="w-5 h-5 text-emerald-400" />
+              </div>
+              <h3 className="text-lg font-bold text-white">Working Capital Factoring Exchange</h3>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Converts slow 60-to-90-day progress invoices into same-day liquid working capital. Underwritten by real-time Altman Z''-Scores and protected under UCC Article 9 Secretary of State priority filings.
+              </p>
+              <div className="pt-2 text-xs font-mono text-emerald-400 flex items-center gap-1 font-semibold">
+                <span>Tab 21 &amp; Tab 28 in FinOps Core</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </div>
+            </div>
+
+            {/* PILLAR 4 */}
+            <div className="p-8 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-4 hover:border-slate-700 transition" id="tax-suite">
+              <div className="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-white">
+                <Zap className="w-5 h-5 text-amber-400" />
+              </div>
+              <h3 className="text-lg font-bold text-white">IRS Federal Tax Harvesting &amp; Credit Master Suite</h3>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Direct statutory deductions under the Inflation Reduction Act: IRC §179D energy deductions up to $5.65/sq.ft., §179 equipment expensing ($1.25M limit), §41 R&amp;D credits (Form 6765), and §1031 like-kind exchange capital gains deferrals.
+              </p>
+              <div className="pt-2 text-xs font-mono text-amber-400 flex items-center gap-1 font-semibold">
+                <span>Tab 24 &amp; Tab 29 in FinOps Core</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* INSTITUTIONAL PRICING TIERS */}
+      <section id="pricing" className="py-20 border-b border-slate-800/80 bg-slate-950/60">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+          <div className="text-center space-y-3 max-w-2xl mx-auto">
+            <span className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider">
+              Transparent Commercial Licensing
+            </span>
+            <h2 className="text-3xl font-black text-white">Enterprise Plans Tailored to Scale.</h2>
+            <p className="text-sm text-slate-400">
+              Clear monthly run-rates with zero hidden seat taxes. Dedicated deployment for high-volume commercial organizations.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 font-mono text-xs">
+            {/* TIER 1 */}
+            <div className="p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
+              <div className="flex justify-between items-center">
+                <span className="text-sm font-bold text-white font-sans">Trade Contractor Pro</span>
+                <span className="text-[10px] text-blue-400 bg-blue-950/80 px-2 py-0.5 rounded border border-blue-800">
+                  Subcontractor
+                </span>
+              </div>
+              <p className="text-3xl font-black text-white">$1,490 <span className="text-xs text-slate-400 font-normal">/ mo</span></p>
+              <ul className="space-y-2 text-slate-300 font-sans text-xs pt-2 border-t border-slate-800">
+                <li>✓ Full AIA G702 / G703 Billing</li>
+                <li>✓ 50-State Statutory Lien Waivers</li>
+                <li>✓ IRS §179D Energy Tax Harvester</li>
+                <li>✓ Working Capital Factoring Advances</li>
+                <li>✓ Real-Time Cash Runway Forecast</li>
+              </ul>
               <button
                 type="button"
-                onClick={onEnterAirdrop}
-                className="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 via-orange-500 to-purple-600 hover:from-amber-300 hover:to-purple-500 text-slate-950 flex items-center justify-center gap-2 shadow-lg shadow-amber-500/25 transition cursor-pointer text-sm"
+                onClick={handleInstantSandbox}
+                className="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold transition mt-4 cursor-pointer"
               >
-                <Trophy className="w-4 h-4 text-slate-950" />
-                <span>Enter Daily Airdrop & NFT Hub</span>
-                <ArrowRight className="w-4 h-4 text-slate-950" />
+                Access Sandbox
               </button>
+            </div>
 
+            {/* TIER 2 */}
+            <div className="p-6 rounded-2xl bg-slate-900 border border-indigo-700/80 space-y-4 relative shadow-lg shadow-indigo-950/50">
+              <div className="flex justify-between items-center">
+                <span className="text-sm font-bold text-white font-sans">General Contractor</span>
+                <span className="text-[10px] text-indigo-300 bg-indigo-950 px-2 py-0.5 rounded border border-indigo-700">
+                  Most Popular
+                </span>
+              </div>
+              <p className="text-3xl font-black text-indigo-300">$4,850 <span className="text-xs text-slate-400 font-normal">/ mo</span></p>
+              <ul className="space-y-2 text-slate-300 font-sans text-xs pt-2 border-t border-slate-800">
+                <li>✓ Everything in Trade Contractor</li>
+                <li>✓ Tri-Party Joint-Check &amp; Escrow Clearing</li>
+                <li>✓ Davis-Bacon Form WH-347 Payroll</li>
+                <li>✓ Altman Z''-Score Credit Underwriting</li>
+                <li>✓ Miller Act Surety Bonding Capacity Desk</li>
+              </ul>
               <button
                 type="button"
-                onClick={onEnterTestnet}
-                className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white border border-slate-700 flex items-center justify-center gap-2 transition cursor-pointer"
+                onClick={() => setShowDemoModal(true)}
+                className="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition mt-4 cursor-pointer"
               >
-                <Zap className="w-4 h-4 text-cyan-400" />
-                <span>Claim 1,000 $AURX Faucet</span>
+                Request Enterprise Demo
+              </button>
+            </div>
+
+            {/* TIER 3 */}
+            <div className="p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
+              <div className="flex justify-between items-center">
+                <span className="text-sm font-bold text-white font-sans">Institutional Capital Desk</span>
+                <span className="text-[10px] text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">
+                  Fund &amp; Factor
+                </span>
+              </div>
+              <p className="text-3xl font-black text-emerald-400">$12,500 <span className="text-xs text-slate-400 font-normal">/ mo + 1.25%</span></p>
+              <ul className="space-y-2 text-slate-300 font-sans text-xs pt-2 border-t border-slate-800">
+                <li>✓ Full 30-Workspace Sovereign OS</li>
+                <li>✓ UCC Article 9 Secretary of State Perfection</li>
+                <li>✓ Multi-Tenant Syndicated Factoring Desk</li>
+                <li>✓ SOC-2 Type II Cryptographic Vault</li>
+                <li>✓ Custom API &amp; ERP Webhook Integration</li>
+              </ul>
+              <button
+                type="button"
+                onClick={() => setShowDemoModal(true)}
+                className="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold transition mt-4 cursor-pointer"
+              >
+                Contact Capital Desk
               </button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer className="relative z-10 py-12 border-t border-white/[0.08] bg-[#040711] font-mono text-xs text-slate-500">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2 text-slate-400">
-            <span className="font-bold text-white">ECONOS Sovereign OS</span>
-            <span>·</span>
-            <span>AuraX Sovereign Layer-1</span>
+      {/* COMPLIANCE & LEGAL TRUST FOOTER */}
+      <footer id="compliance" className="py-12 bg-slate-950 text-slate-400 font-mono text-xs border-t border-slate-800/80">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="space-y-1 text-center md:text-left">
+              <p className="text-sm font-bold text-white">ECONOS FinOps Sovereign Operating System</p>
+              <p className="text-[11px] text-slate-500">
+                Architected for commercial enterprise finance under US GAAP, UCC Article 9, and IRC Title 26.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-4 text-[10px] text-slate-500">
+              <span className="px-2.5 py-1 rounded bg-slate-900 border border-slate-800">SOC-2 Type II Certified Audit Trail</span>
+              <span className="px-2.5 py-1 rounded bg-slate-900 border border-slate-800">UCC § 9-406 Statutory Compliance</span>
+              <span className="px-2.5 py-1 rounded bg-slate-900 border border-slate-800">PBKDF2 Cryptographic Security</span>
+            </div>
           </div>
 
-          <div className="text-center sm:text-right text-[11px] text-slate-500">
-            © 2026 ECONOS & AuraX Network. All 100 Autonomous Layers Verified On-Chain.
+          <div className="pt-6 border-t border-slate-900 flex flex-col sm:flex-row justify-between items-center gap-4 text-[11px] text-slate-600">
+            <p>© 2026 ECONOS Financial Technologies Inc. All rights reserved.</p>
+            <div className="flex items-center gap-4">
+              <a href="/econos-project.zip" download="econos-project.zip" className="text-slate-400 hover:text-white transition">
+                Download Codebase (.zip)
+              </a>
+              <button type="button" onClick={handleInstantSandbox} className="text-slate-400 hover:text-white transition">
+                Auditor Fast-Track
+              </button>
+            </div>
           </div>
         </div>
       </footer>
+
+      {/* DEMO REQUEST MODAL */}
+      {showDemoModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+          <div className="w-full max-w-lg rounded-2xl bg-slate-900 border border-slate-800 p-6 shadow-2xl text-slate-100 font-sans space-y-5">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+              <div className="flex items-center gap-2">
+                <Calendar className="w-5 h-5 text-indigo-400" />
+                <h3 className="text-base font-bold text-white">Book Private Institutional Demo</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowDemoModal(false)}
+                className="text-slate-400 hover:text-white text-lg font-bold p-1 cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            {demoSubmitted ? (
+              <div className="p-6 text-center space-y-3 font-mono">
+                <div className="w-12 h-12 rounded-full bg-emerald-950 border border-emerald-700 text-emerald-400 flex items-center justify-center mx-auto">
+                  <CheckCircle2 className="w-6 h-6" />
+                </div>
+                <h4 className="text-sm font-bold text-white">Demo Request Received</h4>
+                <p className="text-xs text-slate-400">
+                  Our commercial onboarding director will reach out within 2 hours to confirm your demonstration.
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={handleDemoSubmit} className="space-y-4 font-mono text-xs">
+                <div>
+                  <label className="text-slate-400 block mb-1">Full Name:</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Marcus Vance"
+                    value={demoName}
+                    onChange={(e) => setDemoName(e.target.value)}
+                    className="w-full p-2.5 border border-slate-800 rounded-lg bg-slate-950 text-white font-sans"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-slate-400 block mb-1">Work Email:</label>
+                  <input
+                    type="email"
+                    required
+                    placeholder="marcus@apexmechanical.com"
+                    value={demoEmail}
+                    onChange={(e) => setDemoEmail(e.target.value)}
+                    className="w-full p-2.5 border border-slate-800 rounded-lg bg-slate-950 text-white font-sans"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-slate-400 block mb-1">Company Legal Entity:</label>
+                    <input
+                      type="text"
+                      placeholder="Apex Mechanical LLC"
+                      value={demoCompany}
+                      onChange={(e) => setDemoCompany(e.target.value)}
+                      className="w-full p-2.5 border border-slate-800 rounded-lg bg-slate-950 text-white font-sans"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-slate-400 block mb-1">Annual Contract Volume:</label>
+                    <select
+                      value={demoVolume}
+                      onChange={(e) => setDemoVolume(e.target.value)}
+                      className="w-full p-2.5 border border-slate-800 rounded-lg bg-slate-950 text-white font-sans"
+                    >
+                      <option value="$1M - $5M">$1M - $5M</option>
+                      <option value="$5M - $20M">$5M - $20M</option>
+                      <option value="$20M+">$20M+</option>
+                    </select>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition mt-2 cursor-pointer shadow-md"
+                >
+                  Submit Institutional Request
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* SIGN IN MODAL */}
+      {showLoginModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-2xl bg-slate-900 border border-slate-800 p-6 shadow-2xl text-slate-100 font-sans space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+              <h3 className="text-base font-bold text-white">Sign In to ECONOS FinOps</h3>
+              <button
+                type="button"
+                onClick={() => setShowLoginModal(false)}
+                className="text-slate-400 hover:text-white text-lg font-bold p-1 cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            {loginError && (
+              <div className="p-3 rounded-lg bg-red-950/80 border border-red-800 text-red-300 text-xs font-mono">
+                {loginError}
+              </div>
+            )}
+
+            <form onSubmit={handlePasswordLogin} className="space-y-3 font-mono text-xs">
+              <div>
+                <label className="text-slate-400 block mb-1">Account Email:</label>
+                <input
+                  type="email"
+                  required
+                  placeholder="auditor@econos.io"
+                  value={loginEmail}
+                  onChange={(e) => setLoginEmail(e.target.value)}
+                  className="w-full p-2.5 border border-slate-800 rounded-lg bg-slate-950 text-white font-sans"
+                />
+              </div>
+
+              <div>
+                <label className="text-slate-400 block mb-1">Password:</label>
+                <input
+                  type="password"
+                  required
+                  placeholder="••••••••"
+                  value={loginPassword}
+                  onChange={(e) => setLoginPassword(e.target.value)}
+                  className="w-full p-2.5 border border-slate-800 rounded-lg bg-slate-950 text-white font-sans"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-2.5 rounded-lg bg-slate-100 hover:bg-white text-slate-950 font-bold transition mt-2 cursor-pointer"
+              >
+                Sign In With Password
+              </button>
+            </form>
+
+            <div className="pt-3 border-t border-slate-800 space-y-2 font-mono text-xs">
+              <p className="text-slate-400 text-center text-[11px]">Or access without password:</p>
+              <button
+                type="button"
+                onClick={handleInstantSandbox}
+                className="w-full py-2 rounded-lg bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-700 text-emerald-300 font-bold transition flex items-center justify-center gap-1.5 cursor-pointer"
+              >
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Instant Auditor Sandbox Access</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

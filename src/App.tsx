@@ -151,15 +151,17 @@ const AppContent: React.FC = () => {
   if (currentLayer === 'LANDING') {
     return (
       <BillionDollarLandingPage
-        onEnterTestnet={() => setCurrentLayer('BUSINESS')}
-        onEnterAirdrop={() => setCurrentLayer('CLIENT_ACQUISITION')}
-        onSelectLayer={(l) => setCurrentLayer(l)}
+        onEnterApp={() => setCurrentLayer('BUSINESS')}
       />
     );
   }
 
   if (!isAuthenticated || !user) {
-    return <AuthScreen />;
+    return (
+      <BillionDollarLandingPage
+        onEnterApp={() => setCurrentLayer('BUSINESS')}
+      />
+    );
   }
 
   return (

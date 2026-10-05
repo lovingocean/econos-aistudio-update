@@ -29,6 +29,9 @@ import { CommercialSection179DTaxWorkspace } from './CommercialSection179DTaxWor
 import { CommercialAiaBillingWorkspace } from './CommercialAiaBillingWorkspace';
 import { CommercialDavisBaconPayrollWorkspace } from './CommercialDavisBaconPayrollWorkspace';
 import { CommercialSuretyBondingWorkspace } from './CommercialSuretyBondingWorkspace';
+import { CommercialUccArticle9Workspace } from './CommercialUccArticle9Workspace';
+import { CommercialSection1031ExchangeWorkspace } from './CommercialSection1031ExchangeWorkspace';
+import { CommercialMarketAccessWorkspace } from './CommercialMarketAccessWorkspace';
 import { OpportunityEngine } from './OpportunityEngine';
 import { ScenarioEngine } from './ScenarioEngine';
 import { OutcomeVerificationView } from './OutcomeVerification';
@@ -67,7 +70,8 @@ import {
   Lock,
   Zap,
   Shield,
-  HardHat
+  HardHat,
+  Building
 } from 'lucide-react';
 
 type BusinessSubTab = 
@@ -87,6 +91,9 @@ type BusinessSubTab =
   | 'AIA_G702_BILLING'
   | 'DAVIS_BACON_PAYROLL'
   | 'SURETY_BONDING'
+  | 'UCC_ARTICLE_9'
+  | 'SECTION_1031_EXCHANGE'
+  | 'MARKET_ACCESS'
   | 'WHAT_IF_STUDIO'
   | 'FX_HEDGING'
   | 'TAX' 
@@ -147,6 +154,9 @@ const SUBTABS: {
   { id: 'AIA_G702_BILLING', label: '25. AIA G702/G703 Progress Billing', shortLabel: 'AIA G702 Billing', icon: FileSpreadsheet, category: 'ENTERPRISE', isNew: true, badge: '10% RETAINAGE', activeColor: 'bg-blue-800 text-white', inactiveColor: 'text-blue-800 bg-blue-50/80 hover:bg-blue-100 border border-blue-200' },
   { id: 'DAVIS_BACON_PAYROLL', label: '26. Davis-Bacon Form WH-347 Payroll', shortLabel: 'Certified Payroll', icon: HardHat, category: 'ENTERPRISE', isNew: true, badge: 'PREVAILING WAGE', activeColor: 'bg-amber-800 text-white', inactiveColor: 'text-amber-800 bg-amber-50/80 hover:bg-amber-100 border border-amber-200' },
   { id: 'SURETY_BONDING', label: '27. Commercial Surety Bonding Desk', shortLabel: 'Surety Bonding', icon: Shield, category: 'ENTERPRISE', isNew: true, badge: 'MILLER ACT', activeColor: 'bg-indigo-900 text-white', inactiveColor: 'text-indigo-900 bg-indigo-50/80 hover:bg-indigo-100 border border-indigo-200' },
+  { id: 'UCC_ARTICLE_9', label: '28. UCC Article 9 Priority Perfection', shortLabel: 'UCC-1 Perfection', icon: Scale, category: 'ENTERPRISE', isNew: true, badge: 'FIRST-PRIORITY', activeColor: 'bg-purple-900 text-white', inactiveColor: 'text-purple-900 bg-purple-50/80 hover:bg-purple-100 border border-purple-200' },
+  { id: 'SECTION_1031_EXCHANGE', label: '29. IRS §1031 Like-Kind Exchange', shortLabel: '§1031 Tax Deferral', icon: Building, category: 'ENTERPRISE', isNew: true, badge: '45-DAY CLOCK', activeColor: 'bg-teal-900 text-white', inactiveColor: 'text-teal-900 bg-teal-50/80 hover:bg-teal-100 border border-teal-200' },
+  { id: 'MARKET_ACCESS', label: '30. Market Access & Enterprise GTM', shortLabel: 'Market Access & GTM', icon: KeyRound, category: 'ENTERPRISE', isNew: true, badge: 'COMMERCIAL GTM', activeColor: 'bg-emerald-900 text-white', inactiveColor: 'text-emerald-900 bg-emerald-50/80 hover:bg-emerald-100 border border-emerald-200' },
 
   // STRATEGY & SIMULATION
   { id: 'GRAPH', label: '21. Live Network Graph', shortLabel: 'Network Graph', icon: Network, category: 'STRATEGY', activeColor: 'bg-purple-700 text-white', inactiveColor: 'text-purple-700 bg-purple-50/80 hover:bg-purple-100 border border-purple-200' },
@@ -598,6 +608,18 @@ export const BusinessWorkspace: React.FC<BusinessWorkspaceProps> = ({ onNavigate
 
       {subTab === 'SURETY_BONDING' && (
         <CommercialSuretyBondingWorkspace />
+      )}
+
+      {subTab === 'UCC_ARTICLE_9' && (
+        <CommercialUccArticle9Workspace />
+      )}
+
+      {subTab === 'SECTION_1031_EXCHANGE' && (
+        <CommercialSection1031ExchangeWorkspace />
+      )}
+
+      {subTab === 'MARKET_ACCESS' && (
+        <CommercialMarketAccessWorkspace />
       )}
 
       {subTab === 'GRAPH' && (

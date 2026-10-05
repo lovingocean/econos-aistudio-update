@@ -26,6 +26,9 @@ import { CommercialLienWaiverWorkspace } from './CommercialLienWaiverWorkspace';
 import { CommercialFactoringExchangeWorkspace } from './CommercialFactoringExchangeWorkspace';
 import { CommercialJointCheckEscrowWorkspace } from './CommercialJointCheckEscrowWorkspace';
 import { CommercialSection179DTaxWorkspace } from './CommercialSection179DTaxWorkspace';
+import { CommercialAiaBillingWorkspace } from './CommercialAiaBillingWorkspace';
+import { CommercialDavisBaconPayrollWorkspace } from './CommercialDavisBaconPayrollWorkspace';
+import { CommercialSuretyBondingWorkspace } from './CommercialSuretyBondingWorkspace';
 import { OpportunityEngine } from './OpportunityEngine';
 import { ScenarioEngine } from './ScenarioEngine';
 import { OutcomeVerificationView } from './OutcomeVerification';
@@ -62,7 +65,9 @@ import {
   FileCheck2,
   Coins,
   Lock,
-  Zap
+  Zap,
+  Shield,
+  HardHat
 } from 'lucide-react';
 
 type BusinessSubTab = 
@@ -79,6 +84,9 @@ type BusinessSubTab =
   | 'LIEN_WAIVERS'
   | 'JOINT_CHECK_ESCROW'
   | 'SECTION_179D_TAX'
+  | 'AIA_G702_BILLING'
+  | 'DAVIS_BACON_PAYROLL'
+  | 'SURETY_BONDING'
   | 'WHAT_IF_STUDIO'
   | 'FX_HEDGING'
   | 'TAX' 
@@ -135,7 +143,10 @@ const SUBTABS: {
   { id: 'FACTORING_EXCHANGE', label: '21. Working Capital Factoring Exchange', shortLabel: 'Factoring Terminal', icon: Coins, category: 'ENTERPRISE', isNew: true, badge: 'SAME-DAY CASH', activeColor: 'bg-emerald-700 text-white', inactiveColor: 'text-emerald-800 bg-emerald-50/80 hover:bg-emerald-100 border border-emerald-200' },
   { id: 'LIEN_WAIVERS', label: '22. Contractor Statutory Lien Waivers', shortLabel: 'Lien Waivers', icon: FileCheck2, category: 'ENTERPRISE', isNew: true, badge: '50-STATE LEGAL', activeColor: 'bg-amber-700 text-white', inactiveColor: 'text-amber-800 bg-amber-50/80 hover:bg-amber-100 border border-amber-200' },
   { id: 'JOINT_CHECK_ESCROW', label: '23. Tri-Party Joint-Check & Escrow', shortLabel: 'Tri-Party Escrow', icon: Lock, category: 'ENTERPRISE', isNew: true, badge: 'WORLD-FIRST', activeColor: 'bg-indigo-800 text-white', inactiveColor: 'text-indigo-800 bg-indigo-50/80 hover:bg-indigo-100 border border-indigo-200' },
-  { id: 'SECTION_179D_TAX', label: '24. IRS §179D & Altman Z-Score', shortLabel: '§179D Tax & Z-Score', icon: Zap, category: 'ENTERPRISE', isNew: true, badge: 'TAX CASH', activeColor: 'bg-emerald-800 text-white', inactiveColor: 'text-emerald-800 bg-emerald-50/80 hover:bg-emerald-100 border border-emerald-200' },
+  { id: 'SECTION_179D_TAX', label: '24. IRS Federal Tax Master Suite', shortLabel: 'IRS Tax Master Suite', icon: Zap, category: 'ENTERPRISE', isNew: true, badge: '5x IRS ENGINES', activeColor: 'bg-emerald-800 text-white', inactiveColor: 'text-emerald-800 bg-emerald-50/80 hover:bg-emerald-100 border border-emerald-200' },
+  { id: 'AIA_G702_BILLING', label: '25. AIA G702/G703 Progress Billing', shortLabel: 'AIA G702 Billing', icon: FileSpreadsheet, category: 'ENTERPRISE', isNew: true, badge: '10% RETAINAGE', activeColor: 'bg-blue-800 text-white', inactiveColor: 'text-blue-800 bg-blue-50/80 hover:bg-blue-100 border border-blue-200' },
+  { id: 'DAVIS_BACON_PAYROLL', label: '26. Davis-Bacon Form WH-347 Payroll', shortLabel: 'Certified Payroll', icon: HardHat, category: 'ENTERPRISE', isNew: true, badge: 'PREVAILING WAGE', activeColor: 'bg-amber-800 text-white', inactiveColor: 'text-amber-800 bg-amber-50/80 hover:bg-amber-100 border border-amber-200' },
+  { id: 'SURETY_BONDING', label: '27. Commercial Surety Bonding Desk', shortLabel: 'Surety Bonding', icon: Shield, category: 'ENTERPRISE', isNew: true, badge: 'MILLER ACT', activeColor: 'bg-indigo-900 text-white', inactiveColor: 'text-indigo-900 bg-indigo-50/80 hover:bg-indigo-100 border border-indigo-200' },
 
   // STRATEGY & SIMULATION
   { id: 'GRAPH', label: '21. Live Network Graph', shortLabel: 'Network Graph', icon: Network, category: 'STRATEGY', activeColor: 'bg-purple-700 text-white', inactiveColor: 'text-purple-700 bg-purple-50/80 hover:bg-purple-100 border border-purple-200' },
@@ -575,6 +586,18 @@ export const BusinessWorkspace: React.FC<BusinessWorkspaceProps> = ({ onNavigate
 
       {subTab === 'SECTION_179D_TAX' && (
         <CommercialSection179DTaxWorkspace />
+      )}
+
+      {subTab === 'AIA_G702_BILLING' && (
+        <CommercialAiaBillingWorkspace />
+      )}
+
+      {subTab === 'DAVIS_BACON_PAYROLL' && (
+        <CommercialDavisBaconPayrollWorkspace />
+      )}
+
+      {subTab === 'SURETY_BONDING' && (
+        <CommercialSuretyBondingWorkspace />
       )}
 
       {subTab === 'GRAPH' && (

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { 
   Building2, 
+  Briefcase,
   ShieldCheck, 
   UserCheck, 
   ChevronDown, 
@@ -268,24 +269,37 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Right: Security, Commercial, Tools & Account Controls */}
         <div className="flex items-center gap-1 sm:gap-1.5 md:gap-2 shrink-0 ml-auto">
 
-          {/* OMNIFIN Global Autonomous Financial Operating Layer */}
+          {/* Direct Pure Utility Buttons */}
           {onSelectLayer && (
-            <button
-              id="navbar-omnifin-btn"
-              onClick={() => onSelectLayer('OMNIFIN')}
-              className={`flex items-center gap-1 px-2 sm:px-2.5 py-1.5 rounded-xl border text-xs font-mono font-bold transition shadow-xs cursor-pointer shrink-0 ${
-                currentLayer === 'OMNIFIN'
-                  ? 'bg-gradient-to-r from-blue-600 to-cyan-500 text-white border-cyan-300 shadow-md ring-2 ring-cyan-400/40'
-                  : 'bg-[#071326] hover:bg-[#0c1f3d] text-cyan-300 border-cyan-500/40 shadow-sm'
-              }`}
-              title="Open OMNIFIN — Global Autonomous Financial Operating Layer"
-            >
-              <Globe2 className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
-              <span className="font-extrabold tracking-tight hidden md:inline">OMNIFIN</span>
-              <span className="px-1 py-0.2 rounded text-[9px] bg-cyan-950 text-cyan-300 border border-cyan-500/40 font-black">
-                OS
-              </span>
-            </button>
+            <>
+              <button
+                id="navbar-finops-btn"
+                onClick={() => onSelectLayer('BUSINESS')}
+                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-mono font-bold transition shadow-xs cursor-pointer shrink-0 ${
+                  currentLayer === 'BUSINESS'
+                    ? 'bg-emerald-600 text-white border-emerald-400 shadow-md ring-2 ring-emerald-400/30'
+                    : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-200'
+                }`}
+                title="FinOps, Invoicing, Cash Flow & AI CFO"
+              >
+                <Briefcase className="w-3.5 h-3.5 text-emerald-600" />
+                <span className="hidden sm:inline">FinOps Core</span>
+              </button>
+
+              <button
+                id="navbar-leads-btn"
+                onClick={() => onSelectLayer('CLIENT_ACQUISITION')}
+                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-mono font-bold transition shadow-xs cursor-pointer shrink-0 ${
+                  currentLayer === 'CLIENT_ACQUISITION'
+                    ? 'bg-cyan-600 text-white border-cyan-400 shadow-md ring-2 ring-cyan-400/30'
+                    : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-200'
+                }`}
+                title="B2B Commercial Contractor Discovery (Google Places API)"
+              >
+                <Building2 className="w-3.5 h-3.5 text-cyan-600" />
+                <span className="hidden sm:inline">Lead Discovery</span>
+              </button>
+            </>
           )}
 
           {/* Enterprise Multi-Module Command Terminal Button */}

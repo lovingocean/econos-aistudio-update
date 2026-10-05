@@ -22,6 +22,8 @@ import { CommercialProcureToPayWorkspace } from './CommercialProcureToPayWorkspa
 import { CommercialRevenueRecognitionWorkspace } from './CommercialRevenueRecognitionWorkspace';
 import { CommercialContinuousCloseWorkspace } from './CommercialContinuousCloseWorkspace';
 import { CommercialAuditVaultWorkspace } from './CommercialAuditVaultWorkspace';
+import { CommercialLienWaiverWorkspace } from './CommercialLienWaiverWorkspace';
+import { CommercialFactoringExchangeWorkspace } from './CommercialFactoringExchangeWorkspace';
 import { OpportunityEngine } from './OpportunityEngine';
 import { ScenarioEngine } from './ScenarioEngine';
 import { OutcomeVerificationView } from './OutcomeVerification';
@@ -54,7 +56,9 @@ import {
   ShoppingCart,
   FileSpreadsheet,
   CalendarCheck,
-  ShieldCheck
+  ShieldCheck,
+  FileCheck2,
+  Coins
 } from 'lucide-react';
 
 type BusinessSubTab = 
@@ -67,6 +71,8 @@ type BusinessSubTab =
   | 'AI_CFO'
   | 'RECONCILIATION'
   | 'CASHFLOW' 
+  | 'FACTORING_EXCHANGE'
+  | 'LIEN_WAIVERS'
   | 'WHAT_IF_STUDIO'
   | 'FX_HEDGING'
   | 'TAX' 
@@ -120,6 +126,8 @@ const SUBTABS: {
   { id: 'REV_REC', label: '18. ASC 606 Rev Recognition', shortLabel: 'ASC 606 RevRec', icon: FileSpreadsheet, category: 'ENTERPRISE', isNew: true, badge: 'NEW', activeColor: 'bg-teal-700 text-white', inactiveColor: 'text-teal-800 bg-teal-50/80 hover:bg-teal-100 border border-teal-200' },
   { id: 'CONTINUOUS_CLOSE', label: '19. Autonomous Continuous Close', shortLabel: 'Month-End Close', icon: CalendarCheck, category: 'ENTERPRISE', isNew: true, badge: 'NEW', activeColor: 'bg-amber-800 text-white', inactiveColor: 'text-amber-800 bg-amber-50/80 hover:bg-amber-100 border border-amber-200' },
   { id: 'AUDIT_VAULT', label: '20. SOC-2 Cryptographic Vault', shortLabel: 'SOC-2 Audit Vault', icon: ShieldCheck, category: 'ENTERPRISE', isNew: true, badge: 'NEW', activeColor: 'bg-emerald-800 text-white', inactiveColor: 'text-emerald-800 bg-emerald-50/80 hover:bg-emerald-100 border border-emerald-200' },
+  { id: 'FACTORING_EXCHANGE', label: '21. Working Capital Factoring Exchange', shortLabel: 'Factoring Terminal', icon: Coins, category: 'ENTERPRISE', isNew: true, badge: 'SAME-DAY CASH', activeColor: 'bg-emerald-700 text-white', inactiveColor: 'text-emerald-800 bg-emerald-50/80 hover:bg-emerald-100 border border-emerald-200' },
+  { id: 'LIEN_WAIVERS', label: '22. Contractor Statutory Lien Waivers', shortLabel: 'Lien Waivers', icon: FileCheck2, category: 'ENTERPRISE', isNew: true, badge: '50-STATE LEGAL', activeColor: 'bg-amber-700 text-white', inactiveColor: 'text-amber-800 bg-amber-50/80 hover:bg-amber-100 border border-amber-200' },
 
   // STRATEGY & SIMULATION
   { id: 'GRAPH', label: '21. Live Network Graph', shortLabel: 'Network Graph', icon: Network, category: 'STRATEGY', activeColor: 'bg-purple-700 text-white', inactiveColor: 'text-purple-700 bg-purple-50/80 hover:bg-purple-100 border border-purple-200' },
@@ -543,6 +551,14 @@ export const BusinessWorkspace: React.FC<BusinessWorkspaceProps> = ({ onNavigate
 
       {subTab === 'AUDIT_VAULT' && (
         <CommercialAuditVaultWorkspace />
+      )}
+
+      {subTab === 'FACTORING_EXCHANGE' && (
+        <CommercialFactoringExchangeWorkspace />
+      )}
+
+      {subTab === 'LIEN_WAIVERS' && (
+        <CommercialLienWaiverWorkspace />
       )}
 
       {subTab === 'GRAPH' && (

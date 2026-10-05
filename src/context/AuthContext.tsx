@@ -13,6 +13,16 @@ const DEFAULT_ADMIN_USER: User = {
   createdAt: '2026-02-01T10:00:00Z',
 };
 
+// Official Auditor & Due Diligence User
+const DEFAULT_AUDITOR_USER: User = {
+  id: 'usr_audit_investor',
+  email: 'auditor@econos.io',
+  name: 'Senior Auditor / Due Diligence',
+  role: 'AUDITOR',
+  currentOrgId: 'org_real_default',
+  createdAt: '2026-03-01T10:00:00Z',
+};
+
 const DEFAULT_ADMIN_ORG: Organization = {
   id: 'org_real_default',
   name: 'Econos Private Holdings',
@@ -89,6 +99,7 @@ interface AuthContextType {
   login: (email: string, password?: string) => Promise<void>;
   loginAsMeek: () => Promise<void>;
   loginAsDemo: () => Promise<void>;
+  loginAsAuditor: () => Promise<void>;
   loginWithGoogle: () => Promise<void>;
   signup: (data: { name: string; email: string; password?: string; organizationName?: string; businessName?: string; tier?: string }) => Promise<void>;
   logout: () => Promise<void>;
@@ -260,6 +271,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (cleanEmail === 'meekifti@gmail.com' || cleanEmail.includes('meekifti')) {
           await loginAsMeek();
           return;
+        } else if (cleanEmail === 'auditor@econos.io' || cleanEmail.includes('audit')) {
+          await loginAsAuditor();
+          return;
         } else if (cleanEmail.includes('demo') || cleanEmail.includes('alex')) {
           await loginAsDemo();
           return;
@@ -383,6 +397,48 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setOrganizations([demoOrg]);
       if (typeof window !== 'undefined') {
         localStorage.setItem('econos_user_cache', JSON.stringify(demoUser));
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const loginAsAuditor = async () => {
+    setIsLoading(true);
+    try {
+      try {
+        const res = await api.login('auditor@econos.io', 'Audit2026!');
+        if (res.user) {
+          setUser(res.user);
+          if (res.organizations) setOrganizations(res.organizations);
+          if (res.currentOrg) {
+            setCurrentOrg(res.currentOrg);
+            api.setContext(res.currentOrg.id, res.user.id);
+          }
+          if (res.subscription) setSubscription(res.subscription);
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('econos_user_cache', JSON.stringify(res.user));
+          }
+          await loadData();
+          return;
+        }
+      } catch (remoteErr) {
+        console.warn('Backend connection fallback for Auditor session:', remoteErr);
+      }
+
+      const auditorUser = DEFAULT_AUDITOR_USER;
+      const realOrg = DEFAULT_ADMIN_ORG;
+      const token = `econos_tok_${Date.now()}_auditor_session`;
+      api.setToken(token);
+      api.setContext(realOrg.id, auditorUser.id);
+      setUser(auditorUser);
+      setOrganizations([realOrg]);
+      setCurrentOrg(realOrg);
+      setSubscription(DEFAULT_PRO_SUB);
+      setActivePlan(DEFAULT_PRO_PLAN);
+      setEntitlements(DEFAULT_PRO_PLAN.entitlements);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('econos_user_cache', JSON.stringify(auditorUser));
       }
     } finally {
       setIsLoading(false);
@@ -633,6 +689,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         login,
         loginAsMeek,
         loginAsDemo,
+        loginAsAuditor,
         loginWithGoogle,
         signup,
         logout,

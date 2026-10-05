@@ -88,11 +88,14 @@ export const BillionDollarLandingPage: React.FC<BillionDollarLandingPageProps> =
           {/* Quick Nav Links */}
           <nav className="hidden md:flex items-center gap-8 text-xs font-mono font-medium text-slate-300">
             <a href="#operating-loop" className="hover:text-cyan-400 transition">12-Step Loop</a>
-            <a href="#100-layers" className="hover:text-cyan-400 transition">100 Real-World Layers</a>
-            <a href="#airdrop-quests" className="hover:text-cyan-400 transition flex items-center gap-1.5 text-amber-300 font-bold">
-              <Flame className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
-              <span>Daily Airdrop & NFTs</span>
-            </a>
+            <a href="#100-layers" className="hover:text-cyan-400 transition">Operations Matrix</a>
+            <button 
+              onClick={onEnterAirdrop} 
+              className="hover:text-cyan-400 transition flex items-center gap-1.5 text-emerald-400 font-bold cursor-pointer bg-transparent border-0"
+            >
+              <Building2 className="w-3.5 h-3.5 text-emerald-400" />
+              <span>B2B Lead Discovery</span>
+            </button>
             <a href="#metrics" className="hover:text-cyan-400 transition">Metrics</a>
           </nav>
 
@@ -103,7 +106,7 @@ export const BillionDollarLandingPage: React.FC<BillionDollarLandingPageProps> =
               onClick={() => window.dispatchEvent(new CustomEvent('open-buyer-funnel'))}
               className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs font-mono font-bold transition cursor-pointer"
             >
-              <Target className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
+              <Target className="w-3.5 h-3.5 text-emerald-400" />
               <span className="hidden md:inline">Client ROI &amp; Checkout</span>
               <span className="md:hidden">ROI Audit</span>
             </button>
@@ -111,19 +114,19 @@ export const BillionDollarLandingPage: React.FC<BillionDollarLandingPageProps> =
             <button
               type="button"
               onClick={onEnterAirdrop}
-              className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 text-xs font-mono font-bold transition cursor-pointer"
+              className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-xs font-mono font-bold transition cursor-pointer"
             >
-              <Trophy className="w-3.5 h-3.5 text-amber-400" />
-              <span>Daily Airdrop Quests</span>
+              <Building2 className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Contractor Discovery</span>
             </button>
 
             <button
               type="button"
               onClick={onEnterTestnet}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-600 hover:from-cyan-300 hover:to-purple-500 text-slate-950 text-xs font-mono font-black shadow-lg shadow-cyan-500/20 transition cursor-pointer"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-600 hover:brightness-110 text-slate-950 text-xs font-mono font-black shadow-lg shadow-emerald-500/20 transition cursor-pointer"
             >
               <Zap className="w-3.5 h-3.5 text-slate-950" />
-              <span>Launch Testnet Terminal</span>
+              <span>Open FinOps Core</span>
             </button>
           </div>
         </div>

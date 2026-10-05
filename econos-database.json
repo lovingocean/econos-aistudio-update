@@ -24,6 +24,15 @@
       "currentOrgId": "org_1789384800852",
       "createdAt": "2026-09-14T11:20:00.859Z",
       "password": "Password123!"
+    },
+    {
+      "id": "usr_audit_investor",
+      "email": "auditor@econos.io",
+      "name": "Senior Auditor / Due Diligence",
+      "role": "AUDITOR",
+      "currentOrgId": "org_real_default",
+      "createdAt": "2026-03-01T10:00:00Z",
+      "password": "pbkdf2$a8a507aca69b6a1763a77eb75fc347de$cdfc0e244972ba5d5da03c1ecfad678a0902925af1d19e71be95cedceb32c8773e7453da1f8ed6276eaf57f367a66252731c7a5fa8fe3d619c3aa86d32e1d627"
     }
   ],
   "organizations": [

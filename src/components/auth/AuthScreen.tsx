@@ -16,7 +16,9 @@ import {
   Briefcase,
   Layers,
   ChevronRight,
-  Wallet
+  Wallet,
+  Copy,
+  Check
 } from 'lucide-react';
 import { Organization } from '../../types/econos';
 
@@ -25,8 +27,9 @@ interface AuthScreenProps {
 }
 
 export const AuthScreen: React.FC<AuthScreenProps> = ({ initialTab = 'login' }) => {
-  const { login, signup, loginAsMeek, loginAsDemo, loginWithGoogle, isLoading } = useAuth();
+  const { login, signup, loginAsMeek, loginAsDemo, loginAsAuditor, loginWithGoogle, isLoading } = useAuth();
   const [tab, setTab] = useState<'login' | 'signup'>(initialTab);
+  const [copied, setCopied] = useState(false);
   
   // Login form state
   const [loginEmail, setLoginEmail] = useState('');
@@ -113,6 +116,25 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ initialTab = 'login' }) 
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const handleAuditorOneClick = async () => {
+    setError(null);
+    setSubmitting(true);
+    try {
+      await loginAsAuditor();
+    } catch (err: any) {
+      setError(err.message || 'Could not initialize auditor session.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleCopyCredentials = () => {
+    const creds = `ECONOS Audit Portal\nURL: ${window.location.origin}\nUsername: auditor@econos.io\nPassword: Audit2026!`;
+    navigator.clipboard.writeText(creds);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2500);
   };
 
   const handleGoogleSignIn = async () => {
@@ -233,12 +255,63 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ initialTab = 'login' }) 
                   id="login-meek-direct-btn"
                   onClick={handleMeekOneClick}
                   disabled={submitting || isLoading}
-                  className="w-full py-2 px-4 rounded-xl bg-[#132338] hover:bg-[#1b2f48] text-white text-xs font-semibold flex items-center justify-center gap-2 transition shadow-sm disabled:opacity-50"
+                  className="w-full py-2 px-4 rounded-xl bg-[#132338] hover:bg-[#1b2f48] text-white text-xs font-semibold flex items-center justify-center gap-2 transition shadow-sm disabled:opacity-50 cursor-pointer"
                 >
                   <ShieldCheck className="w-4 h-4 text-emerald-400" />
                   <span>Sign In as Meek Ifti (meekifti@gmail.com)</span>
                   <ArrowRight className="w-3.5 h-3.5 text-slate-300" />
                 </button>
+              </div>
+
+              {/* Institutional Auditor & Due Diligence Card */}
+              <div className="p-4 rounded-xl bg-gradient-to-br from-emerald-50/90 to-teal-50 border border-emerald-300 shadow-xs space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                    <span className="text-xs font-bold text-emerald-950 uppercase tracking-wide">
+                      Auditor &amp; Due Diligence Access
+                    </span>
+                  </div>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-900 font-bold border border-emerald-300">
+                    AUDITOR Role
+                  </span>
+                </div>
+
+                <p className="text-xs text-emerald-900/80">
+                  Full unrestricted audit access to review all 171 modules, cash flow engines, B2B lead discovery, statutory lien waivers, and tax vaults.
+                </p>
+
+                <div className="bg-white/90 rounded-lg p-2.5 border border-emerald-200 text-xs font-mono space-y-1">
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-500">Username / Email:</span>
+                    <span className="font-bold text-slate-900 select-all">auditor@econos.io</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-500">Password:</span>
+                    <span className="font-bold text-emerald-700 select-all">Audit2026!</span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={handleCopyCredentials}
+                    className="py-2 px-3 rounded-lg bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-2xs"
+                  >
+                    {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-slate-500" />}
+                    <span>{copied ? 'Copied to Clipboard!' : 'Copy Login Info'}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleAuditorOneClick}
+                    disabled={submitting || isLoading}
+                    className="py-2 px-3 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-xs disabled:opacity-50"
+                  >
+                    <span>Instant Audit Sign-In</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
               </div>
 
               {/* Firebase Cloud Google Sign In & Web3 Wallet Auth */}

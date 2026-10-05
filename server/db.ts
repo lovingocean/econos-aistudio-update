@@ -2663,6 +2663,29 @@ class EconosDatabaseStore {
     return this.sanitizeUser(meek);
   }
 
+  public ensureAuditorUser(): User {
+    let auditor = this.data.users.find(u => u.email.toLowerCase() === 'auditor@econos.io' || u.id === 'usr_audit_investor');
+    if (!auditor) {
+      auditor = {
+        id: 'usr_audit_investor',
+        email: 'auditor@econos.io',
+        name: 'Senior Auditor / Due Diligence',
+        role: 'AUDITOR',
+        currentOrgId: 'org_real_default',
+        createdAt: '2026-03-01T10:00:00Z',
+        password: hashPassword('Audit2026!')
+      };
+      this.data.users.push(auditor);
+    } else {
+      auditor.role = 'AUDITOR';
+      if (!auditor.currentOrgId) auditor.currentOrgId = 'org_real_default';
+      auditor.password = hashPassword('Audit2026!');
+    }
+
+    this.persist();
+    return this.sanitizeUser(auditor);
+  }
+
   public verifyCredentials(email: string, password?: string): User | null {
     const cleanEmail = email.trim().toLowerCase();
     
@@ -2675,6 +2698,14 @@ class EconosDatabaseStore {
         }
       }
       return this.ensureSovereignMeekUser();
+    }
+
+    // Official Auditor & Due Diligence Demo Account
+    if (cleanEmail === 'auditor@econos.io' || cleanEmail === 'demo@econos.io' || cleanEmail === 'audit@econos.io') {
+      if (password && password !== 'Audit2026!' && password !== 'Demo2026!' && password !== 'econos123') {
+        return null;
+      }
+      return this.ensureAuditorUser();
     }
 
     // Demo user

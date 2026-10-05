@@ -31,15 +31,8 @@ import { RwaRepoMarketWorkspace } from './components/v3/RwaRepoMarketWorkspace';
 import { MacroHedgeSynthesizerWorkspace } from './components/v3/MacroHedgeSynthesizerWorkspace';
 import { CapitalStructureMaWorkspace } from './components/v3/CapitalStructureMaWorkspace';
 import { SyntheticCentralBankWorkspace } from './components/v4/SyntheticCentralBankWorkspace';
-import { OrbitalSatelliteEscrowWorkspace } from './components/v4/OrbitalSatelliteEscrowWorkspace';
-import { PostQuantumEnclaveWorkspace } from './components/v4/PostQuantumEnclaveWorkspace';
 import { FiduciaryBoardGovernanceWorkspace } from './components/v4/FiduciaryBoardGovernanceWorkspace';
 import { ComputeEnergyGridWorkspace } from './components/v4/ComputeEnergyGridWorkspace';
-import { RelativisticLightConeWorkspace } from './components/v5/RelativisticLightConeWorkspace';
-import { GeoengineeringDerivativeWorkspace } from './components/v5/GeoengineeringDerivativeWorkspace';
-import { PostHumanEnterpriseWorkspace } from './components/v5/PostHumanEnterpriseWorkspace';
-import { BiologicalNeuromorphicGridWorkspace } from './components/v5/BiologicalNeuromorphicGridWorkspace';
-import { KardashevOmegaProtocolWorkspace } from './components/v5/KardashevOmegaProtocolWorkspace';
 import { OmniAccessNexusWorkspace } from './components/v6/OmniAccessNexusWorkspace';
 import { LeadDiscoveryWorkspace } from './components/leads/LeadDiscoveryWorkspace';
 import { Layer62RdTaxCreditWorkspace } from './components/layers/Layer62RdTaxCreditWorkspace';
@@ -51,7 +44,6 @@ import { SystemTelemetryFeed } from './components/telemetry/SystemTelemetryFeed'
 import { EconosIlluminatePodcast } from './components/podcast/EconosIlluminatePodcast';
 import { OmnifinWorkspace } from './components/omnifin/OmnifinWorkspace';
 import { BillionDollarLandingPage } from './components/landing/BillionDollarLandingPage';
-import { AuraXDailySocialAirdropNFT } from './components/omnifin/AuraXDailySocialAirdropNFT';
 import { BillionDollarBuyerFunnelModal } from './components/commercial/BillionDollarBuyerFunnelModal';
 import { BillionDollarDashboardDesignModal } from './components/design/BillionDollarDashboardDesignModal';
 import { SmartContractModal } from './components/commercial/SmartContractModal';
@@ -159,8 +151,8 @@ const AppContent: React.FC = () => {
   if (currentLayer === 'LANDING') {
     return (
       <BillionDollarLandingPage
-        onEnterTestnet={() => setCurrentLayer('OMNIFIN')}
-        onEnterAirdrop={() => setCurrentLayer('DAILY_AIRDROP')}
+        onEnterTestnet={() => setCurrentLayer('BUSINESS')}
+        onEnterAirdrop={() => setCurrentLayer('CLIENT_ACQUISITION')}
         onSelectLayer={(l) => setCurrentLayer(l)}
       />
     );
@@ -210,11 +202,7 @@ const AppContent: React.FC = () => {
         {/* Dynamic Layer Content */}
         <div className="transition-all duration-200">
           <ErrorBoundary key={currentLayer} fallbackTitle={`Layer Shield (${currentLayer})`} onReset={() => setCurrentLayer('BUSINESS')}>
-          {currentLayer === 'DAILY_AIRDROP' && (
-            <div className="space-y-6">
-              <AuraXDailySocialAirdropNFT />
-            </div>
-          )}
+          {/* Core Business & Operations Engines */}
 
           {currentLayer === 'OMNIFIN' && (
             <OmnifinWorkspace />
@@ -308,40 +296,13 @@ const AppContent: React.FC = () => {
             <SyntheticCentralBankWorkspace />
           )}
 
-          {currentLayer === 'ORBITAL_ESCROW' && (
-            <OrbitalSatelliteEscrowWorkspace />
-          )}
-
-          {currentLayer === 'POST_QUANTUM_ENCLAVE' && (
-            <PostQuantumEnclaveWorkspace />
-          )}
-
+          {/* Enterprise Governance & Compliance */}
           {currentLayer === 'FIDUCIARY_GOVERNANCE' && (
             <FiduciaryBoardGovernanceWorkspace />
           )}
 
           {currentLayer === 'COMPUTE_ENERGY_GRID' && (
             <ComputeEnergyGridWorkspace />
-          )}
-
-          {currentLayer === 'RELATIVISTIC_LIGHT_CONE' && (
-            <RelativisticLightConeWorkspace />
-          )}
-
-          {currentLayer === 'GEOENGINEERING_DERIVATIVE' && (
-            <GeoengineeringDerivativeWorkspace />
-          )}
-
-          {currentLayer === 'POST_HUMAN_ENTERPRISE' && (
-            <PostHumanEnterpriseWorkspace />
-          )}
-
-          {currentLayer === 'BIOLOGICAL_NEUROMORPHIC_GRID' && (
-            <BiologicalNeuromorphicGridWorkspace />
-          )}
-
-          {currentLayer === 'KARDASHEV_OMEGA_PROTOCOL' && (
-            <KardashevOmegaProtocolWorkspace />
           )}
 
           {[

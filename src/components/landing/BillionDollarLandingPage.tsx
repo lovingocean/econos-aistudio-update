@@ -21,7 +21,8 @@ import {
   User as UserIcon,
   Briefcase,
   Sparkles,
-  ChevronRight
+  ChevronRight,
+  CreditCard
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -181,15 +182,6 @@ export const BillionDollarLandingPage: React.FC<BillionDollarLandingPageProps> =
               <Calendar className="w-4 h-4 text-indigo-600" />
               <span>Book Private Institutional Demo</span>
             </button>
-
-            <a
-              href="/econos-project.zip"
-              download="econos-project.zip"
-              className="px-4 py-3.5 rounded-xl bg-white hover:bg-slate-50 text-slate-600 hover:text-slate-900 border border-slate-200/90 text-xs font-mono transition flex items-center gap-1.5 shadow-2xs"
-            >
-              <Download className="w-3.5 h-3.5 text-slate-500" />
-              <span>Audit Source (.ZIP)</span>
-            </a>
           </div>
 
           <p className="text-xs font-mono text-slate-500 pt-2">
@@ -235,7 +227,7 @@ export const BillionDollarLandingPage: React.FC<BillionDollarLandingPageProps> =
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* PILLAR 1 */}
             <div className="p-8 rounded-2xl bg-white border border-slate-200/80 shadow-xs hover:shadow-md transition space-y-4 group">
               <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-700">
@@ -292,6 +284,36 @@ export const BillionDollarLandingPage: React.FC<BillionDollarLandingPageProps> =
               </p>
               <div className="pt-2 text-xs font-mono font-bold text-amber-700 flex items-center gap-1 group-hover:gap-2 transition-all">
                 <span>Tab 24 &amp; Tab 29 in FinOps Core</span>
+                <ChevronRight className="w-4 h-4" />
+              </div>
+            </div>
+
+            {/* PILLAR 5 (NEW BILLION-DOLLAR FINTECH CARD) */}
+            <div className="p-8 rounded-2xl bg-white border border-slate-200/80 shadow-xs hover:shadow-md transition space-y-4 group">
+              <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-700">
+                <CreditCard className="w-6 h-6" />
+              </div>
+              <h3 className="text-lg font-bold text-slate-900">Commercial Visa Fleet Cards &amp; Autonomous Job-Costing</h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Issues smart corporate expense cards to project managers and foremen. Swipes at Home Depot, Chevron, and equipment yards are autonomously tagged to CSI cost codes and AIA line items, yielding 1.85% net interchange revenue.
+              </p>
+              <div className="pt-2 text-xs font-mono font-bold text-emerald-700 flex items-center gap-1 group-hover:gap-2 transition-all">
+                <span>Tab 31 in FinOps Core (Interchange Engine)</span>
+                <ChevronRight className="w-4 h-4" />
+              </div>
+            </div>
+
+            {/* PILLAR 6 (NEW BILLION-DOLLAR GOVERNANCE CARD) */}
+            <div className="p-8 rounded-2xl bg-white border border-slate-200/80 shadow-xs hover:shadow-md transition space-y-4 group">
+              <div className="w-12 h-12 rounded-xl bg-purple-50 border border-purple-100 flex items-center justify-center text-purple-700">
+                <HardHat className="w-6 h-6" />
+              </div>
+              <h3 className="text-lg font-bold text-slate-900">Change Order Governance (AIA G701) &amp; Safety Pre-Qual</h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Eliminates the #1 cause of construction disputes with digital 3-party change order execution and substantial completion time extensions. Audits subcontractor OSHA Experience Modification Rates (EMR &lt; 1.00) and $5M umbrella COIs.
+              </p>
+              <div className="pt-2 text-xs font-mono font-bold text-purple-700 flex items-center gap-1 group-hover:gap-2 transition-all">
+                <span>Tab 32 &amp; Tab 33 in FinOps Core</span>
                 <ChevronRight className="w-4 h-4" />
               </div>
             </div>
@@ -420,11 +442,11 @@ export const BillionDollarLandingPage: React.FC<BillionDollarLandingPageProps> =
           <div className="pt-6 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4 text-[11px] text-slate-400">
             <p>© 2026 ECONOS Financial Technologies Inc. All rights reserved.</p>
             <div className="flex items-center gap-4">
-              <a href="/econos-project.zip" download="econos-project.zip" className="text-slate-600 hover:text-slate-900 transition">
-                Download Codebase (.zip)
-              </a>
+              <button type="button" onClick={() => setShowDemoModal(true)} className="text-slate-600 hover:text-slate-900 transition cursor-pointer">
+                Enterprise Inquiries
+              </button>
               <button type="button" onClick={handleInstantSandbox} className="text-slate-600 hover:text-slate-900 transition cursor-pointer">
-                Auditor Fast-Track
+                Live Sandbox Walkthrough
               </button>
             </div>
           </div>

@@ -313,15 +313,6 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ initialTab = 'login' }) 
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
-
-                <a
-                  href="/econos-project.zip"
-                  download="econos-project.zip"
-                  className="w-full py-2.5 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-mono font-bold flex items-center justify-center gap-2 transition cursor-pointer shadow-xs"
-                >
-                  <Download className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Download Full Project ZIP for Claude Audit (19.2 MB)</span>
-                </a>
               </div>
 
               {/* Firebase Cloud Google Sign In & Web3 Wallet Auth */}

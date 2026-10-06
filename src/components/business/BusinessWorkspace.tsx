@@ -32,6 +32,16 @@ import { CommercialSuretyBondingWorkspace } from './CommercialSuretyBondingWorks
 import { CommercialUccArticle9Workspace } from './CommercialUccArticle9Workspace';
 import { CommercialSection1031ExchangeWorkspace } from './CommercialSection1031ExchangeWorkspace';
 import { CommercialMarketAccessWorkspace } from './CommercialMarketAccessWorkspace';
+import { CommercialFleetCardWorkspace } from './CommercialFleetCardWorkspace';
+import { CommercialChangeOrderWorkspace } from './CommercialChangeOrderWorkspace';
+import { CommercialSubcontractorPreQualWorkspace } from './CommercialSubcontractorPreQualWorkspace';
+import { CommercialWipScheduleWorkspace } from './CommercialWipScheduleWorkspace';
+import { CommercialLiquidatedDamagesWorkspace } from './CommercialLiquidatedDamagesWorkspace';
+import { CommercialIntercompanyTreasuryWorkspace } from './CommercialIntercompanyTreasuryWorkspace';
+import { CommercialSecuritizationWorkspace } from './CommercialSecuritizationWorkspace';
+import { CommercialBimTelemetryWorkspace } from './CommercialBimTelemetryWorkspace';
+import { CommercialTradeFinanceWorkspace } from './CommercialTradeFinanceWorkspace';
+import { CommercialSovereignCitadelWorkspace } from './CommercialSovereignCitadelWorkspace';
 import { OpportunityEngine } from './OpportunityEngine';
 import { ScenarioEngine } from './ScenarioEngine';
 import { OutcomeVerificationView } from './OutcomeVerification';
@@ -71,7 +81,11 @@ import {
   Zap,
   Shield,
   HardHat,
-  Building
+  Building,
+  CreditCard,
+  ShieldAlert,
+  Crown,
+  Layers
 } from 'lucide-react';
 
 type BusinessSubTab = 
@@ -94,6 +108,16 @@ type BusinessSubTab =
   | 'UCC_ARTICLE_9'
   | 'SECTION_1031_EXCHANGE'
   | 'MARKET_ACCESS'
+  | 'FLEET_CARDS'
+  | 'CHANGE_ORDERS'
+  | 'SUBCONTRACTOR_PREQUAL'
+  | 'WIP_SCHEDULE'
+  | 'LIQUIDATED_DAMAGES'
+  | 'INTERCOMPANY_TREASURY'
+  | 'ABS_SECURITIZATION'
+  | 'BIM_TELEMETRY'
+  | 'TRADE_FINANCE'
+  | 'SOVEREIGN_CITADEL'
   | 'WHAT_IF_STUDIO'
   | 'FX_HEDGING'
   | 'TAX' 
@@ -157,6 +181,16 @@ const SUBTABS: {
   { id: 'UCC_ARTICLE_9', label: '28. UCC Article 9 Priority Perfection', shortLabel: 'UCC-1 Perfection', icon: Scale, category: 'ENTERPRISE', isNew: true, badge: 'FIRST-PRIORITY', activeColor: 'bg-purple-900 text-white', inactiveColor: 'text-purple-900 bg-purple-50/80 hover:bg-purple-100 border border-purple-200' },
   { id: 'SECTION_1031_EXCHANGE', label: '29. IRS §1031 Like-Kind Exchange', shortLabel: '§1031 Tax Deferral', icon: Building, category: 'ENTERPRISE', isNew: true, badge: '45-DAY CLOCK', activeColor: 'bg-teal-900 text-white', inactiveColor: 'text-teal-900 bg-teal-50/80 hover:bg-teal-100 border border-teal-200' },
   { id: 'MARKET_ACCESS', label: '30. Market Access & Enterprise GTM', shortLabel: 'Market Access & GTM', icon: KeyRound, category: 'ENTERPRISE', isNew: true, badge: 'COMMERCIAL GTM', activeColor: 'bg-emerald-900 text-white', inactiveColor: 'text-emerald-900 bg-emerald-50/80 hover:bg-emerald-100 border border-emerald-200' },
+  { id: 'FLEET_CARDS', label: '31. Commercial Fleet Cards & Job-Costing', shortLabel: 'Fleet Cards & P-Card', icon: CreditCard, category: 'ENTERPRISE', isNew: true, badge: '1.85% INTERCHANGE', activeColor: 'bg-emerald-800 text-white', inactiveColor: 'text-emerald-800 bg-emerald-50/80 hover:bg-emerald-100 border border-emerald-200' },
+  { id: 'CHANGE_ORDERS', label: '32. AIA G701 Change Order Governance Desk', shortLabel: 'AIA G701 Change Orders', icon: FileText, category: 'ENTERPRISE', isNew: true, badge: 'ZERO DISPUTES', activeColor: 'bg-blue-800 text-white', inactiveColor: 'text-blue-800 bg-blue-50/80 hover:bg-blue-100 border border-blue-200' },
+  { id: 'SUBCONTRACTOR_PREQUAL', label: '33. Subcontractor OSHA & COI Pre-Qual Desk', shortLabel: 'Safety Pre-Qual & COI', icon: HardHat, category: 'ENTERPRISE', isNew: true, badge: 'EMR UNDERWRITING', activeColor: 'bg-amber-800 text-white', inactiveColor: 'text-amber-800 bg-amber-50/80 hover:bg-amber-100 border border-amber-200' },
+  { id: 'WIP_SCHEDULE', label: '34. Autonomous WIP Schedule & Over/Under Billing', shortLabel: 'WIP Schedule (ASC 606)', icon: FileSpreadsheet, category: 'ENTERPRISE', isNew: true, badge: 'CPA AUDIT READY', activeColor: 'bg-teal-800 text-white', inactiveColor: 'text-teal-800 bg-teal-50/80 hover:bg-teal-100 border border-teal-200' },
+  { id: 'LIQUIDATED_DAMAGES', label: '35. Liquidated Damages & Forensic Delay Sentinel', shortLabel: 'Liquidated Damages Defense', icon: ShieldAlert, category: 'ENTERPRISE', isNew: true, badge: 'AIA A201 § 8.3', activeColor: 'bg-rose-800 text-white', inactiveColor: 'text-rose-800 bg-rose-50/80 hover:bg-rose-100 border border-rose-200' },
+  { id: 'INTERCOMPANY_TREASURY', label: '36. Multi-Entity Cash Sweeping & Treasury Pool', shortLabel: 'Intercompany Cash Pool', icon: Landmark, category: 'ENTERPRISE', isNew: true, badge: '5.20% APY YIELD', activeColor: 'bg-indigo-900 text-white', inactiveColor: 'text-indigo-900 bg-indigo-50/80 hover:bg-indigo-100 border border-indigo-200' },
+  { id: 'ABS_SECURITIZATION', label: '37. Institutional ABS Securitization Desk', shortLabel: 'ABS Securitization (SPV)', icon: Coins, category: 'ENTERPRISE', isNew: true, badge: 'WALL STREET AAA', activeColor: 'bg-purple-900 text-white', inactiveColor: 'text-purple-900 bg-purple-50/80 hover:bg-purple-100 border border-purple-200' },
+  { id: 'BIM_TELEMETRY', label: '38. 4D BIM Earned Value Telemetry Desk', shortLabel: '4D BIM Telemetry', icon: Layers, category: 'ENTERPRISE', isNew: true, badge: 'AUTODESK BIM 360', activeColor: 'bg-cyan-900 text-white', inactiveColor: 'text-cyan-900 bg-cyan-50/80 hover:bg-cyan-100 border border-cyan-200' },
+  { id: 'TRADE_FINANCE', label: '39. Trade Finance & Letters of Credit (LC)', shortLabel: 'Trade Finance & LCs', icon: Globe, category: 'ENTERPRISE', isNew: true, badge: 'ICC UCP 600', activeColor: 'bg-sky-900 text-white', inactiveColor: 'text-sky-900 bg-sky-50/80 hover:bg-sky-100 border border-sky-200' },
+  { id: 'SOVEREIGN_CITADEL', label: '40. Sovereign FinOps Master Citadel', shortLabel: 'Sovereign Citadel', icon: Crown, category: 'ENTERPRISE', isNew: true, badge: '$1.42B ASSETS', activeColor: 'bg-amber-950 text-amber-200 border border-amber-600', inactiveColor: 'text-amber-900 bg-amber-50 hover:bg-amber-100 border border-amber-300' },
 
   // STRATEGY & SIMULATION
   { id: 'GRAPH', label: '21. Live Network Graph', shortLabel: 'Network Graph', icon: Network, category: 'STRATEGY', activeColor: 'bg-purple-700 text-white', inactiveColor: 'text-purple-700 bg-purple-50/80 hover:bg-purple-100 border border-purple-200' },
@@ -240,6 +274,17 @@ export const BusinessWorkspace: React.FC<BusinessWorkspaceProps> = ({ onNavigate
           </div>
 
           <div className="flex items-center gap-2 flex-wrap">
+            {onNavigateToLayer && (
+              <button
+                id="quick-launch-customer-acquisition"
+                onClick={() => onNavigateToLayer('CLIENT_ACQUISITION')}
+                className="px-3 py-1.5 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs cursor-pointer"
+              >
+                <Building className="w-3.5 h-3.5" />
+                <span>🎯 Client Acquisition Engine</span>
+              </button>
+            )}
+
             <button
               id="quick-launch-aicfo"
               onClick={() => setSubTab('AI_CFO')}
@@ -620,6 +665,46 @@ export const BusinessWorkspace: React.FC<BusinessWorkspaceProps> = ({ onNavigate
 
       {subTab === 'MARKET_ACCESS' && (
         <CommercialMarketAccessWorkspace />
+      )}
+
+      {subTab === 'FLEET_CARDS' && (
+        <CommercialFleetCardWorkspace />
+      )}
+
+      {subTab === 'CHANGE_ORDERS' && (
+        <CommercialChangeOrderWorkspace />
+      )}
+
+      {subTab === 'SUBCONTRACTOR_PREQUAL' && (
+        <CommercialSubcontractorPreQualWorkspace />
+      )}
+
+      {subTab === 'WIP_SCHEDULE' && (
+        <CommercialWipScheduleWorkspace />
+      )}
+
+      {subTab === 'LIQUIDATED_DAMAGES' && (
+        <CommercialLiquidatedDamagesWorkspace />
+      )}
+
+      {subTab === 'INTERCOMPANY_TREASURY' && (
+        <CommercialIntercompanyTreasuryWorkspace />
+      )}
+
+      {subTab === 'ABS_SECURITIZATION' && (
+        <CommercialSecuritizationWorkspace />
+      )}
+
+      {subTab === 'BIM_TELEMETRY' && (
+        <CommercialBimTelemetryWorkspace />
+      )}
+
+      {subTab === 'TRADE_FINANCE' && (
+        <CommercialTradeFinanceWorkspace />
+      )}
+
+      {subTab === 'SOVEREIGN_CITADEL' && (
+        <CommercialSovereignCitadelWorkspace />
       )}
 
       {subTab === 'GRAPH' && (

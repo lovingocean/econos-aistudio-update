@@ -323,6 +323,333 @@ const EPISODES: PodcastEpisode[] = [
         focusTopic: 'Deterministic Execution Across 100 Layers'
       }
     ]
+  },
+  {
+    id: 'ep-5',
+    title: 'The Commercial FinOps Revolution: Retainage, Lien Waivers & §179D Tax Deductions',
+    duration: '6:15',
+    season: 1,
+    episode: 5,
+    description: 'Dr. Marcus Vance and Elena Rostova deconstruct how ECONOS solves the $1.8 Trillion commercial construction cash drag: AIA G702 progress billing, 50-state statutory lien waivers, same-day invoice factoring, and IRS §179D energy deductions.',
+    reelScript: {
+      hook: "Why do commercial contractors wait 60 to 90 days for their 10% retainage? Here is how ECONOS eliminates it forever.",
+      body: "Marcus and Elena break down the commercial contracting FinOps engine: from AIA G702 progress billing and atomic tri-party escrow clearing to $5.65/sq.ft. direct tax deductions under Section 179D.",
+      callToAction: "Run your commercial construction numbers through the live ECONOS sandbox.",
+      suggestedTags: ['#CommercialFinOps', '#AIABilling', '#LienWaivers', '#TaxHarvesting', '#ContractorCashFlow']
+    },
+    dialogue: [
+      {
+        id: 'd-501',
+        speaker: 'marcus',
+        speakerName: 'Dr. Marcus Vance',
+        role: 'Chief Macro Systems Architect',
+        avatar: 'MV',
+        color: 'from-amber-500 to-amber-700',
+        text: "Welcome back to ECONOS Illuminate! Today we're diving into the commercial contracting trenches. Elena, most founders and investors don't realize that in commercial construction, 10% of every invoice is held back as retainage for up to a year!",
+        timestamp: '00:04',
+        focusTopic: 'The $1.8T Construction Retainage Problem'
+      },
+      {
+        id: 'd-502',
+        speaker: 'elena',
+        speakerName: 'Elena Rostova',
+        role: 'AI & Autonomous Governance Lead',
+        avatar: 'ER',
+        color: 'from-cyan-500 to-blue-600',
+        text: "Exactly, Marcus! A mechanical or electrical contractor finishing a $10M medical tower will have a million dollars in retainage locked up. That cash drag kills their working capital. That's why we engineered the AIA G702 Progress Billing and Tri-Party Escrow clearing modules.",
+        timestamp: '00:24',
+        focusTopic: 'AIA G702 Progress Billing & Tri-Party Escrow'
+      },
+      {
+        id: 'd-503',
+        speaker: 'marcus',
+        speakerName: 'Dr. Marcus Vance',
+        role: 'Chief Macro Systems Architect',
+        avatar: 'MV',
+        color: 'from-amber-500 to-amber-700',
+        text: "And the legal defense is airtight. In Tab 22, we built 50-State Statutory Lien Waivers with real-time UCC Article 9 filings. When the General Contractor pays, unconditional lien waivers and vendor split checks execute simultaneously in atomic escrow.",
+        timestamp: '00:48',
+        focusTopic: '50-State Statutory Mechanics Lien Immunity'
+      },
+      {
+        id: 'd-504',
+        speaker: 'elena',
+        speakerName: 'Elena Rostova',
+        role: 'AI & Autonomous Governance Lead',
+        avatar: 'ER',
+        color: 'from-cyan-500 to-blue-600',
+        text: "And let's not forget the IRS Tax Harvesting Suite! Under the Inflation Reduction Act, Section 179D grants commercial trade contractors up to $5.65 per square foot in direct deductions for energy-efficient MEP installations. On a 100,000 sq.ft. facility, that is over $500,000 in immediate balance sheet value!",
+        timestamp: '01:14',
+        focusTopic: 'IRS §179D Energy Tax Harvesting Engine'
+      }
+    ]
+  },
+  {
+    id: 'ep-6',
+    title: 'Agentic AI for Total Banking: Autonomous Fiduciary Swarms vs. Legacy Cores',
+    duration: '6:50',
+    season: 1,
+    episode: 6,
+    description: 'Marcus and Elena explore how autonomous Agentic AI swarms replace slow batch mainframe banking with sub-second KYC/AML compliance, real-time credit decisioning, and Basel III liquidity stress testing.',
+    reelScript: {
+      hook: "Legacy banks take 48 hours to approve a wire. ECONOS Agentic AI swarms clear complex AML & Basel III compliance in 18 milliseconds.",
+      body: "Elena Rostova and Dr. Marcus Vance examine how autonomous multi-agent systems coordinate real-time credit underwriting, fraud anomaly interception, and liquidity rebalancing without human delay.",
+      callToAction: "Test the Total Banking Operations engine inside ECONOS.",
+      suggestedTags: ['#AgenticAI', '#BankingAI', '#BaselIII', '#AutonomousFinance', '#FinTech2026']
+    },
+    dialogue: [
+      {
+        id: 'd-601',
+        speaker: 'marcus',
+        speakerName: 'Dr. Marcus Vance',
+        role: 'Chief Macro Systems Architect',
+        avatar: 'MV',
+        color: 'from-amber-500 to-amber-700',
+        text: "Today we are addressing the ultimate question: does ECONOS solve Total Banking Operations? And the answer begins with Agentic AI. Traditional banks run on 40-year-old COBOL mainframes with overnight batch jobs. That architecture is fundamentally broken.",
+        timestamp: '00:04',
+        focusTopic: 'Legacy Mainframe Fragility vs Agentic AI'
+      },
+      {
+        id: 'd-602',
+        speaker: 'elena',
+        speakerName: 'Elena Rostova',
+        role: 'AI & Autonomous Governance Lead',
+        avatar: 'ER',
+        color: 'from-cyan-500 to-blue-600',
+        text: "In ECONOS Pillar 1, we deploy autonomous Fiduciary Agent Swarms. Sentinel-KYC intercepts sanctions and PEP lists in 18 milliseconds with 99.98% precision. Meanwhile, our Liquidity Swarm continuously recalculates Basel III Liquidity Coverage Ratios (LCR) every minute!",
+        timestamp: '00:26',
+        focusTopic: 'Sub-Second KYC & Basel III LCR Rebalancing'
+      },
+      {
+        id: 'd-603',
+        speaker: 'marcus',
+        speakerName: 'Dr. Marcus Vance',
+        role: 'Chief Macro Systems Architect',
+        avatar: 'MV',
+        color: 'from-amber-500 to-amber-700',
+        text: "And our Credit Underwriter Agent Prime doesn't ask for tax returns from two years ago! It reads verified real-time cash flow, Altman Z''-Scores, and AIA progress billing retainage to make binding credit decisions in under 65 milliseconds.",
+        timestamp: '00:50',
+        focusTopic: 'Algorithmic Commercial Credit Underwriting'
+      },
+      {
+        id: 'd-604',
+        speaker: 'elena',
+        speakerName: 'Elena Rostova',
+        role: 'AI & Autonomous Governance Lead',
+        avatar: 'ER',
+        color: 'from-cyan-500 to-blue-600',
+        text: "And every single agentic decision is cryptographically signed and logged onto the tamper-evident ledger. Auditors from the OCC, Fed, or FDIC don't have to wait months for sample testing; they get zero-knowledge proof of compliance in real time.",
+        timestamp: '01:16',
+        focusTopic: 'Cryptographic Regulatory Compliance'
+      }
+    ]
+  },
+  {
+    id: 'ep-7',
+    title: 'Cross-Border Payments & Remittances: Atomic ISO 20022 Corridors',
+    duration: '5:45',
+    season: 1,
+    episode: 7,
+    description: 'Dr. Marcus Vance and Elena Rostova breakdown how ECONOS unifies international payments and low-cost remittances across USD, EUR, AED, PKR, GBP, and JPY using ISO 20022 XML schemas and atomic PvP rails.',
+    reelScript: {
+      hook: "Why pay 6% in correspondent banking fees when cross-border remittances can settle in 0.4 seconds for 8 basis points?",
+      body: "Marcus and Elena break down the ISO 20022 revolution: pacs.008 customer credit transfers, atomic Payment versus Payment (PvP) settlement, and instant global trade corridors.",
+      callToAction: "Experience atomic cross-border liquidity in ECONOS.",
+      suggestedTags: ['#CrossBorderPayments', '#ISO20022', '#Remittances', '#GlobalFinTech', '#PvPSettlement']
+    },
+    dialogue: [
+      {
+        id: 'd-701',
+        speaker: 'marcus',
+        speakerName: 'Dr. Marcus Vance',
+        role: 'Chief Macro Systems Architect',
+        avatar: 'MV',
+        color: 'from-amber-500 to-amber-700',
+        text: "Cross-border payments have historically been the most extractive part of global banking. A wire from New York to Dubai or Frankfurt bounces through three correspondent banks, loses 4% in hidden FX markups, and takes three days to settle!",
+        timestamp: '00:04',
+        focusTopic: 'Correspondent Banking Extractive Friction'
+      },
+      {
+        id: 'd-702',
+        speaker: 'elena',
+        speakerName: 'Elena Rostova',
+        role: 'AI & Autonomous Governance Lead',
+        avatar: 'ER',
+        color: 'from-cyan-500 to-blue-600',
+        text: "In ECONOS Pillar 2, we built atomic Payment versus Payment (PvP) settlement corridors compliant with the latest ISO 20022 messaging standards. We process pacs.008 and pacs.009 rich data payloads with settlement finality in 0.4 to 1.2 seconds!",
+        timestamp: '00:25',
+        focusTopic: 'ISO 20022 pacs.008 & Atomic Settlement'
+      },
+      {
+        id: 'd-703',
+        speaker: 'marcus',
+        speakerName: 'Dr. Marcus Vance',
+        role: 'Chief Macro Systems Architect',
+        avatar: 'MV',
+        color: 'from-amber-500 to-amber-700',
+        text: "And our FX spread is compressed to just 8 to 15 basis points! Whether it's high-value equipment imports under letters of credit or cross-border worker remittances to Pakistan and the GCC, funds arrive with instant settlement certainty.",
+        timestamp: '00:48',
+        focusTopic: 'Compressed FX Spreads & Global Remittances'
+      }
+    ]
+  },
+  {
+    id: 'ep-8',
+    title: 'Embedded Mini-Apps: The Modular Super-App Architecture of Modern Banking',
+    duration: '5:30',
+    season: 1,
+    episode: 8,
+    description: 'Elena and Marcus dissect how embedded micro-apps (instant payroll advances, invoice factoring, FX forward locks) live directly inside corporate ERP and mobile environments without clunky standalone bank portals.',
+    reelScript: {
+      hook: "The era of monolithic corporate banking portals is dead. Embedded micro-apps are the future of financial distribution.",
+      body: "Elena and Marcus explore how ECONOS modular mini-apps allow corporate clients to run payroll advances, tax calculators, and factoring terminals right inside their native workflow.",
+      callToAction: "Launch an embedded mini-app in the ECONOS sandbox.",
+      suggestedTags: ['#EmbeddedBanking', '#MiniApps', '#FinTechSuperApp', '#MicroFrontends', '#CorporateTreasury']
+    },
+    dialogue: [
+      {
+        id: 'd-801',
+        speaker: 'elena',
+        speakerName: 'Elena Rostova',
+        role: 'AI & Autonomous Governance Lead',
+        avatar: 'ER',
+        color: 'from-cyan-500 to-blue-600',
+        text: "Marcus, why do traditional commercial banks force CFOs and operators to log into five separate clunky portals just to approve payroll, lock an FX rate, or finance an invoice?",
+        timestamp: '00:04',
+        focusTopic: 'The Death of Monolithic Bank Portals'
+      },
+      {
+        id: 'd-802',
+        speaker: 'marcus',
+        speakerName: 'Dr. Marcus Vance',
+        role: 'Chief Macro Systems Architect',
+        avatar: 'MV',
+        color: 'from-amber-500 to-amber-700',
+        text: "Because legacy core banks build software around their internal ledgers rather than the customer workflow! In ECONOS Pillar 3, we pioneered the Embedded Banking Mini-App framework. Think of it as WeChat or Revolut-style micro-apps, but built for enterprise finance.",
+        timestamp: '00:22',
+        focusTopic: 'Enterprise Micro-App Architecture'
+      },
+      {
+        id: 'd-803',
+        speaker: 'elena',
+        speakerName: 'Elena Rostova',
+        role: 'AI & Autonomous Governance Lead',
+        avatar: 'ER',
+        color: 'from-cyan-500 to-blue-600',
+        text: "A project manager on a construction job site can open the Earned Wage Advance mini-app and pay sub-workers immediately. A CFO can open the FX Forward mini-app to lock a Japanese Yen purchase order. Everything executes in milliseconds inside a single lightweight runtime!",
+        timestamp: '00:46',
+        focusTopic: 'Instant Workflow Execution on the Fly'
+      }
+    ]
+  },
+  {
+    id: 'ep-9',
+    title: 'Robotics in Banking: Zero-Touch RPA Swarms & Smart Vault IoT Telemetry',
+    duration: '5:50',
+    season: 1,
+    episode: 9,
+    description: 'Dr. Marcus Vance and Elena Rostova explain how software RPA bots automate high-frequency SWIFT/Fedwire reconciliation while hardware IoT telemetry safeguards physical vault cash recycling and armored transit.',
+    reelScript: {
+      hook: "Robotics in banking isn't science fiction. It's autonomous RPA reconcilers and IoT-geofenced vault custody running 24/7.",
+      body: "Marcus and Elena break down ECONOS Pillar 4: how software robots eliminate manual ledger balancing while hardware telemetry secures real-world cash recycling.",
+      callToAction: "Audit the live robotic telemetry nodes in ECONOS.",
+      suggestedTags: ['#RoboticsInBanking', '#RPABanking', '#IoTCustody', '#SmartVaults', '#AutomatedClearing']
+    },
+    dialogue: [
+      {
+        id: 'd-901',
+        speaker: 'marcus',
+        speakerName: 'Dr. Marcus Vance',
+        role: 'Chief Macro Systems Architect',
+        avatar: 'MV',
+        color: 'from-amber-500 to-amber-700',
+        text: "When people hear 'Robotics in Banking', they often picture humanoid robots standing in a branch lobby. But the real multi-billion dollar revolution is twofold: autonomous software RPA swarms and physical IoT custody telemetry!",
+        timestamp: '00:04',
+        focusTopic: 'Software RPA vs Physical Vault Robotics'
+      },
+      {
+        id: 'd-902',
+        speaker: 'elena',
+        speakerName: 'Elena Rostova',
+        role: 'AI & Autonomous Governance Lead',
+        avatar: 'ER',
+        color: 'from-cyan-500 to-blue-600',
+        text: "On the software side, our RPA Ledger Bots process hundreds of thousands of Fedwire, ACH, and SWIFT transactions with 100% zero-touch reconciliation. No human has to stay up until 2:00 AM on month-end close to balance out clearing breaks.",
+        timestamp: '00:26',
+        focusTopic: 'Zero-Touch Settlement & Month-End Close'
+      },
+      {
+        id: 'd-903',
+        speaker: 'marcus',
+        speakerName: 'Dr. Marcus Vance',
+        role: 'Chief Macro Systems Architect',
+        avatar: 'MV',
+        color: 'from-amber-500 to-amber-700',
+        text: "And on the physical side, our Smart Vault Robotics monitor automated cash recyclers and armored vehicle transits with sub-meter geofenced cryptographic locks. If a cash transit vehicle deviates by 50 meters, the vault enclave automatically locks until re-authenticated.",
+        timestamp: '00:52',
+        focusTopic: 'Smart-Custody Geofencing & Armored Transit'
+      }
+    ]
+  },
+  {
+    id: 'ep-10',
+    title: 'Tokenization of Bank Assets: RWAs, Regulated Deposit Tokens & 24/7 Atomic DvP',
+    duration: '6:30',
+    season: 1,
+    episode: 10,
+    description: 'Marcus and Elena explore the frontier of institutional asset tokenization: ERC-3643 regulated debt notes, USDF bank deposit tokens, and on-chain sovereign treasuries delivering 24/7 programmable liquidity.',
+    reelScript: {
+      hook: "Why is Wall Street moving trillions into Real-World Asset (RWA) tokenization? Because programmable deposit tokens eliminate T+2 settlement risk.",
+      body: "Elena Rostova and Dr. Marcus Vance examine how commercial loans, bank deposits, and sovereign treasuries are minted into cryptographic tokens with real-time proof of reserves.",
+      callToAction: "Discover asset tokenization in the ECONOS Total Banking console.",
+      suggestedTags: ['#AssetTokenization', '#RWATokenization', '#DepositTokens', '#USDF', '#InstitutionalCrypto']
+    },
+    dialogue: [
+      {
+        id: 'd-1001',
+        speaker: 'elena',
+        speakerName: 'Elena Rostova',
+        role: 'AI & Autonomous Governance Lead',
+        avatar: 'ER',
+        color: 'from-cyan-500 to-blue-600',
+        text: "Marcus, asset tokenization has officially graduated from theoretical crypto whitepapers to sovereign bank reality. Central banks and institutional lenders are demanding 24/7 settlement using regulated deposit tokens.",
+        timestamp: '00:04',
+        focusTopic: 'The Institutional Shift to Asset Tokenization'
+      },
+      {
+        id: 'd-1002',
+        speaker: 'marcus',
+        speakerName: 'Dr. Marcus Vance',
+        role: 'Chief Macro Systems Architect',
+        avatar: 'MV',
+        color: 'from-amber-500 to-amber-700',
+        text: "In ECONOS Pillar 5, we tokenize three critical asset classes: first, commercial loan senior tranches under the ERC-3643 regulated permissioned standard; second, USDF-compliant bank deposit tokens earning 5.20% APY; and third, 90-day sovereign US Treasury bills.",
+        timestamp: '00:26',
+        focusTopic: 'Three Tokenized Classes: Loans, Deposits, Treasuries'
+      },
+      {
+        id: 'd-1003',
+        speaker: 'elena',
+        speakerName: 'Elena Rostova',
+        role: 'AI & Autonomous Governance Lead',
+        avatar: 'ER',
+        color: 'from-cyan-500 to-blue-600',
+        text: "And the true superpower is Delivery versus Payment (DvP)! When a counterparty buys a commercial loan tranche or treasury note, cash and asset transfer atomically in the same microsecond smart contract. Counterparty default risk drops to absolute zero!",
+        timestamp: '00:52',
+        focusTopic: 'Atomic Delivery vs Payment (DvP) Settlement'
+      },
+      {
+        id: 'd-1004',
+        speaker: 'marcus',
+        speakerName: 'Dr. Marcus Vance',
+        role: 'Chief Macro Systems Architect',
+        avatar: 'MV',
+        color: 'from-amber-500 to-amber-700',
+        text: "This is why ECONOS is not just a tool for contractors; it is the Sovereign Financial & Banking Operating System of the modern world. From field labor to Wall Street asset securitization, everything is unified under mathematical certainty!",
+        timestamp: '01:18',
+        focusTopic: 'Sovereign Institutional Synthesis'
+      }
+    ]
   }
 ];
 

@@ -143,6 +143,7 @@ export type AppLayer =
   | 'DAILY_AIRDROP'
   | 'OMNIFIN'
   | 'SOVEREIGN_COMMAND'
+  | 'TOTAL_BANKING_OPS'
   | 'BUSINESS' 
   | 'CLIENT_ACQUISITION'
   | 'WEALTH' 

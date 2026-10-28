@@ -28,7 +28,8 @@ import {
   Home,
   Target,
   PhoneCall,
-  CreditCard
+  CreditCard,
+  Landmark
 } from 'lucide-react';
 import { UserRole, AppLayer } from '../../types/econos';
 import { GlobalLayerSearch } from './GlobalLayerSearch';
@@ -284,6 +285,20 @@ export const Navbar: React.FC<NavbarProps> = ({
               >
                 <Briefcase className="w-3.5 h-3.5 text-emerald-600" />
                 <span className="hidden sm:inline">FinOps Core</span>
+              </button>
+
+              <button
+                id="navbar-banking-btn"
+                onClick={() => onSelectLayer('TOTAL_BANKING_OPS')}
+                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-mono font-bold transition shadow-xs cursor-pointer shrink-0 ${
+                  currentLayer === 'TOTAL_BANKING_OPS'
+                    ? 'bg-indigo-600 text-white border-indigo-400 shadow-md ring-2 ring-indigo-400/30'
+                    : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-200'
+                }`}
+                title="Total Banking Operations: Agentic AI, Cross-Border Rails, Mini Apps, Robotics, Tokenization"
+              >
+                <Landmark className="w-3.5 h-3.5 text-indigo-600" />
+                <span className="hidden sm:inline">Total Banking</span>
               </button>
 
               <button

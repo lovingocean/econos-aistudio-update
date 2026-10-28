@@ -34,6 +34,7 @@ import { SyntheticCentralBankWorkspace } from './components/v4/SyntheticCentralB
 import { FiduciaryBoardGovernanceWorkspace } from './components/v4/FiduciaryBoardGovernanceWorkspace';
 import { ComputeEnergyGridWorkspace } from './components/v4/ComputeEnergyGridWorkspace';
 import { OmniAccessNexusWorkspace } from './components/v6/OmniAccessNexusWorkspace';
+import { TotalBankingOperationsWorkspace } from './components/banking/TotalBankingOperationsWorkspace';
 import { LeadDiscoveryWorkspace } from './components/leads/LeadDiscoveryWorkspace';
 import { Layer62RdTaxCreditWorkspace } from './components/layers/Layer62RdTaxCreditWorkspace';
 import { ExtendedMasterLayersWorkspace } from './components/layers/ExtendedMasterLayersWorkspace';
@@ -216,6 +217,10 @@ const AppContent: React.FC = () => {
 
           {currentLayer === 'BUSINESS' && (
             <BusinessWorkspace onNavigateToLayer={setCurrentLayer} />
+          )}
+
+          {currentLayer === 'TOTAL_BANKING_OPS' && (
+            <TotalBankingOperationsWorkspace />
           )}
 
           {currentLayer === 'CLIENT_ACQUISITION' && (

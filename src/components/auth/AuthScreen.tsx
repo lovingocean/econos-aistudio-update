@@ -132,7 +132,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ initialTab = 'login' }) 
   };
 
   const handleCopyCredentials = () => {
-    const creds = `ECONOS Audit Portal\nURL: ${window.location.origin}\nUsername: auditor@econos.io\nPassword: Audit2026!`;
+    const creds = `ECONOS Sovereign Core - Y Combinator Demo Access\nURL: ${window.location.origin}\nUsername: yc@econos.io (or auditor@econos.io)\nPassword: YCDemo2026!\nRole: AUDITOR / PARTNER (Full Access)`;
     navigator.clipboard.writeText(creds);
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
@@ -264,32 +264,42 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ initialTab = 'login' }) 
                 </button>
               </div>
 
-              {/* Institutional Auditor & Due Diligence Card */}
-              <div className="p-4 rounded-xl bg-gradient-to-br from-emerald-50/90 to-teal-50 border border-emerald-300 shadow-xs space-y-3">
+              {/* Y Combinator Partner & Institutional Due Diligence Card */}
+              <div className="p-4 rounded-xl bg-gradient-to-br from-amber-50/90 via-emerald-50/70 to-teal-50 border-2 border-emerald-400/80 shadow-md space-y-3 relative overflow-hidden">
+                <div className="absolute top-0 right-0 transform translate-x-2 -translate-y-2">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase font-mono bg-orange-500 text-white shadow-xs">
+                    YC &amp; Investor Pass
+                  </span>
+                </div>
+
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <ShieldCheck className="w-4 h-4 text-emerald-600" />
                     <span className="text-xs font-bold text-emerald-950 uppercase tracking-wide">
-                      Auditor &amp; Due Diligence Access
+                      Y Combinator &amp; Investor Due Diligence Access
                     </span>
                   </div>
                   <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-900 font-bold border border-emerald-300">
-                    AUDITOR Role
+                    AUDITOR / PARTNER
                   </span>
                 </div>
 
-                <p className="text-xs text-emerald-900/80">
-                  Full unrestricted audit access to review all 171 modules, cash flow engines, B2B lead discovery, statutory lien waivers, and tax vaults.
+                <p className="text-xs text-emerald-900/80 leading-relaxed">
+                  Full, zero-friction access for YC Partners and institutional reviewers to audit all 171 modules, live Agentic AI swarms, ISO 20022 Raast cross-border rails, AIA G702 construction FinOps, and tokenized RWA assets.
                 </p>
 
-                <div className="bg-white/90 rounded-lg p-2.5 border border-emerald-200 text-xs font-mono space-y-1">
+                <div className="bg-white/95 rounded-lg p-3 border border-emerald-300 text-xs font-mono space-y-1.5 shadow-xs">
                   <div className="flex justify-between items-center">
-                    <span className="text-slate-500">Username / Email:</span>
-                    <span className="font-bold text-slate-900 select-all">auditor@econos.io</span>
+                    <span className="text-slate-500 font-semibold">Username / Email:</span>
+                    <span className="font-bold text-slate-900 bg-slate-100 px-2 py-0.5 rounded select-all text-xs">yc@econos.io</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-slate-500">Password:</span>
-                    <span className="font-bold text-emerald-700 select-all">Audit2026!</span>
+                    <span className="text-slate-500 font-semibold">Password:</span>
+                    <span className="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded select-all text-xs">YCDemo2026!</span>
+                  </div>
+                  <div className="pt-1 border-t border-slate-100 text-[10px] text-slate-400 flex items-center justify-between">
+                    <span>Also accepts: auditor@econos.io</span>
+                    <span className="text-emerald-600 font-bold">100% Guaranteed Login</span>
                   </div>
                 </div>
 
@@ -297,19 +307,19 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ initialTab = 'login' }) 
                   <button
                     type="button"
                     onClick={handleCopyCredentials}
-                    className="py-2 px-3 rounded-lg bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-2xs"
+                    className="py-2 px-3 rounded-lg bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 text-xs font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-2xs"
                   >
                     {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-slate-500" />}
-                    <span>{copied ? 'Copied to Clipboard!' : 'Copy Login Info'}</span>
+                    <span>{copied ? 'Copied to Clipboard!' : 'Copy YC Credentials'}</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={handleAuditorOneClick}
                     disabled={submitting || isLoading}
-                    className="py-2 px-3 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-xs disabled:opacity-50"
+                    className="py-2 px-3 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-xs disabled:opacity-50"
                   >
-                    <span>Instant Audit Sign-In</span>
+                    <span>Instant 1-Click Sign-In</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>

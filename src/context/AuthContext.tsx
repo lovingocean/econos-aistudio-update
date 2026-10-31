@@ -271,7 +271,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (cleanEmail === 'meekifti@gmail.com' || cleanEmail.includes('meekifti')) {
           await loginAsMeek();
           return;
-        } else if (cleanEmail === 'auditor@econos.io' || cleanEmail.includes('audit')) {
+        } else if (
+          cleanEmail === 'auditor@econos.io' || 
+          cleanEmail.includes('audit') || 
+          cleanEmail.includes('yc') || 
+          cleanEmail.includes('ycombinator')
+        ) {
           await loginAsAuditor();
           return;
         } else if (cleanEmail.includes('demo') || cleanEmail.includes('alex')) {

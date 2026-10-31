@@ -2700,9 +2700,24 @@ class EconosDatabaseStore {
       return this.ensureSovereignMeekUser();
     }
 
-    // Official Auditor & Due Diligence Demo Account
-    if (cleanEmail === 'auditor@econos.io' || cleanEmail === 'demo@econos.io' || cleanEmail === 'audit@econos.io') {
-      if (password && password !== 'Audit2026!' && password !== 'Demo2026!' && password !== 'econos123') {
+    // Official Auditor & Due Diligence Demo Account & Y Combinator Partner Access
+    if (
+      cleanEmail === 'auditor@econos.io' || 
+      cleanEmail === 'demo@econos.io' || 
+      cleanEmail === 'audit@econos.io' ||
+      cleanEmail === 'yc@econos.io' ||
+      cleanEmail === 'partner@ycombinator.com' ||
+      cleanEmail.includes('ycombinator') ||
+      cleanEmail.includes('yc-demo')
+    ) {
+      if (
+        password && 
+        password !== 'Audit2026!' && 
+        password !== 'Demo2026!' && 
+        password !== 'econos123' &&
+        password !== 'YCDemo2026!' &&
+        password !== 'YC2026!'
+      ) {
         return null;
       }
       return this.ensureAuditorUser();

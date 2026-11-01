@@ -968,7 +968,7 @@ export const EnterpriseSolutionsModal: React.FC<EnterpriseSolutionsModalProps> =
         <div className="px-6 py-3 bg-white border-t border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
           <div className="text-slate-500 flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>ECONOS 16 Layers &bull; 28 Sovereign Agents &bull; Hardware Security Module Certified</span>
+            <span>ECONOS FinOps Core &bull; Working Progress Billing &amp; Factoring &bull; Multi-Tenant Isolation</span>
           </div>
 
           <div className="flex items-center gap-3">

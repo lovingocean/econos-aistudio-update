@@ -595,8 +595,8 @@ export const Navbar: React.FC<NavbarProps> = ({
               id="navbar-global-search-btn"
               onClick={() => setShowGlobalSearch(true)}
               className="flex items-center gap-1 px-2 py-1.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 hover:text-slate-900 transition shadow-xs cursor-pointer group"
-              title="Search 100 System Layers (⌘K / Ctrl+K)"
-              aria-label="Open 100 System Layers Search"
+              title="Search System Workspaces & Modules (⌘K / Ctrl+K)"
+              aria-label="Open System Module Search"
             >
               <Search className="w-3.5 h-3.5 text-slate-400 group-hover:text-amber-500 transition" />
               <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.2 rounded bg-slate-100 border border-slate-200 text-[10px] text-slate-500 font-mono font-semibold">

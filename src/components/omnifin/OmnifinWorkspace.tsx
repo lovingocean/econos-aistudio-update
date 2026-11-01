@@ -373,15 +373,19 @@ STATUS: READY_FOR_SIGNATURE [TRANSACTION SIGNED & DISPATCHED]`);
                   <Globe2 className="w-5 h-5 text-white" />
                 </div>
                 <h1 className="text-xl sm:text-2xl font-black tracking-tight text-white flex items-center gap-2">
-                  <span>AURAX TERMINAL</span>
-                  <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-400/40">
-                    POWERED BY $AURX
+                  <span>AURAX ARCHITECTURE TERMINAL</span>
+                  <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-blue-500/20 text-cyan-300 border border-blue-400/40">
+                    SIMULATION SANDBOX
                   </span>
                 </h1>
               </div>
               <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
-                A universal <span className="text-cyan-300 font-semibold">Financial State + Intelligence + Integrity + Execution + Clearing + Settlement Layer</span> operating above and across all blockchains, banks, exchanges, and AI agents.
+                An interactive <span className="text-cyan-300 font-semibold">Architectural Simulation &amp; Settlement Prototype</span> modeling unified multi-asset liquidity, ISO 20022 message orchestration, and cryptographic auditability for prospective bank partner pilots.
               </p>
+              <div className="mt-2.5 inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-amber-500/10 border border-amber-400/30 text-amber-300 text-[11px] font-mono">
+                <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+                <span>Sandbox Prototype Mode: Demonstrates future BaaS / Central Bank Raast integration workflows prior to live regulatory sandbox deployment.</span>
+              </div>
             </div>
 
             {/* Emergency Mode Controller */}

@@ -112,30 +112,12 @@ export const LayerNavigation: React.FC<LayerNavigationProps> = ({
 
   const coreLayers = [
     {
-      id: 'OMNIFIN' as AppLayer,
-      name: '⚡ OMNIFIN Global Layer',
-      subtitle: 'State + Intelligence + Clearing + Settlement',
-      question: '15 Asset Classes • 14 Surfaces • Proof-Carrying Rail',
-      icon: Globe2,
-      color: 'sky',
-      badge: 'GLOBAL OS'
-    },
-    {
-      id: 'SOVEREIGN_COMMAND' as AppLayer,
-      name: 'Ω. Sovereign Command',
-      subtitle: 'Concept C 4-Quadrant Institutional Mission Architecture',
-      question: 'Synthetic Reserves • Planetary Map • §41 ASC Tax • Merkle Engine',
-      icon: Compass,
-      color: 'amber',
-      badge: '4-QUADRANT OS'
-    },
-    {
       id: 'BUSINESS' as AppLayer,
-      name: '1. Business',
-      subtitle: 'FinOps, AI CFO, P2P, RevRec, Close & Audit',
-      question: 'P2P 3-Way Match • ASC 606 • Continuous Close • SOC-2',
+      name: '1. Commercial FinOps Core',
+      subtitle: 'Working Construction Billing, AIA G702, Factoring & Close',
+      question: 'AIA G702 • 10% Retainage • 95% Factoring • ASC 606 • Continuous Close',
       icon: Briefcase,
-      color: 'amber'
+      color: 'emerald'
     },
     {
       id: 'CLIENT_ACQUISITION' as AppLayer,
@@ -156,9 +138,9 @@ export const LayerNavigation: React.FC<LayerNavigationProps> = ({
     },
     {
       id: 'TRUST' as AppLayer,
-      name: '3. Trust',
-      subtitle: '28 Agents, AI Firewall & Passports',
-      question: 'What AI can I safely authorize to act?',
+      name: '3. Trust & Governance',
+      subtitle: 'Multi-Agent Policy Engine & Dual-Control RBAC',
+      question: 'Deterministic risk rules & transaction escalation',
       icon: ShieldAlert,
       color: 'indigo',
       badge: pendingApprovalsCount > 0 ? `${pendingApprovalsCount} Approvals` : undefined,
@@ -736,7 +718,7 @@ export const LayerNavigation: React.FC<LayerNavigationProps> = ({
           <button
             onClick={() => {
               setActiveGroup('CORE_OS');
-              if (!['BUSINESS', 'WEALTH', 'TRUST', 'GRAPH'].includes(selected)) {
+              if (!['BUSINESS', 'CLIENT_ACQUISITION', 'WEALTH', 'TRUST', 'GRAPH'].includes(selected)) {
                 onSelectLayer('BUSINESS');
               }
             }}
@@ -747,7 +729,7 @@ export const LayerNavigation: React.FC<LayerNavigationProps> = ({
             }`}
           >
             <Layers className="w-3.5 h-3.5" />
-            <span>Foundational OS (L1-4)</span>
+            <span>Core FinOps &amp; Billing (L1-4)</span>
           </button>
 
           <button
@@ -764,7 +746,7 @@ export const LayerNavigation: React.FC<LayerNavigationProps> = ({
             }`}
           >
             <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            <span>Strategic Expansion (L5-9)</span>
+            <span>Strategic Treasury &amp; Planning (L5-9)</span>
           </button>
 
           <button
@@ -781,7 +763,7 @@ export const LayerNavigation: React.FC<LayerNavigationProps> = ({
             }`}
           >
             <Shield className="w-3.5 h-3.5 text-emerald-300" />
-            <span>Sovereign Rails &amp; Defense (L11-19)</span>
+            <span>Capital Clearing &amp; Credit (L11-19)</span>
           </button>
 
           <button
@@ -798,10 +780,7 @@ export const LayerNavigation: React.FC<LayerNavigationProps> = ({
             }`}
           >
             <Building2 className="w-3.5 h-3.5 text-cyan-300" />
-            <span>Enterprise (L42-61)</span>
-            <span className="px-1.5 py-0.2 rounded-full bg-cyan-950 text-cyan-300 text-[9px] font-mono font-bold">
-              20 LAYERS
-            </span>
+            <span>Enterprise Working Capital (L42-61)</span>
           </button>
 
           <button
@@ -818,28 +797,7 @@ export const LayerNavigation: React.FC<LayerNavigationProps> = ({
             }`}
           >
             <Calculator className="w-3.5 h-3.5 text-amber-300" />
-            <span>Tax &amp; PE (L62-75)</span>
-            <span className="px-1.5 py-0.2 rounded-full bg-amber-400/20 text-amber-200 border border-amber-300/40 text-[9px] font-mono font-bold">
-              ⭐ L62 R&amp;D
-            </span>
-          </button>
-
-          <button
-            onClick={() => {
-              setActiveGroup('EXTENDED_100_MATRIX');
-              onSelectLayer('EXTENDED_LAYERS_WORKSPACE');
-            }}
-            className={`px-3 py-1.5 rounded-lg font-bold transition flex items-center gap-1.5 cursor-pointer ${
-              activeGroup === 'EXTENDED_100_MATRIX' || selected === 'EXTENDED_LAYERS_WORKSPACE'
-                ? 'bg-gradient-to-r from-purple-900 via-indigo-950 to-slate-950 text-white shadow-md border border-purple-400/50'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-            }`}
-          >
-            <Layers className="w-3.5 h-3.5 text-purple-300" />
-            <span>100-Layer Sovereign Matrix</span>
-            <span className="px-1.5 py-0.2 rounded-full bg-purple-500/20 text-purple-300 text-[9px] font-mono font-bold">
-              ALL 100
-            </span>
+            <span>Tax Incentives &amp; Section 179 (L62-75)</span>
           </button>
         </div>
 

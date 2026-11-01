@@ -285,7 +285,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ initialTab = 'login' }) 
                 </div>
 
                 <p className="text-xs text-emerald-900/80 leading-relaxed">
-                  Full, zero-friction access for YC Partners and institutional reviewers to audit all 171 modules, live Agentic AI swarms, ISO 20022 Raast cross-border rails, AIA G702 construction FinOps, and tokenized RWA assets.
+                  Full, zero-friction access for YC Partners and reviewers to audit all 171 working modules: AIA G702 construction FinOps, 95% invoice factoring, and interactive banking sandbox engines (ISO 20022 Raast workflows, heuristic multi-agent screening, and RWA tokenization models).
                 </p>
 
                 <div className="bg-white/95 rounded-lg p-3 border border-emerald-300 text-xs font-mono space-y-1.5 shadow-xs">
@@ -325,18 +325,8 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ initialTab = 'login' }) 
                 </div>
               </div>
 
-              {/* Firebase Cloud Google Sign In & Web3 Wallet Auth */}
+              {/* Enterprise Google Sign In & Standard Access */}
               <div className="space-y-2.5">
-                <button
-                  type="button"
-                  id="web3-wallet-signin-btn"
-                  onClick={handleWeb3WalletLogin}
-                  disabled={submitting || isLoading}
-                  className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:brightness-110 text-white text-xs font-bold font-mono flex items-center justify-center gap-2.5 transition shadow-sm disabled:opacity-50 cursor-pointer"
-                >
-                  <Wallet className="w-4 h-4 text-white shrink-0" />
-                  <span>Sign In with Web3 Wallet (MetaMask / AuraX L1)</span>
-                </button>
 
                 <button
                   type="button"

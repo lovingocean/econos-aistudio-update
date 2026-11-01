@@ -112,18 +112,18 @@ export const TotalBankingOperationsWorkspace: React.FC = () => {
   const [copiedBrief, setCopiedBrief] = useState<boolean>(false);
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
-  const PAK_BANK_SOLUTION_BRIEF = `ECONOS is a sovereign enterprise banking platform integrating Agentic AI, ISO 20022 real-time rails, and Commercial Construction FinOps into a unified institutional core. Built to modernize corporate lending, trade finance, and cash management for commercial banks, ECONOS addresses Pakistan's multi-billion-dollar supply chain, remittance, and infrastructure financing bottlenecks.
+  const PAK_BANK_SOLUTION_BRIEF = `ECONOS is an enterprise Financial Operations (FinOps) platform integrating commercial construction capital management, invoice factoring, and interactive banking sandbox engines into a single core. Built to modernize corporate lending, trade finance, and cash-flow management for commercial banks, ECONOS addresses Pakistan's multi-billion-dollar supply chain, remittance, and infrastructure financing bottlenecks.
 
-The platform combines five operational pillars:
-1) Agentic AI Swarms for autonomous credit underwriting, real-time Basel III LCR liquidity balancing, and sub-second AML/sanctions screening.
-2) ISO 20022 Cross-Border Rail enabling atomic PvP remittance settlement with SBP Raast and GCC corridors at sub-15 bps spreads.
+The platform combines five core capabilities:
+1) Multi-Agent Heuristic Modeling for automated credit underwriting, Basel III LCR liquidity stress simulations, and rule-based AML screening.
+2) ISO 20022 Cross-Border Messaging Engine modeling atomic PvP remittance workflows alongside SBP Raast and GCC corridor specifications.
 3) Embedded Mini-Apps delivering zero-install corporate liquidity tools including Earned Wage Access and FX hedging directly inside enterprise portals.
-4) Robotics & RPA Telemetry for 24/7 automated ledger reconciliation and IoT smart-vault cash recycling.
-5) Commercial Capital Engine automating AIA G702 progress billing, retainage escrow tracking, digital lien waivers, and 95% instant invoice factoring.
+4) Robotics & RPA Telemetry interfaces for automated ledger reconciliation and IoT smart-vault cash recycling models.
+5) Working Commercial Capital Engine automating AIA G702 progress billing, retainage escrow tracking, digital lien waivers, and 95% instant invoice factoring.
 
-Fully compliant with SBP Prudential Regulations, FATF AML/CFT guidelines, and Shariah-compliant asset-backed financing structures, ECONOS reduces loan turnaround from 45 days to under 4 minutes while eliminating contractor default risk through cryptographic escrow, programmatic fund disbursement, and sovereign asset tokenization for institutional balance sheets. The architecture supports on-premise core banking integration and open banking APIs.`;
+Designed around SBP Prudential Regulations, FATF AML/CFT guidelines, and Shariah-compliant asset-backed Murabaha financing principles, ECONOS streamlines trade credit turnaround from 45 days to minutes while mitigating contractor default risk through programmatic retainage, verified draw requests, and open banking API integration.`;
 
-  const PAK_BANK_INNOVATION_ANSWER = `ECONOS unifies autonomous Agentic AI with institutional Commercial FinOps into a single sovereign core. Unlike legacy banking portals or superficial chatbots, ECONOS deploys autonomous multi-agent swarms that execute sub-second credit underwriting, real-time Basel III liquidity stress balancing, and cryptographic fraud detection directly over ISO 20022 and SBP Raast rails. Furthermore, its proprietary AIA G702 progress-billing engine integrates programmatic retainage escrow and digital lien waivers, transforming illiquid supply-chain receivables into instant, risk-mitigated 95% cash advances and tokenized bank assets. It eliminates paper-based loan committees, counterparty settlement risk, and contractor defaults through mathematical determinism.`;
+  const PAK_BANK_INNOVATION_ANSWER = `ECONOS unifies working commercial FinOps with interactive banking simulation engines into a single architecture. Unlike generic accounting software, ECONOS directly solves contractor liquidity delays by linking AIA G702 progress billing to instant 95% invoice factoring. Its deterministic engines programmatically calculate retainage escrows and digital lien waivers, eliminating paper-based credit committee delays and contractor defaults through mathematical rules. Furthermore, its institutional sandbox demonstrates end-to-end ISO 20022 and SBP Raast remittance execution and multi-agent risk screening, enabling commercial banks to evaluate and pilot automated supply chain discounting with zero legacy core friction.`;
 
   const PAK_BANK_GTM_ANSWER = `We employ a three-tier institutional B2B2B deployment strategy:
 1) Core Sandbox & Tier-1 Banks: Partner with top Pakistani banks (HBL, Meezan, Alfalah) under the SBP Regulatory Sandbox to pilot SBP Raast cross-border corridors and SME supply chain discounting.
@@ -405,22 +405,22 @@ Fully compliant with SBP Prudential Regulations, FATF AML/CFT guidelines, and Sh
           <div className="space-y-1.5">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 text-xs font-mono font-bold">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>ECONOS Sovereign Core • Next-Gen Total Banking Operations</span>
+              <span>ECONOS Working Core • Interactive Banking Architecture Sandbox</span>
             </div>
             <h1 className="text-2xl font-black tracking-tight text-white flex items-center gap-2.5">
-              <span>Total Banking Operations &amp; Frontier Financial Architecture</span>
+              <span>Total Banking Operations &amp; Commercial FinOps Core</span>
             </h1>
             <p className="text-xs text-slate-300 max-w-3xl leading-relaxed">
-              Complete institutional coverage across the 5 pillars of 2026 frontier banking: Agentic AI swarms, real-time cross-border ISO 20022 payments &amp; remittances, embedded banking mini-apps, robotics RPA/telemetry, and asset tokenization (RWA &amp; deposit tokens).
+              Working commercial construction FinOps (AIA G702/G703) and invoice factoring paired with interactive institutional simulation prototypes: Heuristic multi-agent risk modeling, ISO 20022 payment messaging, embedded liquidity mini-apps, and asset tokenization models.
             </p>
           </div>
 
           <div className="bg-indigo-900/80 backdrop-blur-md rounded-xl p-4 border border-indigo-700/60 text-right">
-            <p className="text-[10px] font-mono uppercase tracking-wider text-indigo-300">Total Bank Assets Administered</p>
+            <p className="text-[10px] font-mono uppercase tracking-wider text-indigo-300">Sandbox Reference Portfolio</p>
             <p className="text-2xl font-mono font-black text-emerald-400">
               $218.5 Million
             </p>
-            <p className="text-[10px] text-slate-300">Across 5 Frontier Pillars</p>
+            <p className="text-[10px] text-slate-300">Simulated Reference Assets</p>
           </div>
         </div>
       </div>

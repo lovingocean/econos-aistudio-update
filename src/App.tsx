@@ -69,13 +69,12 @@ import { ErrorBoundary } from './components/layout/ErrorBoundary';
 
 const AppContent: React.FC = () => {
   const { user, isLoading, isAuthenticated, openOnboarding, setOpenOnboarding } = useAuth();
-  // Default to LANDING (World-Class Billion-Dollar Landing Page) unless layer or referral code is specified
+  // Default to real working FinOps Core (BUSINESS)
   const [currentLayer, setCurrentLayer] = useState<AppLayer>(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       const urlLayer = params.get('layer');
-      if (urlLayer) return urlLayer as AppLayer;
-      if (params.get('ref')) return 'OMNIFIN';
+      if (urlLayer && urlLayer !== 'OMNIFIN') return urlLayer as AppLayer;
     }
     return 'BUSINESS';
   });

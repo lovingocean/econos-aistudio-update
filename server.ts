@@ -72,28 +72,13 @@ async function startServer() {
     res.redirect(302, `/?ref=${encodeURIComponent(refCode)}`);
   });
 
-  app.get('/testnet', (req, res) => {
-    const ref = req.query.ref ? `?ref=${encodeURIComponent(String(req.query.ref))}` : '?ref=TESTNET';
-    res.redirect(302, `/${ref}`);
-  });
-
-  app.get('/airdrop', (req, res) => {
-    const ref = req.query.ref ? `?ref=${encodeURIComponent(String(req.query.ref))}` : '?ref=AIRDROP';
-    res.redirect(302, `/${ref}`);
-  });
-
-  // Direct root JSON-RPC 2.0 endpoint for Web3 wallets expecting root /rpc
-  app.all('/rpc', (req, res) => {
-    if (req.method === 'GET') {
-      return res.json({
-        jsonrpc: '2.0',
-        status: 'AuraX Sovereign Layer-1 JSON-RPC 2.0 is ACTIVE',
-        chainId: globalAuraXNode.chainId,
-        endpoints: ['POST /rpc', 'POST /api/rpc']
-      });
-    }
-    const rpcResponse = globalAuraXNode.handleJsonRpc(req.body);
-    res.json(rpcResponse);
+  // Enterprise FinOps Health & API Status
+  app.get('/api/status', (req, res) => {
+    res.json({
+      status: 'healthy',
+      service: 'ECONOS Commercial FinOps Operating Core',
+      version: '2026.1.0'
+    });
   });
 
   // Vite middleware setup

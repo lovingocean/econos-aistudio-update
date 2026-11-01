@@ -405,7 +405,7 @@ export const BillionDollarLandingPage: React.FC<BillionDollarLandingPageProps> =
                   <li className="flex items-center gap-2 font-semibold">✓ Full 30-Workspace Sovereign OS</li>
                   <li className="flex items-center gap-2">✓ UCC Article 9 Secretary of State Perfection</li>
                   <li className="flex items-center gap-2">✓ Multi-Tenant Syndicated Factoring Desk</li>
-                  <li className="flex items-center gap-2">✓ SOC-2 Type II Cryptographic Vault</li>
+                  <li className="flex items-center gap-2">✓ SOC-2 Aligned Cryptographic Evidence Vault</li>
                   <li className="flex items-center gap-2">✓ Custom API &amp; ERP Webhook Bus</li>
                 </ul>
               </div>
@@ -433,7 +433,7 @@ export const BillionDollarLandingPage: React.FC<BillionDollarLandingPageProps> =
             </div>
 
             <div className="flex flex-wrap items-center gap-3 text-[10px]">
-              <span className="px-2.5 py-1 rounded bg-slate-50 border border-slate-200 text-slate-700">SOC-2 Type II Certified Audit Trail</span>
+              <span className="px-2.5 py-1 rounded bg-slate-50 border border-slate-200 text-slate-700">SOC-2 Aligned Architecture</span>
               <span className="px-2.5 py-1 rounded bg-slate-50 border border-slate-200 text-slate-700">UCC § 9-406 Statutory Compliance</span>
               <span className="px-2.5 py-1 rounded bg-slate-50 border border-slate-200 text-slate-700">PBKDF2 Cryptographic Security</span>
             </div>
